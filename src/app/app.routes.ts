@@ -9,5 +9,10 @@ export const routes: Routes = [
     loadComponent: () => import('./components/dashboard/dashboard.component').then(m => m.DashboardComponent),
     canActivate: [authGuard]
   },
+  {
+    path: 'experts',
+    loadComponent: () => import('./components/expert-discovery/expert-discovery.component').then(m => m.ExpertDiscoveryComponent),
+    canActivate: [authGuard]
+  },
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];
