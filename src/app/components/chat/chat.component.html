@@ -1,0 +1,86 @@
+<div class="flex flex-col h-screen bg-gray-50 font-sans">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center shadow-sm z-10">
+    <div class="flex items-center space-x-4">
+      <div class="relative">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xl">
+          {{ expertName.charAt(0) }}
+        </div>
+        <!-- Status indicator -->
+        <span 
+          class="absolute bottom-0 right-0 w-3.5 h-3.5 border-2 border-white rounded-full"
+          [ngClass]="{
+            'bg-green-500': expertStatus === 'available',
+            'bg-yellow-500': expertStatus === 'busy',
+            'bg-gray-400': expertStatus === 'offline'
+          }"
+          title="{{ expertStatus }}">
+        </span>
+      </div>
+      <div>
+        <h2 class="text-xl font-bold text-gray-800">{{ expertName }}</h2>
+        <p class="text-sm text-gray-500 capitalize">{{ expertStatus }}</p>
+      </div>
+    </div>
+    
+    <div class="flex items-center space-x-2 bg-blue-50 px-4 py-2 rounded-lg border border-blue-100">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span class="font-mono text-lg font-bold text-blue-700">
+        {{ remainingSeconds !== null ? formatTime(remainingSeconds) : '--:--' }}
+      </span>
+    </div>
+  </header>
+
+  <!-- Chat Messages Area -->
+  <main class="flex-1 overflow-y-auto p-6 space-y-4">
+    <!-- Messages container -->
+    <div class="flex flex-col space-y-4 max-w-4xl mx-auto w-full">
+      
+      <div *ngIf="messages.length === 0" class="text-center text-gray-400 py-10">
+        <p>No messages yet. Send a message to start the consultation!</p>
+      </div>
+
+      <div *ngFor="let msg of messages" 
+           class="flex w-full"
+           [ngClass]="{'justify-end': msg.senderId === currentUserId, 'justify-start': msg.senderId !== currentUserId}">
+        
+        <div class="max-w-[75%] rounded-2xl px-5 py-3 shadow-sm relative"
+             [ngClass]="{
+               'bg-blue-600 text-white rounded-br-none': msg.senderId === currentUserId,
+               'bg-white text-gray-800 border border-gray-200 rounded-bl-none': msg.senderId !== currentUserId
+             }">
+          <div *ngIf="msg.senderId !== currentUserId" class="text-xs font-semibold text-gray-500 mb-1">
+            {{ msg.senderName }}
+          </div>
+          <p class="text-[15px] leading-relaxed break-words">{{ msg.message }}</p>
+          <span class="text-[10px] mt-1 block opacity-70 text-right">
+            {{ msg.timestamp | date:'shortTime' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Input Area -->
+  <footer class="bg-white border-t border-gray-200 p-4">
+    <div class="max-w-4xl mx-auto w-full relative flex items-center">
+      <input 
+        type="text" 
+        [(ngModel)]="newMessage" 
+        (keyup.enter)="sendMessage()"
+        placeholder="Type your message here..." 
+        class="w-full bg-gray-50 border border-gray-300 rounded-full pl-6 pr-14 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+      />
+      <button 
+        (click)="sendMessage()"
+        [disabled]="!newMessage.trim()"
+        class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-0.5" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+        </svg>
+      </button>
+    </div>
+  </footer>
+</div>

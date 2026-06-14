@@ -103,7 +103,9 @@
             <span class="text-2xl font-bold text-gray-900">${{ expert.pricePerHour }}</span>
             <span class="text-sm text-gray-500">/hour</span>
           </div>
-          <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-xl transition-colors shadow-sm">
+          <button 
+            [routerLink]="['/chat', expert.id]"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-xl transition-colors shadow-sm">
             Select Expert
           </button>
         </div>

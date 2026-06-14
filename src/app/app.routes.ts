@@ -14,5 +14,10 @@ export const routes: Routes = [
     loadComponent: () => import('./components/expert-discovery/expert-discovery.component').then(m => m.ExpertDiscoveryComponent),
     canActivate: [authGuard]
   },
+  {
+    path: 'chat/:expertId',
+    loadComponent: () => import('./components/chat/chat.component').then(m => m.ChatComponent),
+    canActivate: [authGuard]
+  },
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];

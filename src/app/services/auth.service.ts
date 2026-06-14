@@ -62,6 +62,18 @@ export class AuthService {
     return !!this.getToken();
   }
 
+  getCurrentUser(): any {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const payload = token.split('.')[1];
+      const decoded = JSON.parse(atob(payload));
+      return { id: decoded.id, name: decoded.email ? decoded.email.split('@')[0] : 'User' };
+    } catch (e) {
+      return null;
+    }
+  }
+
   private handleAuthentication(token: string, user: any): void {
     if (typeof window !== 'undefined') {
       localStorage.setItem(this.TOKEN_KEY, token);
