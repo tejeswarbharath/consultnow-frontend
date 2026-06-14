@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */
+/* src/styles.scss */
+@import "tailwindcss";
+
+/* This replaces your tailwind.config.js! */
+@theme {
+  --color-consult-navy: #1A2B4C;
+  --color-consult-teal: #2A9D8F;
+}
