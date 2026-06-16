@@ -1,11 +1,11 @@
-import { Location } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { CommonModule, Location } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-payment-failure',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   template: `
     <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-md text-center">
@@ -14,7 +14,13 @@ import { RouterLink } from '@angular/router';
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <h2 class="mt-6 text-3xl font-extrabold text-gray-900">Payment Failed</h2>
+        <h2 class="mt-6 text-3xl font-extrabold text-gray-900">Payment failure with reference number</h2>
+        
+        <div class="mt-4 bg-gray-100 p-4 rounded-md" *ngIf="referenceId">
+          <p class="text-sm text-gray-700 font-medium">Reference Number:</p>
+          <p class="text-xs text-gray-500 break-all mt-1">{{ referenceId }}</p>
+        </div>
+
         <p class="mt-2 text-sm text-gray-600">Do you want to retry the payment service?</p>
         
         <div class="mt-6 flex flex-col space-y-3">
@@ -29,8 +35,15 @@ import { RouterLink } from '@angular/router';
     </div>
   `
 })
-export class PaymentFailureComponent {
+export class PaymentFailureComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  referenceId: string | null = '';
+
   constructor(private location: Location) {}
+
+  ngOnInit(): void {
+    this.referenceId = this.route.snapshot.queryParamMap.get('reference_id');
+  }
 
   retry(): void {
     // Navigates the user back to the previous page where they can initiate checkout again

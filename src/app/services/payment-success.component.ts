@@ -14,11 +14,11 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
           </svg>
         </div>
         <h2 class="mt-6 text-3xl font-extrabold text-gray-900">Payment Successful!</h2>
-        <p class="mt-2 text-sm text-gray-600">Your consultation has been booked successfully.</p>
+        <p class="mt-2 text-sm text-gray-600">Your consultation has been booked successfully. Payment successful with reference number.</p>
         
         <div class="mt-4 bg-gray-100 p-4 rounded-md">
           <p class="text-sm text-gray-700 font-medium">Reference Number:</p>
-          <p class="text-xs text-gray-500 break-all mt-1">{{ sessionId || 'N/A' }}</p>
+          <p class="text-xs text-gray-500 break-all mt-1">{{ referenceId || 'N/A' }}</p>
         </div>
         
         <div class="mt-6">
@@ -32,10 +32,10 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 })
 export class PaymentSuccessComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  sessionId: string | null = '';
+  referenceId: string | null = '';
 
   ngOnInit(): void {
-    // Extract the Stripe session_id from query parameters
-    this.sessionId = this.route.snapshot.queryParamMap.get('session_id');
+    // Extract the Razorpay payment_id from query parameters
+    this.referenceId = this.route.snapshot.queryParamMap.get('reference_id');
   }
 }

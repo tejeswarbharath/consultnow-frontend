@@ -19,5 +19,15 @@ export const routes: Routes = [
     loadComponent: () => import('./components/chat/chat.component').then(m => m.ChatComponent),
     canActivate: [authGuard]
   },
+  {
+    path: 'payment-success',
+    loadComponent: () => import('./services/payment-success.component').then(m => m.PaymentSuccessComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'payment-failure',
+    loadComponent: () => import('./services/payment-failure.component').then(m => m.PaymentFailureComponent),
+    canActivate: [authGuard]
+  },
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];
