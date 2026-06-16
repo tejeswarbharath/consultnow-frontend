@@ -29,5 +29,9 @@ export const routes: Routes = [
     loadComponent: () => import('./services/payment-failure.component').then(m => m.PaymentFailureComponent),
     canActivate: [authGuard]
   },
-  { path: '', redirectTo: '/login', pathMatch: 'full' }
+  { 
+    path: '', 
+    loadComponent: () => import('./components/expert-discovery/expert-discovery.component').then(m => m.ExpertDiscoveryComponent) 
+  },
+  { path: '**', redirectTo: '' }
 ];

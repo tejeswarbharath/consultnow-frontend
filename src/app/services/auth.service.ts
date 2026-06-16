@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
 
 export interface AuthResponse {
   token: string;
@@ -14,6 +15,7 @@ export interface AuthResponse {
 export class AuthService {
   private readonly API_URL = `${environment.apiUrl}/auth`;
   private http = inject(HttpClient);
+  private router = inject(Router);
   
   private readonly TOKEN_KEY = 'jwt_token';
   private currentUserSubject = new BehaviorSubject<any>(null);
@@ -49,6 +51,7 @@ export class AuthService {
       localStorage.removeItem(this.TOKEN_KEY);
     }
     this.currentUserSubject.next(null);
+    this.router.navigate(['/']);
   }
 
   getToken(): string | null {

@@ -1,30 +1,38 @@
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { Inject, Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PaymentService {
   private http = inject(HttpClient);
-  
+
   // Utilizing the environment variable per security rules
-  private apiUrl = environment.apiUrl; 
+  private apiUrl = environment.apiUrl;
+
+  constructor(@Inject(PLATFORM_ID) private platformId: object) {}
 
   loadRazorpayScript(): Promise<boolean> {
     return new Promise(resolve => {
-      // Check if script is already loaded
-      if (document.getElementById('razorpay-checkout-js')) {
-        resolve(true);
-        return;
+      if (isPlatformBrowser(this.platformId)) {
+        // Check if script is already loaded
+        if (document.getElementById('razorpay-checkout-js')) {
+          resolve(true);
+          return;
+        }
+        const script = document.createElement('script');
+        script.id = 'razorpay-checkout-js';
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.onload = () => resolve(true);
+        script.onerror = () => resolve(false);
+        document.body.appendChild(script);
+      } else {
+        // If not in a browser, resolve to false.
+        resolve(false);
       }
-      const script = document.createElement('script');
-      script.id = 'razorpay-checkout-js';
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
     });
   }
 

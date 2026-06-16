@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,7 +10,10 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
   template: `
     <div class="min-h-screen bg-gray-100 p-8">
       <div class="max-w-4xl mx-auto">
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">Expert Dashboard</h1>
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-3xl font-bold text-gray-900">Expert Dashboard</h1>
+          <button (click)="onLogout()" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition">Logout</button>
+        </div>
 
         <!-- Notification Banner from Email Redirects -->
         <div *ngIf="statusMessage"
@@ -28,6 +32,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 })
 export class DashboardComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private authService = inject(AuthService);
   status: string | null = null;
   bookingId: string | null = null;
   statusMessage: string | null = null;
@@ -42,5 +47,9 @@ export class DashboardComponent implements OnInit {
     } else if (this.status === 'rejected') {
       this.statusMessage = `You have rejected booking #${this.bookingId}. The user has been notified.`;
     }
+  }
+
+  onLogout(): void {
+    this.authService.logout();
   }
 }
