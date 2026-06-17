@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ExpertMarketingTool } from '../expert-marketing-tool/expert-marketing-tool';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, ExpertMarketingTool],
   template: `
     <div class="min-h-screen bg-gray-100 p-8">
       <div class="max-w-4xl mx-auto">
@@ -23,9 +24,12 @@ import { AuthService } from '../../services/auth.service';
         </div>
 
         <!-- Dashboard Content -->
-        <div class="bg-white shadow rounded-lg p-6">
+        <div class="bg-white shadow rounded-lg p-6 mb-6">
           <p class="text-gray-600">Your upcoming consultations and requests will appear here.</p>
         </div>
+        
+        <!-- AI Marketing Tool -->
+        <app-expert-marketing-tool></app-expert-marketing-tool>
       </div>
     </div>
   `

@@ -5,6 +5,7 @@ import { RouterModule, Router } from '@angular/router';
 import { ExpertService, Expert, Category } from '../../services/expert.service';
 import { PaymentService } from '../../services/payment.service';
 import { environment } from '../../../environments/environment';
+import { AiSupportChat } from '../ai-support-chat/ai-support-chat';
 
 // Declare Razorpay to avoid TS errors
 declare var Razorpay: any;
@@ -12,7 +13,7 @@ declare var Razorpay: any;
 @Component({
   selector: 'app-expert-discovery',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, AiSupportChat],
   templateUrl: './expert-discovery.component.html',
   styles: ``
 })
