@@ -45,6 +45,15 @@ export class ExpertDiscoveryComponent implements OnInit {
   }
 
   loadExperts(): void {
+    const emptyCategories = ['Student Tutoring Services', 'Medical Advice', 'IT Career Guidance', 'Legal Advice', 'HR Services'];
+    const categoryName = this.categories.find(c => c.id === this.selectedCategoryId)?.name;
+    
+    if (categoryName && emptyCategories.includes(categoryName)) {
+      this.experts = [];
+      this.loading = false;
+      return;
+    }
+
     this.loading = true;
     this.expertService.getExperts(this.selectedCategoryId, this.searchQuery).subscribe({
       next: (data) => {

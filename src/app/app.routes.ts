@@ -10,6 +10,11 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'expert-profile',
+    loadComponent: () => import('./components/expert-profile/expert-profile').then(m => m.ExpertProfile),
+    canActivate: [authGuard]
+  },
+  {
     path: 'experts',
     loadComponent: () => import('./components/expert-discovery/expert-discovery.component').then(m => m.ExpertDiscoveryComponent),
     canActivate: [authGuard]

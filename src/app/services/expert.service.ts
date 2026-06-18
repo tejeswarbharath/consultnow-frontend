@@ -18,6 +18,8 @@ export interface Expert {
   isAvailable: boolean;
   categoryId: string;
   category?: Category;
+  bio?: string;
+  marketingSnippet?: string;
 }
 
 @Injectable({
@@ -45,5 +47,9 @@ export class ExpertService {
 
   getExpertById(id: string): Observable<Expert> {
     return this.http.get<Expert>(`${this.apiUrl}/${id}`);
+  }
+
+  updateExpert(id: string, data: Partial<Expert>): Observable<{ message: string, expert: Expert }> {
+    return this.http.put<{ message: string, expert: Expert }>(`${this.apiUrl}/${id}`, data);
   }
 }

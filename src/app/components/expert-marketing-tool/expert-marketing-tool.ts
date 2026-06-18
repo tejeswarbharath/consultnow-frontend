@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
+import { ExpertService } from '../../services/expert.service';
 import { environment } from '../../../environments/environment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-expert-marketing-tool',
@@ -15,10 +17,16 @@ import { environment } from '../../../environments/environment';
 export class ExpertMarketingTool {
   skillsInput: string = '';
   isLoading: boolean = false;
+  isSaving: boolean = false;
   error: string | null = null;
   marketingData: any = null;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private http: HttpClient, 
+    private authService: AuthService,
+    private expertService: ExpertService,
+    private router: Router
+  ) {}
 
   generateMarketing() {
     if (!this.skillsInput.trim()) {
@@ -45,6 +53,29 @@ export class ExpertMarketingTool {
         console.error('Marketing Generation Error', err);
         this.error = 'Failed to generate marketing content. Please try again.';
         this.isLoading = false;
+      }
+    });
+  }
+
+  saveToProfile() {
+    const user = this.authService.getCurrentUser();
+    if (!user || !user.id || !this.marketingData) return;
+
+    this.isSaving = true;
+    const updateData = {
+      bio: this.marketingData.bio || this.marketingData.professionalBio,
+      marketingSnippet: this.marketingData.marketingSnippet || this.marketingData.serviceDescription
+    };
+
+    this.expertService.updateExpert(user.id, updateData).subscribe({
+      next: () => {
+        this.isSaving = false;
+        this.router.navigate(['/expert-profile']);
+      },
+      error: (err) => {
+        console.error('Failed to save profile', err);
+        this.error = 'Failed to save profile. Please try again.';
+        this.isSaving = false;
       }
     });
   }
