@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ExpertService, Expert } from '../../services/expert.service';
-import { AuthService } from '../../services/auth.service';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Expert, ExpertService } from '../../services/expert.service';
+import { ExpertMarketingToolComponent } from '../expert-marketing-tool/expert-marketing-tool.component';
 
 @Component({
   selector: 'app-expert-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ExpertMarketingToolComponent],
   templateUrl: './expert-profile.html',
   styleUrl: './expert-profile.scss'
 })
@@ -17,25 +18,25 @@ export class ExpertProfile implements OnInit {
 
   constructor(
     private expertService: ExpertService,
-    private authService: AuthService
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    const user = this.authService.getCurrentUser();
-    if (user && user.id) {
-      this.expertService.getExpertById(user.id).subscribe({
+    const expertId = this.route.snapshot.paramMap.get('id');
+    if (expertId) {
+      this.expertService.getExpertById(expertId).subscribe({
         next: (data) => {
           this.expert = data;
           this.loading = false;
         },
         error: (err) => {
           console.error('Failed to load expert profile', err);
-          this.error = 'Failed to load profile details.';
+          this.error = 'Failed to load expert profile details.';
           this.loading = false;
         }
       });
     } else {
-      this.error = 'User not found.';
+      this.error = 'Expert ID not found in URL.';
       this.loading = false;
     }
   }

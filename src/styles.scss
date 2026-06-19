@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 /* src/styles.scss */
-@import "tailwindcss";
+@use "tailwindcss";
 
 /* This replaces your tailwind.config.js! */
 @theme {

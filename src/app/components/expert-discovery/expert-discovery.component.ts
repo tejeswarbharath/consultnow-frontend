@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router';
-import { ExpertService, Expert, Category } from '../../services/expert.service';
-import { PaymentService } from '../../services/payment.service';
+import { Router, RouterModule } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { Category, Expert, ExpertService } from '../../services/expert.service';
+import { PaymentService } from '../../services/payment.service';
 import { AiSupportChat } from '../ai-support-chat/ai-support-chat';
 
 // Declare Razorpay to avoid TS errors
@@ -28,20 +28,23 @@ export class ExpertDiscoveryComponent implements OnInit {
   constructor(
     private expertService: ExpertService,
     private paymentService: PaymentService,
-    private router: Router
+    private router: Router,
+    private cdRef: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.loadCategories();
-    this.loadExperts();
-    await this.paymentService.loadRazorpayScript();
-  }
-
-  loadCategories(): void {
+    this.loading = true;
     this.expertService.getCategories().subscribe({
-      next: (data) => this.categories = data,
-      error: (err) => console.error('Failed to load categories', err)
+      next: (data) => {
+        this.categories = data;
+        this.loadExperts(); // Now load experts after categories are fetched
+      },
+      error: (err) => {
+        console.error('Failed to load categories', err);
+        this.loading = false;
+      }
     });
+    await this.paymentService.loadRazorpayScript();
   }
 
   loadExperts(): void {
@@ -50,19 +53,24 @@ export class ExpertDiscoveryComponent implements OnInit {
     
     if (categoryName && emptyCategories.includes(categoryName)) {
       this.experts = [];
-      this.loading = false;
+      setTimeout(() => this.loading = false, 0);
       return;
     }
 
     this.loading = true;
+    // We need to trigger change detection manually here because we set loading to true
+    // and it might be updated in the same cycle by the synchronous part of the code above.
+    this.cdRef.detectChanges();
+
     this.expertService.getExperts(this.selectedCategoryId, this.searchQuery).subscribe({
       next: (data) => {
         this.experts = data;
-        this.loading = false;
+        // Defer the loading state change to the next macrotask
+        setTimeout(() => this.loading = false, 0);
       },
       error: (err) => {
         console.error('Failed to load experts', err);
-        this.loading = false;
+        setTimeout(() => this.loading = false, 0);
       }
     });
   }
@@ -73,7 +81,7 @@ export class ExpertDiscoveryComponent implements OnInit {
 
   onCategorySelect(categoryId: string): void {
     this.selectedCategoryId = categoryId;
-    this.loadExperts();
+    this.loadExperts(); 
   }
 
   selectExpertAndPay(expert: Expert): void {

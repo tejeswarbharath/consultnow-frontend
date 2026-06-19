@@ -12,22 +12,28 @@ export class PaymentService {
 
   // Utilizing the environment variable per security rules
   private apiUrl = environment.apiUrl;
+  private scriptLoaded = false;
 
   constructor(@Inject(PLATFORM_ID) private platformId: object) {}
 
   loadRazorpayScript(): Promise<boolean> {
     return new Promise(resolve => {
       if (isPlatformBrowser(this.platformId)) {
-        // Check if script is already loaded
-        if (document.getElementById('razorpay-checkout-js')) {
+        // If script is already loaded, don't load it again
+        if (this.scriptLoaded) {
           resolve(true);
           return;
         }
         const script = document.createElement('script');
-        script.id = 'razorpay-checkout-js';
-        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-        script.onload = () => resolve(true);
-        script.onerror = () => resolve(false);
+        script.src = `https://checkout.razorpay.com/v1/checkout.js`;
+        script.onload = () => {
+          this.scriptLoaded = true;
+          resolve(true);
+        };
+        script.onerror = () => {
+          this.scriptLoaded = false;
+          resolve(false);
+        };
         document.body.appendChild(script);
       } else {
         // If not in a browser, resolve to false.
