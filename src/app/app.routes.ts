@@ -34,6 +34,10 @@ export const routes: Routes = [
     loadComponent: () => import('./services/payment-failure.component').then(m => m.PaymentFailureComponent),
     canActivate: [authGuard]
   },
+  {
+    path: 'booking/:id',
+    loadComponent: () => import('./components/booking/booking.component').then(m => m.BookingComponent)
+  },
   { 
     path: '', 
     loadComponent: () => import('./components/expert-discovery/expert-discovery.component').then(m => m.ExpertDiscoveryComponent) 

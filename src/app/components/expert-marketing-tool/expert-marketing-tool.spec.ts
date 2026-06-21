@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ExpertMarketingTool } from './expert-marketing-tool';
+import { ExpertMarketingToolComponent } from './expert-marketing-tool';
 
 describe('ExpertMarketingTool', () => {
-  let component: ExpertMarketingTool;
-  let fixture: ComponentFixture<ExpertMarketingTool>;
+  let component: ExpertMarketingToolComponent;
+  let fixture: ComponentFixture<ExpertMarketingToolComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ExpertMarketingTool],
+      imports: [ExpertMarketingToolComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ExpertMarketingTool);
+    fixture = TestBed.createComponent(ExpertMarketingToolComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

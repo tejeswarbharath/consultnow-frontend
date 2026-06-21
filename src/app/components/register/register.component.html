@@ -20,7 +20,22 @@
         </div>
         <div>
           <label for="password" class="sr-only">Password</label>
-          <input id="password" type="password" formControlName="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password">
+          <input id="password" type="password" formControlName="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password">
+        </div>
+        <div>
+          <label for="yearsExperience" class="sr-only">Years of Experience</label>
+          <input id="yearsExperience" type="number" formControlName="yearsExperience" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Years of Experience">
+        </div>
+        <div>
+          <label for="pricePerHour" class="sr-only">Price Per Hour</label>
+          <input id="pricePerHour" type="number" formControlName="pricePerHour" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Price Per Hour">
+        </div>
+        <div>
+          <label for="subjectExpertise" class="sr-only">Subject Expertise</label>
+          <select id="subjectExpertise" formControlName="subjectExpertise" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
+            <option value="" disabled selected>Select Subject Expertise</option>
+            <option *ngFor="let option of subjectExpertiseOptions" [value]="option">{{option}}</option>
+          </select>
         </div>
       </div>
 

@@ -28,6 +28,6 @@
     </div>
 
     <!-- AI Marketing Tool Integration -->
-    <app-expert-marketing-tool [expert]="expert"></app-expert-marketing-tool>
+    <app-expert-marketing-tool [expert]="expert" (expertUpdated)="handleProfileUpdate($event)"></app-expert-marketing-tool>
   </div>
 </div>

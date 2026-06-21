@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 export interface Category {
   id: string;
@@ -11,10 +11,11 @@ export interface Category {
 export interface Expert {
   id: string;
   name: string;
+  email?: string;
   photoUrl?: string;
   yearsExperience: number;
   pricePerHour: number | string;
-  subjectExpertise: string[];
+  subjectExpertise: string;
   isAvailable: boolean;
   categoryId: string;
   category?: Category;
@@ -27,6 +28,8 @@ export interface Expert {
 })
 export class ExpertService {
   private apiUrl = 'http://localhost:3000/api/experts';
+  private expertUpdatedSource = new Subject<Expert>();
+  expertUpdated$ = this.expertUpdatedSource.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -41,6 +44,11 @@ export class ExpertService {
     return this.http.get<Expert[]>(this.apiUrl, { params });
   }
 
+  getExpertsGroupedBySubject(): Observable<{[key: string]: Expert[]}> {
+    let params = new HttpParams().set('groupBy', 'subjectExpertise');
+    return this.http.get<{[key: string]: Expert[]}>(this.apiUrl, { params });
+  }
+
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(`${this.apiUrl}/categories`);
   }
@@ -51,5 +59,9 @@ export class ExpertService {
 
   updateExpert(id: string, data: Partial<Expert>): Observable<{ message: string, expert: Expert }> {
     return this.http.put<{ message: string, expert: Expert }>(`${this.apiUrl}/${id}`, data);
+  }
+
+  notifyExpertUpdated(expert: Expert) {
+    this.expertUpdatedSource.next(expert);
   }
 }

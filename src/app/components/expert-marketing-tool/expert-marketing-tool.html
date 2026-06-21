@@ -7,7 +7,7 @@
   </div>
   
   <p class="text-gray-600 mb-4 text-sm">
-    Let AI craft your professional bio and promotional materials. Enter a few keywords about your skills and experience.
+    Let AI craft your professional bio and promotional materials. Your current expertise is pre-filled.
   </p>
 
   <div class="mb-4">
@@ -25,6 +25,10 @@
     {{ error }}
   </div>
 
+  <div *ngIf="successMessage" class="mb-4 text-sm text-green-600 bg-green-50 p-3 rounded-md">
+    {{ successMessage }}
+  </div>
+
   <button
     (click)="generateMarketing()"
     [disabled]="isLoading"
@@ -40,15 +44,7 @@
     
     <!-- Professional Bio -->
     <div *ngIf="marketingData.bio || marketingData.professionalBio">
-      <div class="flex justify-between items-center mb-2">
-        <h3 class="text-md font-semibold text-gray-800">Professional Bio</h3>
-        <button (click)="copyToClipboard(marketingData.bio || marketingData.professionalBio)" class="text-sm text-purple-600 hover:text-purple-800 flex items-center gap-1">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-          </svg>
-          Copy
-        </button>
-      </div>
+      <h3 class="text-md font-semibold text-gray-800 mb-2">Generated Professional Bio</h3>
       <div class="bg-gray-50 p-4 rounded-md text-sm text-gray-700 border border-gray-100 whitespace-pre-wrap">
         {{ marketingData.bio || marketingData.professionalBio }}
       </div>
@@ -56,33 +52,9 @@
 
     <!-- Marketing Snippet / Service Description -->
     <div *ngIf="marketingData.marketingSnippet || marketingData.serviceDescription">
-      <div class="flex justify-between items-center mb-2">
-        <h3 class="text-md font-semibold text-gray-800">Marketing Tagline / Service Description</h3>
-        <button (click)="copyToClipboard(marketingData.marketingSnippet || marketingData.serviceDescription)" class="text-sm text-purple-600 hover:text-purple-800 flex items-center gap-1">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-          </svg>
-          Copy
-        </button>
-      </div>
+      <h3 class="text-md font-semibold text-gray-800 mb-2">Generated Marketing Snippet</h3>
       <div class="bg-purple-50 p-4 rounded-md text-sm text-purple-900 border border-purple-100 italic">
         "{{ marketingData.marketingSnippet || marketingData.serviceDescription }}"
-      </div>
-    </div>
-    
-    <!-- Promo Email Template (if the AI returns it) -->
-    <div *ngIf="marketingData.promoEmailTemplate">
-      <div class="flex justify-between items-center mb-2">
-        <h3 class="text-md font-semibold text-gray-800">Promotional Email Template</h3>
-        <button (click)="copyToClipboard(marketingData.promoEmailTemplate)" class="text-sm text-purple-600 hover:text-purple-800 flex items-center gap-1">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-          </svg>
-          Copy
-        </button>
-      </div>
-      <div class="bg-gray-50 p-4 rounded-md text-sm text-gray-700 border border-gray-100 whitespace-pre-wrap">
-        {{ marketingData.promoEmailTemplate }}
       </div>
     </div>
     
@@ -93,7 +65,7 @@
         class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-70 flex justify-center items-center gap-2 font-medium"
       >
         <span *ngIf="isSaving" class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
-        <span>{{ isSaving ? 'Saving...' : 'Save to Profile' }}</span>
+        <span>{{ isSaving ? 'Saving...' : 'Save to Profile & Refresh' }}</span>
       </button>
     </div>
   </div>

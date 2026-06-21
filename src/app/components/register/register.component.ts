@@ -15,10 +15,21 @@ export class RegisterComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
+  subjectExpertiseOptions = [
+    "Student Tutoring Services",
+    "Medical Advice",
+    "IT Career Guidance",
+    "Legal Advice",
+    "HR Services"
+  ];
+
   registerForm = this.fb.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]]
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    yearsExperience: ['', Validators.required],
+    pricePerHour: ['', Validators.required],
+    subjectExpertise: ['', Validators.required]
   });
 
   errorMessage = '';
@@ -26,7 +37,7 @@ export class RegisterComponent {
   onSubmit() {
     if (this.registerForm.valid) {
       this.authService.register(this.registerForm.value).subscribe({
-        next: () => this.router.navigate(['/dashboard']),
+        next: () => this.router.navigate(['/login']),
         error: (err) => {
           this.errorMessage = err.error?.message || 'Registration failed. Please try again.';
         }

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Expert, ExpertService } from '../../services/expert.service';
-import { ExpertMarketingToolComponent } from '../expert-marketing-tool/expert-marketing-tool.component';
+import { ExpertMarketingToolComponent } from '../expert-marketing-tool/expert-marketing-tool';
 
 @Component({
   selector: 'app-expert-profile',
@@ -39,5 +39,9 @@ export class ExpertProfile implements OnInit {
       this.error = 'Expert ID not found in URL.';
       this.loading = false;
     }
+  }
+
+  handleProfileUpdate(updatedExpert: Expert): void {
+    this.expert = updatedExpert;
   }
 }

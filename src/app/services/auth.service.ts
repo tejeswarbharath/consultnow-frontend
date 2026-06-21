@@ -6,7 +6,10 @@ import { Router } from '@angular/router';
 
 export interface AuthResponse {
   token: string;
-  user: any;
+  user?: any;
+  role?: string;
+  message?: string;
+  expertId?: string;
 }
 
 @Injectable({
@@ -16,7 +19,7 @@ export class AuthService {
   private readonly API_URL = `${environment.apiUrl}/auth`;
   private http = inject(HttpClient);
   private router = inject(Router);
-  
+
   private readonly TOKEN_KEY = 'jwt_token';
   private currentUserSubject = new BehaviorSubject<any>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -29,21 +32,23 @@ export class AuthService {
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem(this.TOKEN_KEY);
       if (token) {
-        this.currentUserSubject.next({ token }); 
+        this.currentUserSubject.next(this.getCurrentUser());
       }
     }
   }
 
   login(credentials: any): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials).pipe(
-      tap(response => this.handleAuthentication(response.token, response.user))
+    return this.http.post<AuthResponse>(`${this.API_URL}/login`, { ...credentials, role: 'expert' }).pipe(
+      tap(response => {
+        if (response.token) {
+          this.handleAuthentication(response.token, null);
+        }
+      })
     );
   }
 
-  register(userData: any): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/register`, userData).pipe(
-      tap(response => this.handleAuthentication(response.token, response.user))
-    );
+  register(userData: any): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/register`, userData);
   }
 
   logout(): void {
@@ -71,7 +76,7 @@ export class AuthService {
     try {
       const payload = token.split('.')[1];
       const decoded = JSON.parse(atob(payload));
-      return { id: decoded.id, name: decoded.email ? decoded.email.split('@')[0] : 'User' };
+      return { id: decoded.id, email: decoded.email, role: decoded.role };
     } catch (e) {
       return null;
     }
@@ -81,6 +86,6 @@ export class AuthService {
     if (typeof window !== 'undefined') {
       localStorage.setItem(this.TOKEN_KEY, token);
     }
-    this.currentUserSubject.next(user || { token });
+    this.currentUserSubject.next(user || this.getCurrentUser());
   }
 }
