@@ -1,66 +1,54 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-
-export interface Category {
-  id: string;
-  name: string;
-  description?: string;
-}
+import { environment } from '../../environments/environment';
 
 export interface Expert {
   id: string;
   name: string;
-  email?: string;
+  email?: string; // Restored for dashboard.component.ts
   photoUrl?: string;
   yearsExperience: number;
-  pricePerHour: number | string;
+  pricePerHour: number;
   subjectExpertise: string;
   isAvailable: boolean;
-  categoryId: string;
-  category?: Category;
   bio?: string;
   marketingSnippet?: string;
+  currency?: string;
+  category?: { name: string }; // Restored strictly to prevent template compilation errors
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExpertService {
-  private apiUrl = 'http://localhost:3000/api/experts';
+  private apiUrl = `${environment.apiUrl}/experts`;
+
+  // Restored Subject for marketing tool notifications
   private expertUpdatedSource = new Subject<Expert>();
   expertUpdated$ = this.expertUpdatedSource.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  getExperts(categoryId?: string, search?: string): Observable<Expert[]> {
-    let params = new HttpParams();
-    if (categoryId) {
-      params = params.set('categoryId', categoryId);
-    }
-    if (search) {
-      params = params.set('search', search);
-    }
-    return this.http.get<Expert[]>(this.apiUrl, { params });
+  // Restored to fix chat.component.ts inference errors
+  getExperts(): Observable<Expert[]> {
+    return this.http.get<Expert[]>(this.apiUrl);
   }
 
-  getExpertsGroupedBySubject(): Observable<{[key: string]: Expert[]}> {
-    let params = new HttpParams().set('groupBy', 'subjectExpertise');
-    return this.http.get<{[key: string]: Expert[]}>(this.apiUrl, { params });
-  }
-
-  getCategories(): Observable<Category[]> {
-    return this.http.get<Category[]>(`${this.apiUrl}/categories`);
+  getExpertsGroupedBySubject(): Observable<{ [key: string]: Expert[] }> {
+    return this.http.get<{ [key: string]: Expert[] }>(`${this.apiUrl}?groupBy=subjectExpertise`);
   }
 
   getExpertById(id: string): Observable<Expert> {
     return this.http.get<Expert>(`${this.apiUrl}/${id}`);
   }
 
-  updateExpert(id: string, data: Partial<Expert>): Observable<{ message: string, expert: Expert }> {
-    return this.http.put<{ message: string, expert: Expert }>(`${this.apiUrl}/${id}`, data);
+  // Restored to fix expert-marketing-tool.ts
+  updateExpert(id: string, data: Partial<Expert>): Observable<{ message?: string, expert: Expert }> {
+    return this.http.put<{ message?: string, expert: Expert }>(`${this.apiUrl}/${id}`, data);
   }
 
+  // Restored notification trigger
   notifyExpertUpdated(expert: Expert) {
     this.expertUpdatedSource.next(expert);
   }

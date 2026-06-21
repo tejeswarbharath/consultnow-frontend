@@ -1,52 +1,102 @@
-import { isPlatformBrowser } from '@angular/common';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../environments/environment';
+
+// FIX: Declare Razorpay globally so TypeScript knows it exists
+declare var Razorpay: any; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class PaymentService {
-  private http = inject(HttpClient);
+  private apiUrl = `${environment.apiUrl}/payment`;
+  
+  // Keep track of the current checkout context
+  private currentExpertId: string | null = null;
+  private currentGuestData: any = null;
 
-  // Utilizing the environment variable per security rules
-  private apiUrl = environment.apiUrl;
-  private scriptLoaded = false;
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {}
+  /**
+   * Step 1: Send cart/expert data to backend to generate a Razorpay Order
+   * FIX: Updated payload signature to match the Booking Component
+   */
+  createOrder(payload: { expertId: string, amount: number, currency: string, guestData: any }): Observable<any> {
+    // Store the checkout context so we can use it during verification
+    this.currentExpertId = payload.expertId;
+    this.currentGuestData = payload.guestData;
+    
+    return this.http.post(`${this.apiUrl}/create-order`, payload);
+  }
 
-  loadRazorpayScript(): Promise<boolean> {
-    return new Promise(resolve => {
-      if (isPlatformBrowser(this.platformId)) {
-        // If script is already loaded, don't load it again
-        if (this.scriptLoaded) {
-          resolve(true);
-          return;
-        }
-        const script = document.createElement('script');
-        script.src = `https://checkout.razorpay.com/v1/checkout.js`;
-        script.onload = () => {
-          this.scriptLoaded = true;
-          resolve(true);
-        };
-        script.onerror = () => {
-          this.scriptLoaded = false;
-          resolve(false);
-        };
-        document.body.appendChild(script);
-      } else {
-        // If not in a browser, resolve to false.
-        resolve(false);
+  /**
+   * Step 2: Open the Razorpay Checkout Modal
+   * FIX: Implemented the missing function
+   */
+  openRazorpayModal(orderData: any, guestName: string, guestEmail: string) {
+    if (!isPlatformBrowser(this.platformId)) {
+      return; // Ensure we don't break Server-Side Rendering
+    }
+
+    const options = {
+      // NOTE: Ensure your environment.ts has razorpayKeyId defined
+      key: (environment as any).razorpayKeyId || '', 
+      amount: orderData.amount,
+      currency: orderData.currency,
+      name: 'ConsultNow',
+      description: 'Secure Expert Consultation Booking',
+      order_id: orderData.orderId,
+      handler: (response: any) => {
+        // This callback runs when Razorpay successfully captures the payment
+        this.verifyPayment(response);
+      },
+      prefill: {
+        name: guestName,
+        email: guestEmail
+      },
+      theme: {
+        color: '#2563eb' // Tailwind Blue-600
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    
+    rzp.on('payment.failed', (response: any) => {
+      console.error('Payment Failed', response.error);
+      this.router.navigate(['/payment-failure']);
+    });
+    
+    rzp.open();
+  }
+
+  /**
+   * Step 3: Verify the digital signature on the backend and complete automation
+   */
+  private verifyPayment(response: any) {
+    const verificationPayload = {
+      razorpay_order_id: response.razorpay_order_id,
+      razorpay_payment_id: response.razorpay_payment_id,
+      razorpay_signature: response.razorpay_signature,
+      expertId: this.currentExpertId,
+      guestData: this.currentGuestData
+    };
+
+    this.http.post(`${this.apiUrl}/verify-payment`, verificationPayload).subscribe({
+      next: (res) => {
+        console.log('Payment & Booking Confirmed!', res);
+        this.router.navigate(['/payment-success']);
+      },
+      error: (err) => {
+        console.error('Verification failed', err);
+        this.router.navigate(['/payment-failure']);
       }
     });
-  }
-
-  createOrder(expertId: string, currency: string = 'INR'): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/payment/create-order`, { expertId, currency });
-  }
-
-  verifyPayment(verificationData: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/payment/verify`, verificationData);
   }
 }
