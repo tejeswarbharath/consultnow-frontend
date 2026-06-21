@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AiService } from '../../services/ai.service'; // FIX: Import AiService
 
 @Component({
   selector: 'app-ai-support-chat',
@@ -17,7 +17,8 @@ export class AiSupportChatComponent {
   ];
   isLoading = false;
 
-  constructor(private http: HttpClient) {}
+  // FIX: Inject AiService instead of HttpClient
+  constructor(private aiService: AiService) {}
 
   toggleChat() {
     this.isOpen = !this.isOpen;
@@ -25,12 +26,14 @@ export class AiSupportChatComponent {
 
   sendMessage() {
     if (!this.problemDescription.trim()) return;
+    
     this.chatHistory.push({ sender: 'user', text: this.problemDescription });
-    const payload = { problemDescription: this.problemDescription };
+    const currentProblem = this.problemDescription;
     this.problemDescription = '';
     this.isLoading = true;
 
-    this.http.post<{recommendedCategory: string}>('http://localhost:3000/api/ai/triage', payload)
+    // FIX: Call the service method instead of a hardcoded http://localhost URL
+    this.aiService.triageProblem(currentProblem)
       .subscribe({
         next: (response) => {
           this.chatHistory.push({ sender: 'ai', text: `Based on your description, I recommend searching for an expert in: **${response.recommendedCategory}**.` });

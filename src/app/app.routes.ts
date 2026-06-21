@@ -24,15 +24,14 @@ export const routes: Routes = [
     loadComponent: () => import('./components/chat/chat.component').then(m => m.ChatComponent),
     canActivate: [authGuard]
   },
+  // FIX: Removed authGuard from these two routes so Guests can redirect back from Razorpay
   {
     path: 'payment-success',
-    loadComponent: () => import('./services/payment-success.component').then(m => m.PaymentSuccessComponent),
-    canActivate: [authGuard]
+    loadComponent: () => import('./services/payment-success.component').then(m => m.PaymentSuccessComponent)
   },
   {
     path: 'payment-failure',
-    loadComponent: () => import('./services/payment-failure.component').then(m => m.PaymentFailureComponent),
-    canActivate: [authGuard]
+    loadComponent: () => import('./services/payment-failure.component').then(m => m.PaymentFailureComponent)
   },
   {
     path: 'booking/:id',

@@ -19,4 +19,9 @@ export class AiService {
   generateMarketingContent(skills: string): Observable<MarketingContent> {
     return this.http.post<MarketingContent>(`${this.apiUrl}/generate-marketing`, { skills });
   }
+
+  // FIX: Added the triage method to use the centralized environment API URL
+  triageProblem(problemDescription: string): Observable<{recommendedCategory: string}> {
+    return this.http.post<{recommendedCategory: string}>(`${this.apiUrl}/triage`, { problemDescription });
+  }
 }

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+// 1. Import ChangeDetectorRef
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Expert, ExpertService } from '../../services/expert.service';
@@ -21,12 +22,16 @@ import { AiSupportChat } from '../ai-support-chat/ai-support-chat';
 export class ExpertDiscoveryComponent implements OnInit {
   expertsBySubject: {[key: string]: Expert[]} = {};
   subjects: string[] = [];
-  loading: boolean = false;
+  
+  // Best Practice: Initialize directly to true so the template expects it
+  loading: boolean = true; 
   openSubject: string | null = null;
 
   constructor(
     private expertService: ExpertService,
-    private router: Router
+    private router: Router,
+    // 2. Inject ChangeDetectorRef into the constructor
+    private cdr: ChangeDetectorRef 
   ) {}
 
   ngOnInit(): void {
@@ -36,10 +41,16 @@ export class ExpertDiscoveryComponent implements OnInit {
         this.expertsBySubject = data;
         this.subjects = Object.keys(data);
         this.loading = false;
+        
+        // 3. Explicitly tell Angular to detect this immediate change
+        this.cdr.detectChanges(); 
       },
       error: (err) => {
         console.error('Failed to load experts', err);
         this.loading = false;
+        
+        // 4. Protect the error block as well
+        this.cdr.detectChanges(); 
       }
     });
   }
