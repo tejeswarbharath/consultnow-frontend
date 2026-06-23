@@ -26,7 +26,6 @@ export class PaymentService {
 
   /**
    * Step 1: Send cart/expert data to backend to generate a Razorpay Order
-   * FIX: Updated payload signature to match the Booking Component
    */
   createOrder(payload: { expertId: string, amount: number, currency: string, guestData: any }): Observable<any> {
     // Store the checkout context so we can use it during verification
@@ -38,42 +37,53 @@ export class PaymentService {
 
   /**
    * Step 2: Open the Razorpay Checkout Modal
-   * FIX: Implemented the missing function
+   * FIX: Now returns a Promise so the BookingComponent can use .then() and .catch()
    */
-  openRazorpayModal(orderData: any, guestName: string, guestEmail: string) {
-    if (!isPlatformBrowser(this.platformId)) {
-      return; // Ensure we don't break Server-Side Rendering
-    }
-
-    const options = {
-      // NOTE: Ensure your environment.ts has razorpayKeyId defined
-      key: (environment as any).razorpayKeyId || '', 
-      amount: orderData.amount,
-      currency: orderData.currency,
-      name: 'ConsultNow',
-      description: 'Secure Expert Consultation Booking',
-      order_id: orderData.orderId,
-      handler: (response: any) => {
-        // This callback runs when Razorpay successfully captures the payment
-        this.verifyPayment(response);
-      },
-      prefill: {
-        name: guestName,
-        email: guestEmail
-      },
-      theme: {
-        color: '#2563eb' // Tailwind Blue-600
+  openRazorpayModal(orderData: any, guestName: string, guestEmail: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!isPlatformBrowser(this.platformId)) {
+        reject('Server-side rendering, cannot open modal.');
+        return; 
       }
-    };
 
-    const rzp = new Razorpay(options);
-    
-    rzp.on('payment.failed', (response: any) => {
-      console.error('Payment Failed', response.error);
-      this.router.navigate(['/payment-failure']);
+      try {
+        const options = {
+          // NOTE: Ensure your environment.ts has razorpayKeyId defined
+          key: (environment as any).razorpayKeyId || '', 
+          amount: orderData.amount,
+          currency: orderData.currency,
+          name: 'ConsultNow',
+          description: 'Secure Expert Consultation Booking',
+          order_id: orderData.orderId,
+          handler: (response: any) => {
+            // This callback runs when Razorpay successfully captures the payment
+            this.verifyPayment(response);
+          },
+          prefill: {
+            name: guestName,
+            email: guestEmail
+          },
+          theme: {
+            color: '#2563eb' // Tailwind Blue-600
+          }
+        };
+
+        const rzp = new Razorpay(options);
+        
+        rzp.on('payment.failed', (response: any) => {
+          console.error('Payment Failed', response.error);
+          this.router.navigate(['/payment-failure']);
+        });
+        
+        rzp.open();
+        
+        // Resolve the promise so the component turns off the 'Processing...' spinner
+        resolve(); 
+      } catch (error) {
+        console.error('Failed to initialize Razorpay', error);
+        reject(error);
+      }
     });
-    
-    rzp.open();
   }
 
   /**
