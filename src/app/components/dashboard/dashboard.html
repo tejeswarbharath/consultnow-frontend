@@ -1,0 +1,61 @@
+<div class="min-h-screen bg-gray-50 py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <div *ngIf="isLoading" class="flex justify-center items-center py-20">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <div *ngIf="!isLoading && expert">
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+        <div class="bg-blue-600 px-6 py-6 text-white">
+          <h1 class="text-3xl font-bold">Expert Dashboard</h1>
+          <p class="mt-1 text-blue-100">Welcome back, {{ expert.name }}</p>
+        </div>
+
+        <div class="p-6 sm:p-8">
+          <h2 class="text-xl font-semibold text-gray-900 border-b pb-2 mb-4">Your Profile Details</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <p class="text-sm text-gray-500">Email Address</p>
+              <p class="font-medium text-gray-900">{{ expert.email }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Category / Expertise</p>
+              <p class="font-medium text-gray-900">{{ expert.subjectExpertise }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Years of Experience</p>
+              <p class="font-medium text-gray-900">{{ expert.yearsExperience }} Years</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Price Per Hour</p>
+              <p class="font-medium text-gray-900">
+                <span *ngIf="expert.currency === 'INR'">₹</span>
+                <span *ngIf="expert.currency === 'USD'">$</span>
+                {{ expert.pricePerHour }}
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-8 bg-gray-50 p-6 rounded-lg border border-gray-100">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Public Marketing Profile</h3>
+            
+            <div class="mb-4">
+              <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Tagline / Snippet</p>
+              <p class="mt-1 text-gray-900 italic" *ngIf="expert.marketingSnippet">"{{ expert.marketingSnippet }}"</p>
+              <p class="mt-1 text-gray-400 text-sm" *ngIf="!expert.marketingSnippet">No tagline generated yet. Use the AI tool below.</p>
+            </div>
+
+            <div>
+              <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Professional Bio</p>
+              <p class="mt-1 text-gray-800 whitespace-pre-wrap" *ngIf="expert.bio">{{ expert.bio }}</p>
+              <p class="mt-1 text-gray-400 text-sm" *ngIf="!expert.bio">No bio generated yet. Use the AI tool below.</p>
+            </div>
+          </div>
+          </div>
+      </div>
+
+      <app-expert-marketing-tool [expert]="expert"></app-expert-marketing-tool>
+    </div>
+  </div>
+</div>

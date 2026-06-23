@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Expert, ExpertService } from '../../services/expert.service';
-import { ExpertMarketingToolComponent } from '../expert-marketing-tool/expert-marketing-tool';
+import { ExpertMarketingTool } from '../expert-marketing-tool/expert-marketing-tool';
 
 @Component({
   selector: 'app-expert-profile',
   standalone: true,
-  imports: [CommonModule, ExpertMarketingToolComponent],
+  imports: [CommonModule, ExpertMarketingTool],
   templateUrl: './expert-profile.html',
   styleUrl: './expert-profile.scss'
 })
