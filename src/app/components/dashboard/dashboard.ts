@@ -56,4 +56,8 @@ export class Dashboard implements OnInit {
       this.cdr.detectChanges();
     });
   }
+
+  logout(): void {
+    this.authService.logout();
+  }
 }
