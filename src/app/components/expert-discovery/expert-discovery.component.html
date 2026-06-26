@@ -27,7 +27,7 @@
             <div *ngFor="let expert of expertsBySubject[subject]" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
               <div class="p-6 flex-1">
                 <div class="flex items-start space-x-4">
-                  <img [src]="expert.photoUrl || 'https://ui-avatars.com/api/?name=' + expert.name + '&background=random'" alt="{{ expert.name }}" class="w-16 h-16 rounded-full object-cover shadow-sm border border-gray-100">
+                  <img [src]="expert.photoUrl || 'https://picsum.photos/seed/' + expert.id + '/150/150'" alt="{{ expert.name }}" class="w-16 h-16 rounded-full object-cover shadow-sm border border-gray-100">
                   <div>
                     <h3 class="text-lg font-bold text-gray-900">{{ expert.name }}</h3>
                     <div class="flex items-center mt-1 text-sm text-gray-500">

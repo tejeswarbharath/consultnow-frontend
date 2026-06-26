@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -16,6 +16,7 @@ export class BookingComponent implements OnInit {
   private expertService = inject(ExpertService);
   private paymentService = inject(PaymentService);
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
   expertId: string | null = null;
   expert: Expert | null = null;
@@ -41,10 +42,12 @@ export class BookingComponent implements OnInit {
       next: (data) => {
         this.expert = data;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Failed to load expert details', err);
         this.isLoading = false;
+        this.cdr.detectChanges();
         this.router.navigate(['/']);
       }
     });
@@ -73,14 +76,17 @@ export class BookingComponent implements OnInit {
       next: (orderData: any) => {
         this.paymentService.openRazorpayModal(orderData, this.guestName, this.guestEmail).then(() => {
            this.isProcessing = false;
+           this.cdr.detectChanges();
         }).catch(() => {
            this.isProcessing = false;
+           this.cdr.detectChanges();
         });
       },
       error: (err: any) => {
         console.error('Order creation failed', err);
         this.isProcessing = false;
         alert('Failed to initialize payment. Please try again.');
+        this.cdr.detectChanges();
       }
     });
   }
@@ -92,12 +98,14 @@ export class BookingComponent implements OnInit {
     }
 
     this.isProcessing = true;
+    this.cdr.detectChanges();
 
     // Simulating a successful free booking workflow dispatch for now
     setTimeout(() => {
       this.isProcessing = false;
       alert('Your 1-hour free service request has been sent! Check your email for the Google Meet link.');
       this.router.navigate(['/']); 
+      this.cdr.detectChanges();
     }, 1500);
   }
 }

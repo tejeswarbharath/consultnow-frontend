@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Expert, ExpertService } from '../../services/expert.service';
 import { ExpertMarketingTool } from '../expert-marketing-tool/expert-marketing-tool';
@@ -18,7 +18,8 @@ export class ExpertProfile implements OnInit {
 
   constructor(
     private expertService: ExpertService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -28,20 +29,24 @@ export class ExpertProfile implements OnInit {
         next: (data) => {
           this.expert = data;
           this.loading = false;
+          this.cdr.detectChanges();
         },
         error: (err) => {
           console.error('Failed to load expert profile', err);
           this.error = 'Failed to load expert profile details.';
           this.loading = false;
+          this.cdr.detectChanges();
         }
       });
     } else {
       this.error = 'Expert ID not found in URL.';
       this.loading = false;
+      this.cdr.detectChanges();
     }
   }
 
   handleProfileUpdate(updatedExpert: Expert): void {
     this.expert = updatedExpert;
+    this.cdr.detectChanges();
   }
 }

@@ -4,12 +4,12 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Expert, ExpertService } from '../../services/expert.service';
-import { AiSupportChat } from '../ai-support-chat/ai-support-chat';
+import { AiSupportChatComponent } from '../ai-support-chat/ai-support-chat.component';
 
 @Component({
   selector: 'app-expert-discovery',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, AiSupportChat],
+  imports: [CommonModule, FormsModule, RouterModule, AiSupportChatComponent],
   templateUrl: './expert-discovery.component.html',
   styles: [`
     .accordion-content {
