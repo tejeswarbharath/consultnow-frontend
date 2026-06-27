@@ -39,7 +39,7 @@ export class PaymentService {
    * Step 2: Open the Razorpay Checkout Modal
    * FIX: Now returns a Promise so the BookingComponent can use .then() and .catch()
    */
-  openRazorpayModal(orderData: any, guestName: string, guestEmail: string): Promise<void> {
+  openRazorpayModal(orderData: any, guestName: string, guestEmail: string, selectedSlot: Date | null): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!isPlatformBrowser(this.platformId)) {
         reject('Server-side rendering, cannot open modal.');
@@ -57,7 +57,7 @@ export class PaymentService {
           order_id: orderData.orderId,
           handler: (response: any) => {
             // This callback runs when Razorpay successfully captures the payment
-            this.verifyPayment(response);
+            this.verifyPayment(response, selectedSlot);
           },
           prefill: {
             name: guestName,
@@ -89,13 +89,20 @@ export class PaymentService {
   /**
    * Step 3: Verify the digital signature on the backend and complete automation
    */
-  private verifyPayment(response: any) {
+  private verifyPayment(response: any, selectedSlot: Date | null) {
+    const endTime = selectedSlot ? new Date(selectedSlot) : null;
+    if (endTime) {
+      endTime.setHours(endTime.getHours() + 1);
+    }
+
     const verificationPayload = {
       razorpay_order_id: response.razorpay_order_id,
       razorpay_payment_id: response.razorpay_payment_id,
       razorpay_signature: response.razorpay_signature,
       expertId: this.currentExpertId,
-      guestData: this.currentGuestData
+      guestData: this.currentGuestData,
+      startTime: selectedSlot,
+      endTime: endTime
     };
 
     this.http.post(`${this.apiUrl}/verify-payment`, verificationPayload).subscribe({

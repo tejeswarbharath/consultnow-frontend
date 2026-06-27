@@ -52,20 +52,52 @@
         <textarea [(ngModel)]="problemDescription" class="textarea textarea-bordered h-32 w-full" placeholder="Describe what you need help with in detail..."></textarea>
       </div>
 
+      <!-- Time Slot Selection -->
+      <div class="mb-8">
+        <h3 class="text-xl font-bold mb-4">Select a Time Slot</h3>
+        <div *ngIf="availableSlots.length > 0; else noSlots">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <button 
+              *ngFor="let slot of paginatedSlots" 
+              (click)="selectSlot(slot)"
+              class="btn"
+              [class.btn-primary]="selectedSlot?.getTime() === slot.getTime()"
+              [class.btn-outline]="selectedSlot?.getTime() !== slot.getTime()">
+              <span *ngIf="selectedSlot?.getTime() === slot.getTime()" class="mr-2">✔</span>
+              {{ slot | date:'shortTime' }} on {{ slot | date:'shortDate' }}
+            </button>
+          </div>
+          <div class="flex justify-center mt-6" *ngIf="availableSlots.length > pageSize">
+            <div class="join">
+              <button class="join-item btn" (click)="previousPage()" [disabled]="currentPage === 1">«</button>
+              <button class="join-item btn">Page {{ currentPage }}</button>
+              <button class="join-item btn" (click)="nextPage()" [disabled]="currentPage * pageSize >= availableSlots.length">»</button>
+            </div>
+          </div>
+        </div>
+        <ng-template #noSlots>
+          <div class="text-center text-base-content/70">
+            <p *ngIf="!isLoading">No available slots in the next 7 days.</p>
+            <span *ngIf="isLoading" class="loading loading-spinner loading-md"></span>
+          </div>
+        </ng-template>
+      </div>
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <button 
           (click)="initiateCheckout()" 
-          [disabled]="isProcessing || !expert.isAvailable" 
+          [disabled]="isProcessingPaid || isProcessingFree || !expert.isAvailable" 
           class="btn btn-primary btn-lg w-full shadow-lg hover:-translate-y-1 transition-transform">
-          <span *ngIf="isProcessing" class="loading loading-spinner"></span>
-          {{ isProcessing ? 'Processing...' : 'Paid Service' }}
+          <span *ngIf="isProcessingPaid" class="loading loading-spinner"></span>
+          {{ isProcessingPaid ? 'Processing...' : 'Paid Service' }}
         </button>
         
         <button 
           (click)="bookFreeService()" 
-          [disabled]="isProcessing || !expert.isAvailable" 
+          [disabled]="isProcessingPaid || isProcessingFree || !expert.isAvailable" 
           class="btn btn-secondary btn-lg w-full shadow-lg hover:-translate-y-1 transition-transform">
-          One Hour Free Service
+          <span *ngIf="isProcessingFree" class="loading loading-spinner"></span>
+          {{ isProcessingFree ? 'Booking...' : 'One Hour Free Service' }}
         </button>
       </div>
     </div>

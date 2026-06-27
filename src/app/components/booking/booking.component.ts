@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ExpertService, Expert } from '../../services/expert.service';
 import { PaymentService } from '../../services/payment.service';
+import { BookingService } from '../../services/booking.service';
 
 @Component({
   selector: 'app-booking',
@@ -15,6 +16,7 @@ export class BookingComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private expertService = inject(ExpertService);
   private paymentService = inject(PaymentService);
+  private bookingService = inject(BookingService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
 
@@ -22,11 +24,18 @@ export class BookingComponent implements OnInit {
   expert: Expert | null = null;
   isLoading = true;
 
-  // Guest Information mapping to Guest Architecture Pivot
+  // Guest Information
   guestName = '';
   guestEmail = '';
   problemDescription = '';
-  isProcessing = false;
+  isProcessingPaid = false;
+  isProcessingFree = false;
+
+  // Availability
+  availableSlots: Date[] = [];
+  selectedSlot: Date | null = null;
+  currentPage = 1;
+  pageSize = 20;
 
   ngOnInit() {
     this.expertId = this.route.snapshot.paramMap.get('id');
@@ -37,11 +46,29 @@ export class BookingComponent implements OnInit {
     }
   }
 
+  get paginatedSlots(): Date[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return this.availableSlots.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  nextPage() {
+    if (this.currentPage * this.pageSize < this.availableSlots.length) {
+      this.currentPage++;
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
   fetchExpertDetails() {
     this.expertService.getExpertById(this.expertId!).subscribe({
       next: (data) => {
         this.expert = data;
         this.isLoading = false;
+        this.fetchAvailability();
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -53,13 +80,35 @@ export class BookingComponent implements OnInit {
     });
   }
 
+  fetchAvailability() {
+    this.bookingService.getAvailability(this.expertId!).subscribe({
+      next: (slots) => {
+        this.availableSlots = slots.map(s => new Date(s));
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to load availability', err);
+      }
+    });
+  }
+
+  selectSlot(slot: Date) {
+    this.selectedSlot = slot;
+    this.cdr.detectChanges();
+  }
+
   initiateCheckout() {
     if (!this.guestName || !this.guestEmail || !this.problemDescription) {
       alert('Please provide your name, email, and your first query so we can prepare your consultation.');
       return;
     }
+
+    if (!this.selectedSlot) {
+      alert('Please select a time slot for your consultation.');
+      return;
+    }
     
-    this.isProcessing = true;
+    this.isProcessingPaid = true;
 
     const paymentPayload = {
       expertId: this.expertId!,
@@ -74,17 +123,17 @@ export class BookingComponent implements OnInit {
 
     this.paymentService.createOrder(paymentPayload).subscribe({
       next: (orderData: any) => {
-        this.paymentService.openRazorpayModal(orderData, this.guestName, this.guestEmail).then(() => {
-           this.isProcessing = false;
+        this.paymentService.openRazorpayModal(orderData, this.guestName, this.guestEmail, this.selectedSlot).then(() => {
+           this.isProcessingPaid = false;
            this.cdr.detectChanges();
         }).catch(() => {
-           this.isProcessing = false;
+           this.isProcessingPaid = false;
            this.cdr.detectChanges();
         });
       },
       error: (err: any) => {
         console.error('Order creation failed', err);
-        this.isProcessing = false;
+        this.isProcessingPaid = false;
         alert('Failed to initialize payment. Please try again.');
         this.cdr.detectChanges();
       }
@@ -97,15 +146,41 @@ export class BookingComponent implements OnInit {
       return;
     }
 
-    this.isProcessing = true;
+    if (!this.selectedSlot) {
+      alert('Please select a time slot for your consultation.');
+      return;
+    }
+
+    this.isProcessingFree = true;
     this.cdr.detectChanges();
 
-    // Simulating a successful free booking workflow dispatch for now
-    setTimeout(() => {
-      this.isProcessing = false;
-      alert('Your 1-hour free service request has been sent! Check your email for the Google Meet link.');
-      this.router.navigate(['/']); 
-      this.cdr.detectChanges();
-    }, 1500);
+    const endTime = new Date(this.selectedSlot);
+    endTime.setHours(endTime.getHours() + 1);
+
+    const payload = {
+      expertId: this.expertId,
+      serviceDetails: this.problemDescription,
+      startTime: this.selectedSlot,
+      endTime: endTime,
+      guestData: {
+        name: this.guestName,
+        email: this.guestEmail
+      }
+    };
+
+    this.bookingService.requestFreeService(payload).subscribe({
+      next: () => {
+        this.isProcessingFree = false;
+        alert('Your 1-hour free service request has been sent! Check your email for confirmation.');
+        this.router.navigate(['/']);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.isProcessingFree = false;
+        console.error('Free service booking failed', err);
+        alert('Failed to book free service. Please try again.');
+        this.cdr.detectChanges();
+      }
+    });
   }
 }
