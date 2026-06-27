@@ -1,9 +1,71 @@
 /* You can add global styles to this file, and also import other style files */
-/* src/styles.scss */
 @use "tailwindcss";
+
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* This replaces your tailwind.config.js! */
 @theme {
+  // Existing colors (to be reviewed if they fit the new theme, for now keep)
   --color-consult-navy: #1A2B4C;
   --color-consult-teal: #2A9D8F;
+
+  // BetterHelp inspired color palette (CSS variables)
+  --color-primary-blue: #007bff;
+  --color-primary-dark-blue: #0A2540;
+  --color-secondary-green: #28a745;
+  --color-accent-purple: #6f42c1;
+  --color-neutral-light-gray: #f8f9fa;
+  --color-neutral-medium-gray: #dee2e6;
+  --color-neutral-dark-gray: #495057;
+  --color-text-body: #212529;
+  --color-text-light: #6c757d;
+
+  // DaisyUI-like variables mapped to BetterHelp inspired palette
+  // These are often used by DaisyUI components to generate their colors.
+  // Assuming a similar mechanism is at play here.
+  --p: var(--color-primary-blue);              // Primary color
+  --pc: white;                                // Primary content (text on primary)
+  --s: var(--color-secondary-green);          // Secondary color
+  --sc: white;                                // Secondary content
+  --a: var(--color-accent-purple);            // Accent color
+  --ac: white;                                // Accent content
+  --n: var(--color-neutral-dark-gray);        // Neutral color
+  --nc: white;                                // Neutral content
+  --b1: var(--color-neutral-light-gray);      // Base 100 (lightest background)
+  --b2: #e0e7ec;                              // Base 200 (slightly darker base) - Adjusted for contrast
+  --b3: #cbd5e1;                              // Base 300 (even darker base) - Adjusted for contrast
+  --bc: var(--color-text-body);               // Base content (text on base backgrounds)
+
+  --in: #00bcd4;                              // Info color (cyan-like)
+  --inc: white;                               // Info content
+  --su: #28a745;                              // Success color (green)
+  --suc: white;                               // Success content
+  --wa: #ffc107;                              // Warning color (amber)
+  --wac: black;                               // Warning content
+  --er: #dc3545;                              // Error color (red)
+  --erc: white;                               // Error content
+
+  // Typography
+  --font-family-sans: 'Inter', sans-serif;
+  --font-size-base: 1rem; // 16px
+  --line-height-base: 1.6;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--bc); /* Use base content color for body text */
+  background-color: var(--b1); /* Use base 100 for body background */
+}
+
+// Add some base responsive styles if needed, e.g., for global padding or max-width
+// This can also be handled with Tailwind utility classes in components, but a global base can be useful.
+html {
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
 }

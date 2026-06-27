@@ -1,52 +1,53 @@
-<div class="min-h-screen bg-gray-50 p-6 md:p-10">
-  <main class="max-w-4xl mx-auto">
-    <h1 class="text-4xl font-bold text-gray-900 mb-8 text-center">Find an Expert</h1>
+<div class="min-h-screen bg-[var(--b1)] p-6 md:p-10">
+  <main class="max-w-7xl mx-auto">
+    <h1 class="text-4xl font-bold text-[var(--bc)] mb-8 text-center">Find an Expert</h1>
 
     <!-- Loading State -->
     <div *ngIf="loading" class="flex justify-center items-center py-20">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--p)]"></div>
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!loading && subjects.length === 0" class="bg-white rounded-xl shadow-sm p-12 text-center border border-gray-200">
-      <h3 class="text-xl font-medium text-gray-900 mb-2">No experts available at the moment.</h3>
-      <p class="text-gray-500">Please check back later.</p>
+    <div *ngIf="!loading && subjects.length === 0" class="bg-white rounded-xl shadow-sm p-12 text-center border border-[var(--b2)]">
+      <h3 class="text-xl font-medium text-[var(--bc)] mb-2">No experts available at the moment.</h3>
+      <p class="text-[var(--bc)]/70">Please check back later.</p>
     </div>
 
     <!-- Accordion for Subjects -->
     <div *ngIf="!loading && subjects.length > 0" class="space-y-4">
-      <div *ngFor="let subject of subjects" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div *ngFor="let subject of subjects" class="bg-white rounded-xl shadow-md border border-[var(--b2)] overflow-hidden">
         <button (click)="toggleSubject(subject)" class="w-full flex justify-between items-center p-6 text-left">
-          <h2 class="text-2xl font-bold text-gray-800">{{ subject }}</h2>
-          <svg [ngClass]="{'transform rotate-180': openSubject === subject}" class="h-6 w-6 text-gray-500 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <h2 class="text-2xl font-bold text-[var(--bc)]">{{ subject }}</h2>
+          <svg [ngClass]="{'transform rotate-180': openSubject === subject}" class="h-6 w-6 text-[var(--bc)]/70 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
         <div class="accordion-content" [style.max-height]="openSubject === subject ? '1000px' : '0'">
-          <div class="p-6 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div *ngFor="let expert of expertsBySubject[subject]" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
+          <div class="p-6 border-t border-[var(--b2)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div *ngFor="let expert of expertsBySubject[subject]" class="bg-white rounded-2xl shadow-lg border border-[var(--b2)] overflow-hidden hover:shadow-xl transition-shadow flex flex-col">
               <div class="p-6 flex-1">
                 <div class="flex items-start space-x-4">
-                  <img [src]="expert.photoUrl || 'https://picsum.photos/seed/' + expert.id + '/150/150'" alt="{{ expert.name }}" class="w-16 h-16 rounded-full object-cover shadow-sm border border-gray-100">
+                  <img [src]="expert.photoUrl || '/Expert_Profile_No_Photo.png'" alt="{{ expert.name }}" class="w-16 h-16 rounded-full object-cover shadow-sm border border-[var(--b2)]">
                   <div>
-                    <h3 class="text-lg font-bold text-gray-900">{{ expert.name }}</h3>
-                    <div class="flex items-center mt-1 text-sm text-gray-500">
-                      <svg class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <h3 class="text-lg font-bold text-[var(--bc)]">{{ expert.name }}</h3>
+                    <div class="flex items-center mt-1 text-sm text-[var(--bc)]/70">
+                      <svg class="h-4 w-4 mr-1 text-[var(--bc)]/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       {{ expert.yearsExperience }} Years Exp.
                     </div>
                   </div>
                 </div>
+                <p class="mt-4 text-sm text-[var(--bc)]/80">{{ expert.marketingSnippet || 'No marketing snippet available.' }}</p>
               </div>
-              <div class="bg-gray-50 p-6 border-t border-gray-100 flex items-center justify-between mt-auto">
+              <div class="bg-[var(--b1)] p-6 border-t border-[var(--b2)] flex items-center justify-between mt-auto">
                 <div>
-                  <span class="text-2xl font-bold text-gray-900">${{ expert.pricePerHour }}</span>
-                  <span class="text-sm text-gray-500">/hour</span>
+                  <span class="text-2xl font-bold text-[var(--bc)]">${{ expert.pricePerHour }}</span>
+                  <span class="text-sm text-[var(--bc)]/70">/hour</span>
                 </div>
                 <button 
                   (click)="selectExpert(expert)"
-                  class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-xl transition-colors shadow-sm">
+                  class="bg-[var(--p)] hover:bg-[var(--primary-dark-blue)] text-white font-medium py-2 px-6 rounded-xl transition-colors shadow-sm">
                   Select
                 </button>
               </div>

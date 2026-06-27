@@ -3,48 +3,48 @@
   <button 
     *ngIf="!isOpen" 
     (click)="toggleChat()" 
-    class="bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+    class="bg-[var(--color-primary-blue)] text-white rounded-full p-4 shadow-lg hover:bg-[var(--color-primary-dark-blue)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-blue)] transition-colors duration-150 ease-in-out">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
     </svg>
   </button>
 
   <!-- Chat Window -->
-  <div *ngIf="isOpen" class="bg-white rounded-lg shadow-2xl w-80 sm:w-96 overflow-hidden flex flex-col border border-gray-200">
-    <div class="bg-blue-600 text-white p-4 flex justify-between items-center">
-      <h3 class="font-semibold text-lg">AI Support Triage</h3>
-      <button (click)="toggleChat()" class="text-blue-100 hover:text-white focus:outline-none">
+  <div *ngIf="isOpen" class="bg-white rounded-lg shadow-2xl w-80 sm:w-96 overflow-hidden flex flex-col border border-[var(--color-neutral-medium-gray)]">
+    <div class="bg-[var(--color-primary-dark-blue)] text-white p-4 flex justify-between items-center">
+      <h3 class="font-semibold text-lg">AI Assistant</h3>
+      <button (click)="toggleChat()" class="text-white hover:text-[var(--color-neutral-light-gray)] focus:outline-none transition-colors duration-150 ease-in-out">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
     </div>
     
-    <div class="p-4 h-64 overflow-y-auto flex flex-col space-y-3 bg-gray-50">
+    <div class="p-4 h-64 overflow-y-auto flex flex-col space-y-3 bg-[var(--color-neutral-light-gray)]">
       <div *ngFor="let msg of chatHistory" [ngClass]="{'self-end': msg.sender === 'user', 'self-start': msg.sender === 'ai'}">
-        <div [ngClass]="msg.sender === 'user' ? 'bg-blue-100 text-blue-900' : 'bg-white text-gray-800 border border-gray-200'" class="rounded-lg p-3 max-w-[85%] text-sm shadow-sm">
+        <div [ngClass]="msg.sender === 'user' ? 'bg-[var(--color-primary-blue)] text-white' : 'bg-white text-[var(--color-text-body)] border border-[var(--color-neutral-medium-gray)]'" class="rounded-lg p-3 max-w-[85%] text-sm shadow-sm">
           {{ msg.text }}
         </div>
       </div>
-      <div *ngIf="isLoading" class="self-start text-gray-500 text-sm italic">
+      <div *ngIf="isLoading" class="self-start text-[var(--color-text-light)] text-sm italic">
         AI is typing...
       </div>
     </div>
     
-    <div class="p-4 border-t border-gray-200 bg-white">
+    <div class="p-4 border-t border-[var(--color-neutral-medium-gray)] bg-white">
       <form (ngSubmit)="sendMessage()" class="flex space-x-2">
         <input 
           type="text" 
           name="problemDescription" 
           [(ngModel)]="problemDescription" 
-          placeholder="Describe your problem..." 
-          class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+          placeholder="Type your message..." 
+          class="flex-1 border border-[var(--color-neutral-medium-gray)] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--color-primary-blue)] text-[var(--color-text-body)]"
           autocomplete="off"
         />
         <button 
           type="submit" 
           [disabled]="isLoading || !problemDescription.trim()"
-          class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors">
+          class="bg-[var(--color-primary-blue)] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[var(--color-primary-dark-blue)] disabled:opacity-50 transition-colors duration-150 ease-in-out">
           Send
         </button>
       </form>

@@ -1,20 +1,20 @@
-<div class="container mx-auto p-4 max-w-4xl animate-fade-in">
+<div class="container mx-auto p-4 max-w-4xl animate-fade-in text-[var(--bc)]">
   <div *ngIf="isLoading" class="text-center py-10">
-    <span class="loading loading-spinner loading-lg text-primary"></span>
+    <span class="loading loading-spinner loading-lg text-[var(--p)]"></span>
   </div>
 
   <div *ngIf="!isLoading && expert">
-    <div class="bg-base-100 shadow-xl rounded-2xl overflow-hidden mb-8 border border-base-200">
+    <div class="bg-white shadow-xl rounded-2xl overflow-hidden mb-8 border border-[var(--b2)]">
       <div class="md:flex">
-        <div class="md:shrink-0 bg-base-200 p-6 flex justify-center items-center">
+        <div class="md:shrink-0 bg-[var(--b2)] p-6 flex justify-center items-center">
           <img [src]="expert.photoUrl ? expert.photoUrl : '/Expert_Profile_No_Photo.png'" alt="Expert Photo" class="h-48 w-48 object-cover rounded-full shadow-lg border-4 border-white">
         </div>
-        <div class="p-8">
-          <div class="uppercase tracking-wide text-sm text-primary font-semibold">{{ expert.subjectExpertise }}</div>
-          <h2 class="mt-1 text-3xl font-bold text-base-content">{{ expert.name }}</h2>
-          <p class="mt-2 text-base-content/70 whitespace-pre-line">{{ expert.bio || expert.marketingSnippet || 'No bio provided.' }}</p>
+        <div class="p-8 flex-grow">
+          <div class="uppercase tracking-wide text-sm text-[var(--p)] font-semibold">{{ expert.subjectExpertise }}</div>
+          <h2 class="mt-1 text-3xl font-bold text-[var(--bc)]">{{ expert.name }}</h2>
+          <p class="mt-2 text-[var(--bc)]/80 whitespace-pre-line">{{ expert.bio || expert.marketingSnippet || 'No bio provided.' }}</p>
           
-          <div class="mt-4 flex flex-wrap gap-4 text-sm text-base-content/80">
+          <div class="mt-4 flex flex-wrap gap-4 text-sm text-[var(--bc)]/80">
             <div class="flex items-center">
               <span class="font-bold mr-2">Experience:</span> {{ expert.yearsExperience }} Years
             </div>
@@ -26,59 +26,60 @@
             </div>
             <div class="flex items-center">
               <span class="font-bold mr-2">Status:</span> 
-              <span class="badge badge-success gap-1" *ngIf="expert.isAvailable">Available</span>
-              <span class="badge badge-error gap-1" *ngIf="!expert.isAvailable">Unavailable</span>
+              <span class="px-2 py-1 rounded-full text-xs font-semibold" 
+                    [ngClass]="expert.isAvailable ? 'bg-[var(--su)] text-white' : 'bg-[var(--er)] text-white'">
+                    {{ expert.isAvailable ? 'Available' : 'Unavailable' }}
+              </span>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="bg-base-100 shadow-xl rounded-2xl p-8 mb-8 border border-base-200">
-      <h3 class="text-2xl font-bold mb-6">Book Your Consultation</h3>
+    <div class="bg-white shadow-xl rounded-2xl p-8 mb-8 border border-[var(--b2)]">
+      <h3 class="text-2xl font-bold mb-6 text-[var(--bc)]">Book Your Consultation</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div class="form-control">
-          <label class="label"><span class="label-text font-semibold">Your Name</span></label>
-          <input type="text" [(ngModel)]="guestName" placeholder="John Doe" class="input input-bordered w-full" />
+          <label class="label"><span class="label-text font-semibold text-[var(--bc)]">Your Name</span></label>
+          <input type="text" [(ngModel)]="guestName" placeholder="John Doe" class="input input-bordered w-full px-3 py-2 border border-[var(--b3)] rounded-md focus:outline-none focus:ring-[var(--p)] focus:border-[var(--p)]" />
         </div>
         <div class="form-control">
-          <label class="label"><span class="label-text font-semibold">Your Email</span></label>
-          <input type="email" [(ngModel)]="guestEmail" placeholder="john@example.com" class="input input-bordered w-full" />
+          <label class="label"><span class="label-text font-semibold text-[var(--bc)]">Your Email</span></label>
+          <input type="email" [(ngModel)]="guestEmail" placeholder="john@example.com" class="input input-bordered w-full px-3 py-2 border border-[var(--b3)] rounded-md focus:outline-none focus:ring-[var(--p)] focus:border-[var(--p)]" />
         </div>
       </div>
       
       <div class="form-control mb-8">
-        <label class="label"><span class="label-text font-semibold">Enter Your First Query / Problem Description</span></label>
-        <textarea [(ngModel)]="problemDescription" class="textarea textarea-bordered h-32 w-full" placeholder="Describe what you need help with in detail..."></textarea>
+        <label class="label"><span class="label-text font-semibold text-[var(--bc)]">Enter Your First Query / Problem Description</span></label>
+        <textarea [(ngModel)]="problemDescription" class="textarea textarea-bordered h-32 w-full px-3 py-2 border border-[var(--b3)] rounded-md focus:outline-none focus:ring-[var(--p)] focus:border-[var(--p)]" placeholder="Describe what you need help with in detail..."></textarea>
       </div>
 
       <!-- Time Slot Selection -->
       <div class="mb-8">
-        <h3 class="text-xl font-bold mb-4">Select a Time Slot</h3>
+        <h3 class="text-xl font-bold mb-4 text-[var(--bc)]">Select a Time Slot</h3>
         <div *ngIf="availableSlots.length > 0; else noSlots">
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <button 
               *ngFor="let slot of paginatedSlots" 
               (click)="selectSlot(slot)"
-              class="btn"
-              [class.btn-primary]="selectedSlot?.getTime() === slot.getTime()"
-              [class.btn-outline]="selectedSlot?.getTime() !== slot.getTime()">
+              class="btn py-2 px-4 rounded-md font-medium transition-colors duration-150 ease-in-out"
+              [ngClass]="selectedSlot?.getTime() === slot.getTime() ? 'bg-[var(--p)] text-white hover:bg-[var(--primary-dark-blue)]' : 'bg-white border border-[var(--b3)] text-[var(--bc)] hover:bg-[var(--b2)]'">
               <span *ngIf="selectedSlot?.getTime() === slot.getTime()" class="mr-2">✔</span>
               {{ slot | date:'shortTime' }} on {{ slot | date:'shortDate' }}
             </button>
           </div>
           <div class="flex justify-center mt-6" *ngIf="availableSlots.length > pageSize">
-            <div class="join">
-              <button class="join-item btn" (click)="previousPage()" [disabled]="currentPage === 1">«</button>
-              <button class="join-item btn">Page {{ currentPage }}</button>
-              <button class="join-item btn" (click)="nextPage()" [disabled]="currentPage * pageSize >= availableSlots.length">»</button>
+            <div class="join flex items-center">
+              <button class="join-item btn bg-white border border-[var(--b3)] text-[var(--bc)] hover:bg-[var(--b2)] px-4 py-2 rounded-l-md" (click)="previousPage()" [disabled]="currentPage === 1">«</button>
+              <span class="join-item btn bg-white border-y border-[var(--b3)] text-[var(--bc)] px-4 py-2">Page {{ currentPage }}</span>
+              <button class="join-item btn bg-white border border-[var(--b3)] text-[var(--bc)] hover:bg-[var(--b2)] px-4 py-2 rounded-r-md" (click)="nextPage()" [disabled]="currentPage * pageSize >= availableSlots.length">»</button>
             </div>
           </div>
         </div>
         <ng-template #noSlots>
-          <div class="text-center text-base-content/70">
-            <p *ngIf="!isLoading">No available slots in the next 7 days.</p>
-            <span *ngIf="isLoading" class="loading loading-spinner loading-md"></span>
+          <div class="text-center text-[var(--bc)]/70">
+            <p *ngIf="!isLoading">No available slots in the next 7 days. Please check back later.</p>
+            <span *ngIf="isLoading" class="loading loading-spinner loading-md text-[var(--p)]"></span>
           </div>
         </ng-template>
       </div>
@@ -86,18 +87,18 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <button 
           (click)="initiateCheckout()" 
-          [disabled]="isProcessingPaid || isProcessingFree || !expert.isAvailable" 
-          class="btn btn-primary btn-lg w-full shadow-lg hover:-translate-y-1 transition-transform">
+          [disabled]="isProcessingPaid || isProcessingFree || !expert.isAvailable || !selectedSlot || !guestName || !guestEmail || !problemDescription" 
+          class="btn bg-[var(--p)] text-white btn-lg w-full shadow-lg hover:bg-[var(--primary-dark-blue)] transition-colors duration-150 ease-in-out">
           <span *ngIf="isProcessingPaid" class="loading loading-spinner"></span>
-          {{ isProcessingPaid ? 'Processing...' : 'Paid Service' }}
+          {{ isProcessingPaid ? 'Processing...' : 'Book Paid Service' }}
         </button>
         
         <button 
           (click)="bookFreeService()" 
-          [disabled]="isProcessingPaid || isProcessingFree || !expert.isAvailable" 
-          class="btn btn-secondary btn-lg w-full shadow-lg hover:-translate-y-1 transition-transform">
+          [disabled]="isProcessingPaid || isProcessingFree || !expert.isAvailable || !selectedSlot || !guestName || !guestEmail || !problemDescription" 
+          class="btn bg-[var(--s)] text-white btn-lg w-full shadow-lg hover:bg-[var(--color-secondary-green-dark)] transition-colors duration-150 ease-in-out">
           <span *ngIf="isProcessingFree" class="loading loading-spinner"></span>
-          {{ isProcessingFree ? 'Booking...' : 'One Hour Free Service' }}
+          {{ isProcessingFree ? 'Booking...' : 'Request Free Consultation' }}
         </button>
       </div>
     </div>
