@@ -25,7 +25,6 @@
               <h3 class="font-bold text-sm uppercase text-[var(--bc)]/60 tracking-wider">Rate</h3>
               <p class="text-lg">
                 <span *ngIf="expert.currency === 'INR'">₹</span>
-                <span *ngIf="expert.currency === 'USD'">$</span>
                 {{ expert.pricePerHour }}/hour
               </p>
             </div>

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ExpertDiscovery } from './expert-discovery';
+import { ExpertDiscoveryComponent } from './expert-discovery.component';
 
 describe('ExpertDiscovery', () => {
-  let component: ExpertDiscovery;
-  let fixture: ComponentFixture<ExpertDiscovery>;
+  let component: ExpertDiscoveryComponent;
+  let fixture: ComponentFixture<ExpertDiscoveryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ExpertDiscovery],
+      imports: [ExpertDiscoveryComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ExpertDiscovery);
+    fixture = TestBed.createComponent(ExpertDiscoveryComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

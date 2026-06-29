@@ -36,7 +36,6 @@
               <p class="text-sm text-[var(--bc)]/70">Price Per Hour</p>
               <p class="font-medium text-[var(--bc)]">
                 <span *ngIf="expert.currency === 'INR'">₹</span>
-                <span *ngIf="expert.currency === 'USD'">$</span>
                 {{ expert.pricePerHour }}
               </p>
             </div>

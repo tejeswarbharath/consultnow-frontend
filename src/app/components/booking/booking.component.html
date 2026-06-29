@@ -21,7 +21,6 @@
             <div class="flex items-center">
               <span class="font-bold mr-2">Rate:</span> 
               <span *ngIf="expert.currency === 'INR'">₹</span>
-              <span *ngIf="expert.currency === 'USD'">$</span>
               {{ expert.pricePerHour }}/hr
             </div>
             <div class="flex items-center">
