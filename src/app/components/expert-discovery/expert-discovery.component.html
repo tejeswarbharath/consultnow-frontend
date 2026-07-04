@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-[var(--b1)] p-6 md:p-10">
   <main class="max-w-7xl mx-auto">
     <!-- "Become an Expert" Banner -->
-    <div *ngIf="showBanner" class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md mb-8 shadow-md flex justify-between items-center">
+    <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md mb-8 shadow-md flex justify-between items-center">
       <div>
         <p class="font-bold">Want to become an expert?</p>
         <p>You can register as an expert by clicking the button. If you have any queries, reach out to <a href="mailto:no-reply@consultnow.in" class="underline">no-reply@consultnow.in</a>.</p>
@@ -9,11 +9,6 @@
           Register as Expert
         </a>
       </div>
-      <button (click)="dismissBanner()" class="text-blue-500 hover:text-blue-700">
-        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
     </div>
 
     <h1 class="text-4xl font-bold text-[var(--bc)] mb-8 text-center">Find an Expert</h1>

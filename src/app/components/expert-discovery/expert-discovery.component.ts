@@ -25,7 +25,6 @@ export class ExpertDiscoveryComponent implements OnInit {
   
   loading: boolean = true; 
   openSubject: string | null = null;
-  showBanner = false;
   registerUrl: string = environment.registerUrl;
 
   constructor(
@@ -35,9 +34,6 @@ export class ExpertDiscoveryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (typeof localStorage !== 'undefined' && !localStorage.getItem('hideExpertBanner')) {
-      this.showBanner = true;
-    }
 
     this.loading = true;
     this.expertService.getExpertsGroupedBySubject().subscribe({
@@ -55,13 +51,6 @@ export class ExpertDiscoveryComponent implements OnInit {
         this.cdr.detectChanges(); 
       }
     });
-  }
-
-  dismissBanner(): void {
-    this.showBanner = false;
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('hideExpertBanner', 'true');
-    }
   }
 
   toggleSubject(subject: string): void {

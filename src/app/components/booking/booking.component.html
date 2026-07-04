@@ -35,6 +35,11 @@
       </div>
     </div>
 
+    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-8" role="alert">
+      <p class="font-bold">Important Information</p>
+      <p>In case of any issue with charges while booking an expert, please reach out to our customer care at <a href="mailto:no-reply@consultnow.in" class="text-yellow-800 underline">no-reply@consultnow.in</a>.</p>
+    </div>
+
     <div class="bg-white shadow-xl rounded-2xl p-8 mb-8 border border-[var(--b2)]">
       <h3 class="text-2xl font-bold mb-6 text-[var(--bc)]">Book Your Consultation</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -87,7 +92,7 @@
         <button 
           (click)="initiateCheckout()" 
           [disabled]="isProcessingPaid || isProcessingFree || !expert.isAvailable || !selectedSlot || !guestName || !guestEmail || !problemDescription" 
-          class="btn bg-[var(--p)] text-white btn-lg w-full shadow-lg hover:bg-[var(--primary-dark-blue)] transition-colors duration-150 ease-in-out">
+          class="btn bg-white text-[var(--p)] border-[var(--p)] border btn-lg w-full shadow-lg hover:bg-[var(--p)] hover:text-white transition-colors duration-150 ease-in-out">
           <span *ngIf="isProcessingPaid" class="loading loading-spinner"></span>
           {{ isProcessingPaid ? 'Processing...' : 'Book Paid Service' }}
         </button>
