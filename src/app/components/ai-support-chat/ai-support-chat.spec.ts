@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AiSupportChatComponent } from './ai-support-chat.component';
+import { AiService } from '../../services/ai.service';
 
 describe('AiSupportChatComponent', () => {
   let component: AiSupportChatComponent;
@@ -8,7 +9,8 @@ describe('AiSupportChatComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AiSupportChatComponent],
+      imports: [AiSupportChatComponent, HttpClientTestingModule],
+      providers: [AiService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AiSupportChatComponent);
