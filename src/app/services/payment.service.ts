@@ -32,7 +32,7 @@ export class PaymentService {
     this.currentExpertId = payload.expertId;
     this.currentGuestData = payload.guestData;
     
-    return this.http.post(`${this.apiUrl}/create-order`, payload);
+    return this.http.post(`/.netlify/functions/create-razorpay-order`, payload);
   }
 
   /**
