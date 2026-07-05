@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectorRef, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ExpertService, Expert } from '../../services/expert.service';
@@ -19,11 +19,11 @@ export class BookingComponent implements OnInit {
   private bookingService = inject(BookingService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  private platformId = inject(PLATFORM_ID);
 
   expertId: string | null = null;
   expert: Expert | null = null;
   isLoading = true;
-
   // Guest Information
   guestName = '';
   guestEmail = '';
@@ -38,11 +38,13 @@ export class BookingComponent implements OnInit {
   pageSize = 20;
 
   ngOnInit() {
-    this.expertId = this.route.snapshot.paramMap.get('id');
-    if (this.expertId) {
-      this.fetchExpertDetails();
-    } else {
-      this.router.navigate(['/']); // Redirect if accessed without an ID
+    if (isPlatformBrowser(this.platformId)) {
+      this.expertId = this.route.snapshot.paramMap.get('id');
+      if (this.expertId) {
+        this.fetchExpertDetails();
+      } else {
+        this.router.navigate(['/']); // Redirect if accessed without an ID
+      }
     }
   }
 

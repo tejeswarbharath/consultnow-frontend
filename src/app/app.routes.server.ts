@@ -10,15 +10,7 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: 'booking/:id',
-    renderMode: RenderMode.Prerender,
-    getPrerenderParams: () => {
-      const expertService = inject(ExpertService);
-      return firstValueFrom(
-        expertService.getExperts().pipe(
-          map(experts => experts.map(expert => ({ id: expert.id })))
-        )
-      );
-    }
+    renderMode: RenderMode.Server
   },
   {
     path: '**',

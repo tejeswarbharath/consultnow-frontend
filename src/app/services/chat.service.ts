@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface ChatMessage {
   senderId: string;
@@ -14,10 +15,9 @@ export interface ChatMessage {
 })
 export class ChatService {
   private socket: Socket;
-  private readonly apiUrl = 'http://localhost:3000';
 
   constructor() {
-    this.socket = io(this.apiUrl);
+    this.socket = io(environment.socketUrl);
   }
 
   joinRoom(roomId: string, expertId?: string): void {

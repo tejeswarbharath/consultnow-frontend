@@ -36,6 +36,10 @@
             "security": {
               "allowedHosts": []
             },
+            "allowedCommonJsDependencies": [
+              "debug",
+              "xmlhttprequest-ssl"
+            ],
             "ssr": {
               "entry": "src/server.ts"
             }
@@ -54,7 +58,17 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.development.ts",
+                  "with": "src/environments/environment.ts"
+                }
+              ],
+              "outputHashing": "all",
+              "prerender": {
+                "discoverRoutes": false,
+                "routesFile": "routes.txt"
+              }
             },
             "development": {
               "optimization": false,
