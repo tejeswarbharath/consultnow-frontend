@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Expert, ExpertService } from '../../services/expert.service';
 import { AiSupportChatComponent } from '../ai-support-chat/ai-support-chat.component';
 import { environment } from '../../../environments/environment';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformServer } from '@angular/common';
 
 @Component({
   selector: 'app-expert-discovery',
@@ -30,27 +30,35 @@ export class ExpertDiscoveryComponent implements OnInit {
   constructor(
     private expertService: ExpertService,
     private router: Router,
-    private cdr: ChangeDetectorRef 
+    private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: object
   ) {}
 
   ngOnInit(): void {
-
     this.loading = true;
-    this.expertService.getExpertsGroupedBySubject().subscribe({
-      next: (data) => {
-        this.expertsBySubject = data;
-        this.subjects = Object.keys(data);
-        this.loading = false;
-        
-        this.cdr.detectChanges(); 
-      },
-      error: (err) => {
-        console.error('Failed to load experts', err);
-        this.loading = false;
-        
-        this.cdr.detectChanges(); 
-      }
-    });
+
+    if (isPlatformServer(this.platformId)) {
+      // Running on the server, do not fetch data to avoid build timeouts.
+      // The component will be rendered with its initial (loading) state.
+      this.loading = false; // Or keep it true until client-side hydration
+    } else {
+      // Running in the browser, fetch the data.
+      this.expertService.getExpertsGroupedBySubject().subscribe({
+        next: (data) => {
+          this.expertsBySubject = data;
+          this.subjects = Object.keys(data);
+          this.loading = false;
+          
+          this.cdr.detectChanges(); 
+        },
+        error: (err) => {
+          console.error('Failed to load experts', err);
+          this.loading = false;
+          
+          this.cdr.detectChanges(); 
+        }
+      });
+    }
   }
 
   toggleSubject(subject: string): void {
