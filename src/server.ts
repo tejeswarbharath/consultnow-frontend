@@ -2,7 +2,7 @@ import { AngularAppEngine, createRequestHandler } from '@angular/ssr'
 import { getAllowedHosts, getContext, getTrustProxyHeaders } from '@netlify/angular-runtime/app-engine.js'
 
 const angularAppEngine = new AngularAppEngine({
-  allowedHosts: getAllowedHosts(),
+  allowedHosts: process.env['NETLIFY'] ? getAllowedHosts() : ['localhost:4200', '127.0.0.1:4200'],
   trustProxyHeaders: getTrustProxyHeaders(),
 })
 

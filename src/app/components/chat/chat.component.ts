@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChatService, ChatMessage } from '../../services/chat.service';
@@ -34,65 +34,67 @@ export class ChatComponent implements OnInit, OnDestroy {
     private router: Router,
     private chatService: ChatService,
     private authService: AuthService,
-    private expertService: ExpertService
+    private expertService: ExpertService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
-    const user = this.authService.getCurrentUser();
-    if (!user) {
-      this.router.navigate(['/login']);
-      return;
-    }
-    
-    this.currentUserId = user.id;
-    this.currentUserName = user.name;
-
-    this.route.paramMap.subscribe(params => {
-      this.expertId = params.get('expertId') || '';
-      if (this.expertId) {
-        // Fetch expert details to get the name
-        this.expertService.getExperts().subscribe(experts => {
-          const expert = experts.find(e => e.id === this.expertId);
-          if (expert) {
-            this.expertName = expert.name;
-          }
-        });
-
-        // Generating a unique room ID for the user and expert
-        // For simplicity, sort IDs to have a consistent room name regardless of who starts
-        const ids = [this.currentUserId, this.expertId].sort();
-        this.roomId = `room_${ids[0]}_${ids[1]}`;
-        
-        this.chatService.joinRoom(this.roomId, this.expertId);
+    if (isPlatformBrowser(this.platformId)) {
+      const user = this.authService.getCurrentUser();
+      if (!user) {
+        this.router.navigate(['/login']);
+        return;
       }
-    });
+      
+      this.currentUserId = user.id;
+      this.currentUserName = user.name;
 
-    this.subscriptions.add(
-      this.chatService.onReceiveMessage().subscribe(msg => {
-        this.messages.push(msg);
-      })
-    );
+      this.route.paramMap.subscribe(params => {
+        this.expertId = params.get('expertId') || '';
+        if (this.expertId) {
+          // Fetch expert details to get the name
+          this.expertService.getExpertById(this.expertId).subscribe(expert => {
+            if (expert) {
+              this.expertName = expert.name;
+            }
+          });
 
-    this.subscriptions.add(
-      this.chatService.onStatusUpdate().subscribe(data => {
-        if (data.expertId === this.expertId) {
-          this.expertStatus = data.status;
+          // Generating a unique room ID for the user and expert
+          // For simplicity, sort IDs to have a consistent room name regardless of who starts
+          const ids = [this.currentUserId, this.expertId].sort();
+          this.roomId = `room_${ids[0]}_${ids[1]}`;
+          
+          this.chatService.joinRoom(this.roomId, this.expertId);
         }
-      })
-    );
+      });
 
-    this.subscriptions.add(
-      this.chatService.onTimerUpdate().subscribe(data => {
-        this.remainingSeconds = data.remainingSeconds;
-      })
-    );
+      this.subscriptions.add(
+        this.chatService.onReceiveMessage().subscribe(msg => {
+          this.messages.push(msg);
+        })
+      );
 
-    this.subscriptions.add(
-      this.chatService.onTimerEnded().subscribe(data => {
-        this.remainingSeconds = 0;
-        alert(data.message);
-      })
-    );
+      this.subscriptions.add(
+        this.chatService.onStatusUpdate().subscribe(data => {
+          if (data.expertId === this.expertId) {
+            this.expertStatus = data.status;
+          }
+        })
+      );
+
+      this.subscriptions.add(
+        this.chatService.onTimerUpdate().subscribe(data => {
+          this.remainingSeconds = data.remainingSeconds;
+        })
+      );
+
+      this.subscriptions.add(
+        this.chatService.onTimerEnded().subscribe(data => {
+          this.remainingSeconds = 0;
+          alert(data.message);
+        })
+      );
+    }
   }
 
   ngOnDestroy(): void {
