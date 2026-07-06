@@ -1,65 +1,75 @@
-<div class="min-h-screen bg-[var(--b1)] p-6 md:p-10">
+<div class="min-h-screen bg-[var(--b1)] py-10 px-4 sm:px-6 lg:px-8 text-[var(--bc)]">
   <main class="max-w-7xl mx-auto">
     <!-- "Become an Expert" Banner -->
-    <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md mb-8 shadow-md flex justify-between items-center">
-      <div>
-        <p class="font-bold">Want to become an expert?</p>
-        <p>You can register as an expert by clicking the button. If you have any queries, reach out to <a href="mailto:no-reply@consultnow.in" class="underline">no-reply@consultnow.in</a>.</p>
-        <a [href]="registerUrl" target="_blank" class="mt-2 inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition-colors">
-          Register as Expert
-        </a>
+    <div class="bg-gradient-to-r from-blue-950/40 to-slate-900/40 backdrop-blur border border-blue-500/20 p-6 rounded-2xl mb-10 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <div class="space-y-1">
+        <h4 class="font-bold text-white text-lg">Want to share your expertise?</h4>
+        <p class="text-sm text-[var(--bc)]/70">Join ConsultNow as an expert and start offering consultations. Queries? Contact <a href="mailto:no-reply@consultnow.in" class="text-blue-400 underline">no-reply@consultnow.in</a>.</p>
       </div>
+      <a [href]="registerUrl" target="_blank" class="glow-btn-primary whitespace-nowrap text-white font-semibold py-2.5 px-6 rounded-xl transition-all text-sm">
+        Register as Expert
+      </a>
     </div>
 
-    <h1 class="text-4xl font-bold text-[var(--bc)] mb-8 text-center">Find an Expert</h1>
+    <h1 class="text-4xl font-extrabold tracking-tight text-white mb-10 text-center bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Find an Expert</h1>
 
     <!-- Loading State -->
     <div *ngIf="loading" class="flex justify-center items-center py-20">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--p)]"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!loading && subjects.length === 0" class="bg-white rounded-xl shadow-sm p-12 text-center border border-[var(--b2)]">
-      <h3 class="text-xl font-medium text-[var(--bc)] mb-2">No experts available at the moment.</h3>
-      <p class="text-[var(--bc)]/70">Please check back later.</p>
+    <div *ngIf="!loading && subjects.length === 0" class="bg-[var(--b2)] border border-[var(--b3)] rounded-2xl p-12 text-center shadow-lg">
+      <h3 class="text-xl font-semibold text-white mb-2">No experts available at the moment.</h3>
+      <p class="text-[var(--bc)]/60 text-sm">Please check back later.</p>
     </div>
 
     <!-- Accordion for Subjects -->
-    <div *ngIf="!loading && subjects.length > 0" class="space-y-4">
-      <div *ngFor="let subject of subjects" class="bg-white rounded-xl shadow-md border border-[var(--b2)] overflow-hidden">
-        <button (click)="toggleSubject(subject)" class="w-full flex justify-between items-center p-6 text-left">
-          <h2 class="text-2xl font-bold text-[var(--bc)]">{{ subject }}</h2>
-          <svg [ngClass]="{'transform rotate-180': openSubject === subject}" class="h-6 w-6 text-[var(--bc)]/70 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div *ngIf="!loading && subjects.length > 0" class="space-y-6">
+      <div *ngFor="let subject of subjects" class="bg-[var(--b2)] rounded-2xl border border-[var(--b3)] overflow-hidden shadow-md transition-all duration-300">
+        <button (click)="toggleSubject(subject)" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-900/30 transition-colors focus:outline-none">
+          <h2 class="text-2xl font-bold text-white tracking-wide">{{ subject }}</h2>
+          <svg [ngClass]="{'transform rotate-180': openSubject === subject}" class="h-5 w-5 text-slate-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
-        <div class="accordion-content" [style.max-height]="openSubject === subject ? '1000px' : '0'">
-          <div class="p-6 border-t border-[var(--b2)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div *ngFor="let expert of expertsBySubject[subject]" class="bg-white rounded-2xl shadow-lg border border-[var(--b2)] overflow-hidden hover:shadow-xl transition-shadow flex flex-col">
-              <div class="p-6 flex-1">
+        
+        <div class="accordion-content" [style.max-height]="openSubject === subject ? '2000px' : '0'">
+          <div class="p-6 border-t border-[var(--b3)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-[#0c1222]/40">
+            <!-- Upwork-inspired Expert Card -->
+            <div *ngFor="let expert of expertsBySubject[subject]" class="premium-card rounded-2xl flex flex-col overflow-hidden">
+              <div class="p-6 flex-1 flex flex-col">
                 <div class="flex items-start space-x-4">
-                  <img [src]="expert.photoUrl || '/Expert_Profile_No_Photo.png'" alt="{{ expert.name }}" class="w-16 h-16 rounded-full object-cover shadow-sm border border-[var(--b2)]">
-                  <div>
-                    <h3 class="text-lg font-bold text-[var(--bc)]">{{ expert.name }}</h3>
-                    <div class="flex items-center mt-1 text-sm text-[var(--bc)]/70">
-                      <svg class="h-4 w-4 mr-1 text-[var(--bc)]/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <!-- 1:1 Aspect Ratio photo -->
+                  <img [src]="expert.photoUrl || '/Expert_Profile_No_Photo.png'" alt="{{ expert.name }}" 
+                    class="w-20 h-20 rounded-xl object-cover aspect-square shadow-sm border border-[var(--b3)]"
+                    width="80" height="80">
+                  <div class="space-y-1">
+                    <h3 class="text-lg font-bold text-white hover:text-blue-400 transition-colors cursor-pointer" (click)="selectExpert(expert)">{{ expert.name }}</h3>
+                    <div class="flex items-center text-xs text-[var(--bc)]/60">
+                      <svg class="h-4 w-4 mr-1 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       {{ expert.yearsExperience }} Years Exp.
                     </div>
+                    <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Verified
+                    </div>
                   </div>
                 </div>
-                <p class="mt-4 text-sm text-[var(--bc)]/80">{{ expert.marketingSnippet || 'No marketing snippet available.' }}</p>
+                <p class="mt-4 text-sm text-[var(--bc)]/80 leading-relaxed line-clamp-3 flex-grow">
+                  {{ expert.marketingSnippet || 'No marketing snippet available.' }}
+                </p>
               </div>
-              <div class="bg-[var(--b1)] p-6 border-t border-[var(--b2)] flex items-center justify-between mt-auto">
+              <div class="bg-slate-950/40 p-5 border-t border-[var(--b3)] flex items-center justify-between mt-auto">
                 <div>
-                  <span class="text-2xl font-bold text-[var(--bc)]">₹{{ expert.pricePerHour }}</span>
-                  <span class="text-sm text-[var(--bc)]/70">/hour</span>
+                  <span class="text-xl font-extrabold text-white">₹{{ expert.pricePerHour }}</span>
+                  <span class="text-xs text-[var(--bc)]/60 font-medium">/hour</span>
                 </div>
                 <button 
                   (click)="selectExpert(expert)"
-                  class="bg-[var(--p)] hover:bg-[var(--primary-dark-blue)] text-white font-medium py-2 px-6 rounded-xl transition-colors shadow-sm">
-                  Select
+                  class="glow-btn-primary text-white text-sm font-semibold py-2 px-5 rounded-xl transition-all cursor-pointer">
+                  Select Profile
                 </button>
               </div>
             </div>
@@ -72,3 +82,4 @@
   <!-- AI Support Chat Widget -->
   <app-ai-support-chat></app-ai-support-chat>
 </div>
+

@@ -1,37 +1,42 @@
-<div class="min-h-screen flex items-center justify-center bg-[var(--color-neutral-light-gray)] py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-md w-full space-y-8 p-8 rounded-lg shadow-xl bg-white">
+<div class="min-h-screen flex items-center justify-center bg-[var(--b1)] py-12 px-4 sm:px-6 lg:px-8 text-[var(--bc)]">
+  <div class="max-w-md w-full space-y-8 p-8 rounded-2xl border border-[var(--b3)] bg-[var(--b2)] shadow-2xl">
     <div class="text-center">
-      <img src="ConsultNowDesign.png" alt="ConsultNow Design" class="mx-auto h-20 w-auto mb-4">
-      <h2 class="mt-6 text-center text-4xl font-extrabold text-[var(--color-primary-dark-blue)]">Welcome Back</h2>
-      <p class="mt-2 text-sm text-[var(--color-text-light)]">Sign in to access your expert profile.</p>
+      <img src="ConsultNowDesign.png" alt="ConsultNow Design" class="mx-auto h-16 w-auto mb-4 object-contain" width="64" height="64">
+      <h2 class="mt-6 text-center text-4xl font-extrabold text-white">Welcome Back</h2>
+      <p class="mt-2 text-sm text-[var(--bc)]/60">Sign in to access your expert profile.</p>
     </div>
     <form class="mt-8 space-y-6" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       
-      <div *ngIf="errorMessage" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md" role="alert">
+      <div *ngIf="errorMessage" class="bg-red-950/40 border border-red-500 text-red-200 p-4 rounded-md text-sm" role="alert">
         <p>{{ errorMessage }}</p>
       </div>
 
-      <div class="rounded-md shadow-sm -space-y-px">
+      <div class="rounded-md space-y-4">
         <div>
-          <label for="email-address" class="sr-only">Email address</label>
-          <input id="email-address" type="email" formControlName="email" required class="appearance-none rounded-t-md relative block w-full px-3 py-3 border border-[var(--color-neutral-medium-gray)] placeholder-[var(--color-text-light)] text-[var(--color-text-body)] focus:outline-none focus:ring-[var(--color-primary-blue)] focus:border-[var(--color-primary-blue)] focus:z-10 sm:text-sm" placeholder="Email address">
+          <label for="email-address" class="block text-sm font-medium text-[var(--bc)]/80 mb-1">Email address</label>
+          <input id="email-address" type="email" formControlName="email" required 
+            class="stripe-input w-full px-3 py-3 rounded-md text-sm" placeholder="john@example.com">
         </div>
         <div>
-          <label for="password" class="sr-only">Password</label>
-          <input id="password" type="password" formControlName="password" required class="appearance-none rounded-b-md relative block w-full px-3 py-3 border border-[var(--color-neutral-medium-gray)] placeholder-[var(--color-text-light)] text-[var(--color-text-body)] focus:outline-none focus:ring-[var(--color-primary-blue)] focus:border-[var(--color-primary-blue)] focus:z-10 sm:text-sm" placeholder="Password">
+          <label for="password" class="block text-sm font-medium text-[var(--bc)]/80 mb-1">Password</label>
+          <input id="password" type="password" formControlName="password" required 
+            class="stripe-input w-full px-3 py-3 rounded-md text-sm" placeholder="••••••••">
         </div>
       </div>
 
       <div>
-        <button type="submit" [disabled]="!loginForm.valid" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-lg font-medium rounded-md text-white bg-[var(--color-primary-blue)] hover:bg-[var(--color-primary-dark-blue)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary-blue)] disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 ease-in-out">
+        <button type="submit" [disabled]="!loginForm.valid" 
+          class="glow-btn-primary w-full flex justify-center py-3 px-4 text-base font-semibold rounded-md text-white disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 ease-in-out cursor-pointer">
           Sign In
         </button>
       </div>
+      
       <div class="text-sm text-center">
-        <a routerLink="/register" class="font-medium text-[var(--color-primary-blue)] hover:text-[var(--color-primary-dark-blue)] transition duration-150 ease-in-out">
+        <a routerLink="/register" class="font-medium text-blue-400 hover:text-blue-300 transition duration-150 ease-in-out">
           New to ConsultNow? Create an account
         </a>
       </div>
     </form>
   </div>
 </div>
+

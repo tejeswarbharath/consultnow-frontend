@@ -1,38 +1,38 @@
-<div class="bg-white shadow-xl rounded-lg p-6 mt-6 border border-[var(--b2)]">
-  <div class="flex items-center gap-2 mb-4">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[var(--a)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<div class="bg-[var(--b2)] border border-[var(--b3)] shadow-2xl rounded-2xl p-6 mt-6">
+  <div class="flex items-center gap-2.5 mb-4">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
     </svg>
-    <h2 class="text-xl font-bold text-[var(--bc)]">AI Marketing Generator</h2>
+    <h2 class="text-xl font-bold text-white">AI Marketing Generator</h2>
   </div>
   
-  <p class="text-[var(--bc)]/70 mb-4 text-sm">
+  <p class="text-[var(--bc)]/60 mb-6 text-sm leading-relaxed">
     Let our AI craft a professional bio and promotional materials for you. Your current expertise is pre-filled to get you started.
   </p>
 
-  <div class="mb-4">
-    <label for="skills" class="block text-sm font-medium text-[var(--bc)] mb-1">Your Skills & Experience</label>
+  <div class="mb-5">
+    <label for="skills" class="block text-sm font-medium text-[var(--bc)]/80 mb-2">Your Skills & Experience</label>
     <textarea
       id="skills"
       [(ngModel)]="skillsInput"
       rows="3"
-      class="w-full px-3 py-2 border border-[var(--b3)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--p)] focus:border-transparent text-sm text-[var(--bc)] bg-white"
+      class="stripe-input w-full px-4 py-3 rounded-xl text-sm"
       placeholder="e.g. 10 years experience in corporate law, specializing in mergers and acquisitions. Fluent in Spanish."
     ></textarea>
   </div>
 
-  <div *ngIf="error" class="mb-4 text-sm text-[var(--er)] bg-[var(--er)]/10 p-3 rounded-md border border-[var(--er)]/20">
+  <div *ngIf="error" class="mb-5 text-sm text-red-400 bg-red-950/20 p-4 rounded-xl border border-red-500/20">
     {{ error }}
   </div>
 
-  <div *ngIf="successMessage" class="mb-4 text-sm text-[var(--su)] bg-[var(--su)]/10 p-3 rounded-md border border-[var(--su)]/20">
+  <div *ngIf="successMessage" class="mb-5 text-sm text-emerald-400 bg-emerald-950/20 p-4 rounded-xl border border-emerald-500/20">
     {{ successMessage }}
   </div>
 
   <button
     (click)="generateMarketing()"
     [disabled]="isLoading"
-    class="w-full sm:w-auto px-6 py-2 bg-[var(--a)] text-white rounded-md hover:bg-[var(--a)]/80 focus:outline-none focus:ring-2 focus:ring-[var(--a)] focus:ring-offset-2 transition-colors disabled:opacity-70 flex justify-center items-center gap-2 font-medium"
+    class="glow-btn-primary w-full sm:w-auto px-6 py-2.5 text-white rounded-xl disabled:opacity-70 flex justify-center items-center gap-2 font-semibold text-sm cursor-pointer focus:outline-none"
   >
     <span *ngIf="isLoading" class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
     <span>{{ isLoading ? 'Generating...' : 'Generate Magic' }}</span>
@@ -40,21 +40,21 @@
 
   <!-- Results Section -->
   <div *ngIf="marketingData" class="mt-8 space-y-6 animate-fade-in-up">
-    <hr class="border-[var(--b2)]">
+    <hr class="border-[var(--b3)]">
     
     <!-- Professional Bio -->
-    <div *ngIf="marketingData.bio || marketingData.professionalBio">
-      <h3 class="text-md font-semibold text-[var(--bc)] mb-2">Generated Professional Bio</h3>
-      <div class="bg-[var(--b1)] p-4 rounded-md text-sm text-[var(--bc)]/90 border border-[var(--b2)] whitespace-pre-wrap">
+    <div *ngIf="marketingData.bio || marketingData.professionalBio" class="space-y-2">
+      <h3 class="text-sm font-bold uppercase tracking-wider text-[var(--bc)]/50">Generated Professional Bio</h3>
+      <div class="bg-slate-950/30 p-4 rounded-xl text-sm text-[var(--bc)]/90 border border-[var(--b3)] whitespace-pre-wrap leading-relaxed">
         {{ marketingData.bio || marketingData.professionalBio }}
       </div>
     </div>
 
     <!-- Marketing Snippet / Service Description -->
-    <div *ngIf="marketingData.marketingSnippet || marketingData.serviceDescription">
-      <h3 class="text-md font-semibold text-[var(--bc)] mb-2">Generated Marketing Snippet</h3>
-      <div class="bg-[var(--a)]/10 p-4 rounded-md text-sm text-[var(--a)]/90 border border-[var(--a)]/20 italic">
-        "{{ marketingData.marketingSnippet || marketingData.serviceDescription }}"
+    <div *ngIf="marketingData.marketingSnippet || marketingData.serviceDescription" class="space-y-2">
+      <h3 class="text-sm font-bold uppercase tracking-wider text-[var(--bc)]/50">Generated Marketing Tagline</h3>
+      <div class="bg-amber-500/5 p-4 rounded-xl text-sm text-amber-400 border border-amber-500/20 italic leading-relaxed">
+        "{{ expert.name }} - {{ marketingData.marketingSnippet || marketingData.serviceDescription }}"
       </div>
     </div>
     
@@ -62,7 +62,7 @@
       <button
         (click)="saveToProfile()"
         [disabled]="isSaving"
-        class="px-6 py-2 bg-[var(--p)] text-white rounded-md hover:bg-[var(--primary-dark-blue)] focus:outline-none focus:ring-2 focus:ring-[var(--p)] focus:ring-offset-2 transition-colors disabled:opacity-70 flex justify-center items-center gap-2 font-medium"
+        class="glow-btn-primary px-6 py-2.5 text-white rounded-xl disabled:opacity-70 flex justify-center items-center gap-2 font-semibold text-sm cursor-pointer focus:outline-none"
       >
         <span *ngIf="isSaving" class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
         <span>{{ isSaving ? 'Saving...' : 'Save to Profile & Refresh' }}</span>
@@ -70,3 +70,4 @@
     </div>
   </div>
 </div>
+

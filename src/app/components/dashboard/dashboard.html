@@ -1,65 +1,64 @@
-<div class="min-h-screen bg-[var(--b1)] py-10">
+<div class="min-h-screen bg-[var(--b1)] py-10 text-[var(--bc)]">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
     <div *ngIf="isLoading" class="flex justify-center items-center py-20">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--p)]"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
     </div>
 
     <div *ngIf="!isLoading && expert">
-      <div class="bg-white rounded-xl shadow-xl overflow-hidden mb-8 border border-[var(--b2)]">
-        <div class="bg-[var(--p)] px-6 py-6 text-white flex justify-between items-center">
+      <div class="bg-[var(--b2)] border border-[var(--b3)] shadow-2xl rounded-2xl overflow-hidden mb-8">
+        <div class="bg-slate-950/40 border-b border-[var(--b3)] px-6 py-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 class="text-3xl font-bold">Expert Dashboard</h1>
-            <p class="mt-1 text-white/80">Welcome back, {{ expert.name }}</p>
+            <h1 class="text-3xl font-extrabold text-white tracking-tight">Expert Dashboard</h1>
+            <p class="mt-1 text-sm text-[var(--bc)]/60">Welcome back, {{ expert.name }}</p>
           </div>
-          <button (click)="logout()" class="bg-[var(--er)] hover:bg-[var(--er)]/80 text-white font-bold py-2 px-4 rounded-md transition-colors">
+          <button (click)="logout()" class="px-5 py-2.5 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 font-semibold transition-all text-sm cursor-pointer focus:outline-none">
             Logout
           </button>
         </div>
 
         <div class="p-6 sm:p-8">
-          <h2 class="text-xl font-semibold text-[var(--bc)] border-b border-[var(--b2)] pb-2 mb-4">Your Profile Details</h2>
+          <h2 class="text-xl font-bold text-white border-b border-[var(--b3)] pb-3 mb-6">Profile Details</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <p class="text-sm text-[var(--bc)]/70">Email Address</p>
-              <p class="font-medium text-[var(--bc)]">{{ expert.email }}</p>
+            <div class="space-y-1">
+              <p class="text-xs font-semibold uppercase tracking-wider text-[var(--bc)]/50">Email Address</p>
+              <p class="font-medium text-white text-base">{{ expert.email }}</p>
             </div>
-            <div>
-              <p class="text-sm text-[var(--bc)]/70">Category / Expertise</p>
-              <p class="font-medium text-[var(--bc)]">{{ expert.subjectExpertise }}</p>
+            <div class="space-y-1">
+              <p class="text-xs font-semibold uppercase tracking-wider text-[var(--bc)]/50">Category / Expertise</p>
+              <p class="font-medium text-white text-base">{{ expert.subjectExpertise }}</p>
             </div>
-            <div>
-              <p class="text-sm text-[var(--bc)]/70">Years of Experience</p>
-              <p class="font-medium text-[var(--bc)]">{{ expert.yearsExperience }} Years</p>
+            <div class="space-y-1">
+              <p class="text-xs font-semibold uppercase tracking-wider text-[var(--bc)]/50">Years of Experience</p>
+              <p class="font-medium text-white text-base">{{ expert.yearsExperience }} Years</p>
             </div>
-            <div>
-              <p class="text-sm text-[var(--bc)]/70">Price Per Hour</p>
-              <p class="font-medium text-[var(--bc)]">
-                <span *ngIf="expert.currency === 'INR'">₹</span>
-                {{ expert.pricePerHour }}
+            <div class="space-y-1">
+              <p class="text-xs font-semibold uppercase tracking-wider text-[var(--bc)]/50">Price Per Hour</p>
+              <p class="font-medium text-white text-base">
+                <span *ngIf="expert.currency === 'INR'">₹</span>{{ expert.pricePerHour }}
               </p>
             </div>
           </div>
 
-          <div class="mt-8 bg-[var(--b1)] p-6 rounded-lg border border-[var(--b2)]">
-            <h3 class="text-lg font-semibold text-[var(--bc)] mb-4">Public Marketing Profile</h3>
+          <div class="mt-8 bg-slate-950/20 p-6 rounded-xl border border-[var(--b3)]">
+            <h3 class="text-lg font-bold text-white mb-4">Public Marketing Profile</h3>
             
-            <div class="mb-4">
-              <p class="text-sm font-medium text-[var(--bc)]/70 uppercase tracking-wider">Tagline / Snippet</p>
-              <p class="mt-1 text-[var(--bc)] italic" *ngIf="expert.marketingSnippet">"{{ expert.marketingSnippet }}"</p>
-              <p class="mt-1 text-[var(--bc)]/50 text-sm" *ngIf="!expert.marketingSnippet">No tagline generated yet. Use the AI tool below.</p>
+            <div class="mb-6">
+              <p class="text-xs font-semibold uppercase tracking-wider text-[var(--bc)]/50">Tagline / Snippet</p>
+              <p class="mt-2 text-sm text-[var(--bc)]/90 italic leading-relaxed" *ngIf="expert.marketingSnippet">"{{ expert.marketingSnippet }}"</p>
+              <p class="mt-2 text-sm text-[var(--bc)]/40 italic" *ngIf="!expert.marketingSnippet">No tagline generated yet. Use the AI tool below.</p>
             </div>
 
             <div>
-              <p class="text-sm font-medium text-[var(--bc)]/70 uppercase tracking-wider">Professional Bio</p>
-              <p class="mt-1 text-[var(--bc)] whitespace-pre-wrap" *ngIf="expert.bio">{{ expert.bio }}</p>
-              <p class="mt-1 text-[var(--bc)]/50 text-sm" *ngIf="!expert.bio">No bio generated yet. Use the AI tool below.</p>
+              <p class="text-xs font-semibold uppercase tracking-wider text-[var(--bc)]/50">Professional Bio</p>
+              <p class="mt-2 text-sm text-[var(--bc)]/90 whitespace-pre-wrap leading-relaxed" *ngIf="expert.bio">{{ expert.bio }}</p>
+              <p class="mt-2 text-sm text-[var(--bc)]/40 italic" *ngIf="!expert.bio">No bio generated yet. Use the AI tool below.</p>
             </div>
           </div>
-          </div>
+        </div>
       </div>
 
       <app-expert-marketing-tool [expert]="expert"></app-expert-marketing-tool>
     </div>
   </div>
-</div>
+</div>

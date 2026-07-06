@@ -1,37 +1,41 @@
-<div class="min-h-screen flex items-center justify-center bg-[var(--color-neutral-light-gray)] py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-xl w-full space-y-8 bg-white p-8 rounded-lg shadow-xl">
+<div class="min-h-screen flex items-center justify-center bg-[var(--b1)] py-12 px-4 sm:px-6 lg:px-8 text-[var(--bc)]">
+  <div class="max-w-xl w-full space-y-8 bg-[var(--b2)] border border-[var(--b3)] p-8 rounded-2xl shadow-2xl">
     <div class="text-center">
-      <img src="ConsultNowDesign.png" alt="ConsultNow Design" class="mx-auto h-20 w-auto mb-4">
-      <h2 class="mt-2 text-center text-4xl font-extrabold text-[var(--color-primary-dark-blue)]">
+      <img src="ConsultNowDesign.png" alt="ConsultNow Design" class="mx-auto h-16 w-auto mb-4 object-contain" width="64" height="64">
+      <h2 class="mt-2 text-center text-4xl font-extrabold text-white">
         Become a ConsultNow Expert
       </h2>
-      <p class="mt-2 text-sm text-[var(--color-text-light)]">Join our platform and connect with individuals seeking your expertise.</p>
+      <p class="mt-2 text-sm text-[var(--bc)]/60">Join our platform and connect with individuals seeking your expertise.</p>
     </div>
     <form class="mt-8 space-y-6" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       
-      <div *ngIf="errorMessage" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md" role="alert">
+      <div *ngIf="errorMessage" class="bg-red-950/40 border border-red-500 text-red-200 p-4 rounded-md text-sm" role="alert">
         <p>{{ errorMessage }}</p>
       </div>
 
-      <div class="rounded-md shadow-sm space-y-4">
+      <div class="rounded-md space-y-4">
         <div>
-          <label for="fullName" class="block text-sm font-medium text-[var(--color-text-body)]">Full Name</label>
-          <input id="fullName" formControlName="name" type="text" required class="appearance-none rounded relative block w-full px-3 py-3 border border-[var(--color-neutral-medium-gray)] placeholder-[var(--color-text-light)] text-[var(--color-text-body)] focus:outline-none focus:ring-[var(--color-primary-blue)] focus:border-[var(--color-primary-blue)] sm:text-sm">
+          <label for="fullName" class="block text-sm font-medium text-[var(--bc)]/80 mb-1">Full Name</label>
+          <input id="fullName" formControlName="name" type="text" required 
+            class="stripe-input w-full px-3 py-3 rounded-md text-sm" placeholder="John Doe">
         </div>
 
         <div>
-          <label for="email" class="block text-sm font-medium text-[var(--color-text-body)]">Email Address</label>
-          <input id="email" formControlName="email" type="email" required class="appearance-none rounded relative block w-full px-3 py-3 border border-[var(--color-neutral-medium-gray)] placeholder-[var(--color-text-light)] text-[var(--color-text-body)] focus:outline-none focus:ring-[var(--color-primary-blue)] focus:border-[var(--color-primary-blue)] sm:text-sm">
+          <label for="email" class="block text-sm font-medium text-[var(--bc)]/80 mb-1">Email Address</label>
+          <input id="email" formControlName="email" type="email" required 
+            class="stripe-input w-full px-3 py-3 rounded-md text-sm" placeholder="john@example.com">
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium text-[var(--color-text-body)]">Password</label>
-          <input id="password" formControlName="password" type="password" required class="appearance-none rounded relative block w-full px-3 py-3 border border-[var(--color-neutral-medium-gray)] placeholder-[var(--color-text-light)] text-[var(--color-text-body)] focus:outline-none focus:ring-[var(--color-primary-blue)] focus:border-[var(--color-primary-blue)] sm:text-sm">
+          <label for="password" class="block text-sm font-medium text-[var(--bc)]/80 mb-1">Password</label>
+          <input id="password" formControlName="password" type="password" required 
+            class="stripe-input w-full px-3 py-3 rounded-md text-sm" placeholder="••••••••">
         </div>
 
         <div>
-          <label for="subjectExpertise" class="block text-sm font-medium text-[var(--color-text-body)]">Category / Expertise</label>
-          <select id="subjectExpertise" formControlName="subjectExpertise" class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-[var(--color-neutral-medium-gray)] focus:outline-none focus:ring-[var(--color-primary-blue)] focus:border-[var(--color-primary-blue)] sm:text-sm rounded-md border text-[var(--color-text-body)]">
+          <label for="subjectExpertise" class="block text-sm font-medium text-[var(--bc)]/80 mb-1">Category / Expertise</label>
+          <select id="subjectExpertise" formControlName="subjectExpertise" 
+            class="stripe-input w-full px-3 py-3 rounded-md text-sm bg-[#0f172a]/60">
             <option value="" disabled selected>Select your area of expertise</option>
             <option value="Student Tutoring Services">Student Tutoring Services</option>
             <option value="Medical Advice">Medical Advice</option>
@@ -42,36 +46,39 @@
         </div>
 
         <div>
-          <label for="yearsExperience" class="block text-sm font-medium text-[var(--color-text-body)]">Years of Experience</label>
-          <input id="yearsExperience" formControlName="yearsExperience" type="number" min="0" required class="appearance-none rounded relative block w-full px-3 py-3 border border-[var(--color-neutral-medium-gray)] placeholder-[var(--color-text-light)] text-[var(--color-text-body)] focus:outline-none focus:ring-[var(--color-primary-blue)] focus:border-[var(--color-primary-blue)] sm:text-sm">
+          <label for="yearsExperience" class="block text-sm font-medium text-[var(--bc)]/80 mb-1">Years of Experience</label>
+          <input id="yearsExperience" formControlName="yearsExperience" type="number" min="0" required 
+            class="stripe-input w-full px-3 py-3 rounded-md text-sm" placeholder="5">
         </div>
 
         <div class="flex space-x-4">
           <div class="w-1/3">
-            <label for="currency" class="block text-sm font-medium text-[var(--color-text-body)]">Currency</label>
-            <select id="currency" formControlName="currency" class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-[var(--color-neutral-medium-gray)] focus:outline-none focus:ring-[var(--color-primary-blue)] focus:border-[var(--color-primary-blue)] sm:text-sm rounded-md border text-[var(--color-text-body)]">
+            <label for="currency" class="block text-sm font-medium text-[var(--bc)]/80 mb-1">Currency</label>
+            <select id="currency" formControlName="currency" 
+              class="stripe-input w-full px-3 py-3 rounded-md text-sm bg-[#0f172a]/60">
               <option value="INR">INR (₹)</option>
             </select>
           </div>
           <div class="w-2/3">
-            <label for="pricePerHour" class="block text-sm font-medium text-[var(--color-text-body)]">Price Per Hour</label>
-            <input id="pricePerHour" formControlName="pricePerHour" type="number" min="0" required class="appearance-none rounded relative block w-full px-3 py-3 border border-[var(--color-neutral-medium-gray)] placeholder-[var(--color-text-light)] text-[var(--color-text-body)] focus:outline-none focus:ring-[var(--color-primary-blue)] focus:border-[var(--color-primary-blue)] sm:text-sm">
+            <label for="pricePerHour" class="block text-sm font-medium text-[var(--bc)]/80 mb-1">Price Per Hour</label>
+            <input id="pricePerHour" formControlName="pricePerHour" type="number" min="0" required 
+              class="stripe-input w-full px-3 py-3 rounded-md text-sm" placeholder="1000">
           </div>
         </div>
-
       </div>
 
       <div>
-        <button type="submit" [disabled]="registerForm.invalid" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-lg font-medium rounded-md text-white bg-[var(--color-primary-blue)] hover:bg-[var(--color-primary-dark-blue)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary-blue)] disabled:opacity-50 transition duration-150 ease-in-out">
+        <button type="submit" [disabled]="registerForm.invalid" 
+          class="glow-btn-primary w-full flex justify-center py-3 px-4 text-base font-semibold rounded-md text-white disabled:opacity-50 transition duration-150 ease-in-out cursor-pointer">
           Complete Registration
         </button>
       </div>
       
       <div class="text-center">
-        <a routerLink="/login" class="font-medium text-[var(--color-primary-blue)] hover:text-[var(--color-primary-dark-blue)] text-sm transition duration-150 ease-in-out">
+        <a routerLink="/login" class="font-medium text-blue-400 hover:text-blue-300 text-sm transition duration-150 ease-in-out">
           Already a member? Log in here.
         </a>
       </div>
     </form>
   </div>
-</div>
+</div>

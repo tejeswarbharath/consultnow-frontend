@@ -1,53 +1,59 @@
-<div class="fixed bottom-4 right-4 z-50">
+<div class="fixed bottom-6 right-6 z-50">
   <!-- Chat Button -->
   <button 
     *ngIf="!isOpen" 
     (click)="toggleChat()" 
-    class="bg-[var(--color-primary-blue)] text-white rounded-full p-4 shadow-lg hover:bg-[var(--color-primary-dark-blue)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-blue)] transition-colors duration-150 ease-in-out">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    class="bg-blue-600 text-white rounded-full p-4 shadow-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-150 ease-in-out cursor-pointer hover:scale-105 active:scale-95">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
     </svg>
   </button>
 
   <!-- Chat Window -->
-  <div *ngIf="isOpen" class="bg-white rounded-lg shadow-2xl w-80 sm:w-96 overflow-hidden flex flex-col border border-[var(--color-neutral-medium-gray)]">
-    <div class="bg-[var(--color-primary-dark-blue)] text-white p-4 flex justify-between items-center">
-      <h3 class="font-semibold text-lg">AI Assistant</h3>
-      <button (click)="toggleChat()" class="text-white hover:text-[var(--color-neutral-light-gray)] focus:outline-none transition-colors duration-150 ease-in-out">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <div *ngIf="isOpen" class="bg-[var(--b2)] rounded-2xl shadow-2xl w-80 sm:w-96 overflow-hidden flex flex-col border border-[var(--b3)] animate-fade-in-up">
+    <!-- Header -->
+    <div class="bg-slate-950/60 border-b border-[var(--b3)] text-white p-4 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <h3 class="font-bold text-sm tracking-wide">ConsultNow AI Support</h3>
+      </div>
+      <button (click)="toggleChat()" class="text-slate-400 hover:text-white focus:outline-none transition-colors duration-150 ease-in-out cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
     </div>
     
-    <div class="p-4 h-64 overflow-y-auto flex flex-col space-y-3 bg-[var(--color-neutral-light-gray)]">
-      <div *ngFor="let msg of chatHistory" [ngClass]="{'self-end': msg.sender === 'user', 'self-start': msg.sender === 'ai'}">
-        <div [ngClass]="msg.sender === 'user' ? 'bg-[var(--color-primary-blue)] text-white' : 'bg-white text-[var(--color-text-body)] border border-[var(--color-neutral-medium-gray)]'" class="rounded-lg p-3 max-w-[85%] text-sm shadow-sm">
+    <!-- Messages Area -->
+    <div class="p-4 h-72 overflow-y-auto flex flex-col space-y-3 bg-slate-950/20">
+      <div *ngFor="let msg of chatHistory" [ngClass]="{'self-end': msg.sender === 'user', 'self-start': msg.sender === 'ai'}" class="w-full flex" [ngClass]="msg.sender === 'user' ? 'justify-end' : 'justify-start'">
+        <div [ngClass]="msg.sender === 'user' ? 'bg-blue-600/20 border border-blue-500/30 text-white rounded-br-none' : 'bg-[var(--b2)] text-[var(--bc)] border border-[var(--b3)] rounded-bl-none'" class="rounded-xl p-3 max-w-[85%] text-xs shadow-sm leading-relaxed break-words">
           {{ msg.text }}
         </div>
       </div>
-      <div *ngIf="isLoading" class="self-start text-[var(--color-text-light)] text-sm italic">
-        AI is typing...
+      <div *ngIf="isLoading" class="self-start text-[var(--bc)]/50 text-xs italic">
+        AI is thinking...
       </div>
     </div>
     
-    <div class="p-4 border-t border-[var(--color-neutral-medium-gray)] bg-white">
+    <!-- Input Form -->
+    <div class="p-4 border-t border-[var(--b3)] bg-slate-950/40">
       <form (ngSubmit)="sendMessage()" class="flex space-x-2">
         <input 
           type="text" 
           name="problemDescription" 
           [(ngModel)]="problemDescription" 
           placeholder="Type your message..." 
-          class="flex-1 border border-[var(--color-neutral-medium-gray)] rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--color-primary-blue)] text-[var(--color-text-body)]"
+          class="stripe-input flex-1 px-3 py-2 rounded-xl text-xs"
           autocomplete="off"
         />
         <button 
           type="submit" 
           [disabled]="isLoading || !problemDescription.trim()"
-          class="bg-[var(--color-primary-blue)] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[var(--color-primary-dark-blue)] disabled:opacity-50 transition-colors duration-150 ease-in-out">
+          class="glow-btn-primary text-white px-4 py-2 rounded-xl text-xs font-semibold hover:opacity-90 disabled:opacity-50 transition-colors duration-150 ease-in-out cursor-pointer focus:outline-none">
           Send
         </button>
       </form>
     </div>
   </div>
-</div>
+</div>

@@ -4,51 +4,48 @@
 /* Google Fonts Import */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* This replaces your tailwind.config.js! */
+/* Tailwind v4 Theme Configuration */
 @theme {
-  // Existing colors (to be reviewed if they fit the new theme, for now keep)
-  --color-consult-navy: #1A2B4C;
-  --color-consult-teal: #2A9D8F;
+  --color-consult-navy: #090d16;
+  --color-consult-teal: #10b981;
 
-  // BetterHelp inspired color palette (CSS variables)
-  --color-primary-blue: #007bff;
-  --color-primary-dark-blue: #0A2540;
-  --color-secondary-green: #28a745;
-  --color-accent-purple: #6f42c1;
-  --color-neutral-light-gray: #f8f9fa;
-  --color-neutral-medium-gray: #dee2e6;
-  --color-neutral-dark-gray: #495057;
-  --color-text-body: #212529;
-  --color-text-light: #6c757d;
+  /* Modern Premium Dark Palette */
+  --color-primary-blue: #3b82f6;
+  --color-primary-dark-blue: #0f172a;
+  --color-secondary-green: #10b981;
+  --color-accent-purple: #8b5cf6;
+  --color-neutral-light-gray: #090d16;
+  --color-neutral-medium-gray: #1e293b;
+  --color-neutral-dark-gray: #64748b;
+  --color-text-body: #f8fafc;
+  --color-text-light: #94a3b8;
 
-  // DaisyUI-like variables mapped to BetterHelp inspired palette
-  // These are often used by DaisyUI components to generate their colors.
-  // Assuming a similar mechanism is at play here.
-  --p: var(--color-primary-blue);              // Primary color
-  --pc: white;                                // Primary content (text on primary)
-  --s: var(--color-secondary-green);          // Secondary color
-  --sc: white;                                // Secondary content
-  --a: var(--color-accent-purple);            // Accent color
-  --ac: white;                                // Accent content
-  --n: var(--color-neutral-dark-gray);        // Neutral color
-  --nc: white;                                // Neutral content
-  --b1: var(--color-neutral-light-gray);      // Base 100 (lightest background)
-  --b2: #e0e7ec;                              // Base 200 (slightly darker base) - Adjusted for contrast
-  --b3: #cbd5e1;                              // Base 300 (even darker base) - Adjusted for contrast
-  --bc: var(--color-text-body);               // Base content (text on base backgrounds)
+  /* Semantic variables mapped to theme */
+  --p: #3b82f6;                  /* Primary (Electric Blue) */
+  --pc: #ffffff;
+  --s: #10b981;                  /* Secondary (Electric Green) */
+  --sc: #ffffff;
+  --a: #f59e0b;                  /* Accent (Amber Gold) */
+  --ac: #090d16;
+  --n: #1e293b;                  /* Neutral (Slate) */
+  --nc: #f8fafc;
+  --b1: #090d16;                 /* Base 100 (Deep Obsidian Background) */
+  --b2: #111a2e;                 /* Base 200 (Dark Slate Card Background) */
+  --b3: #1e293b;                 /* Base 300 (Border Color) */
+  --bc: #f8fafc;                 /* Base Content (Off-White Text) */
 
-  --in: #00bcd4;                              // Info color (cyan-like)
-  --inc: white;                               // Info content
-  --su: #28a745;                              // Success color (green)
-  --suc: white;                               // Success content
-  --wa: #ffc107;                              // Warning color (amber)
-  --wac: black;                               // Warning content
-  --er: #dc3545;                              // Error color (red)
-  --erc: white;                               // Error content
+  --in: #0ea5e9;
+  --inc: #ffffff;
+  --su: #10b981;
+  --suc: #ffffff;
+  --wa: #f59e0b;
+  --wac: #090d16;
+  --er: #ef4444;
+  --erc: #ffffff;
 
-  // Typography
+  /* Typography */
   --font-family-sans: 'Inter', sans-serif;
-  --font-size-base: 1rem; // 16px
+  --font-size-base: 1rem;
   --line-height-base: 1.6;
 }
 
@@ -56,16 +53,66 @@ body {
   font-family: var(--font-family-sans);
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
-  color: var(--bc); /* Use base content color for body text */
-  background-color: var(--b1); /* Use base 100 for body background */
+  color: var(--bc);
+  background-color: var(--b1);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-// Add some base responsive styles if needed, e.g., for global padding or max-width
-// This can also be handled with Tailwind utility classes in components, but a global base can be useful.
 html {
   box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 *, *::before, *::after {
   box-sizing: inherit;
 }
+
+/* Premium UI Utilities */
+.glass-panel {
+  background: rgba(17, 26, 46, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.premium-card {
+  background-color: var(--b2);
+  border: 1px solid var(--b3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-card:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.15);
+  transform: translateY(-2px);
+}
+
+.glow-btn-primary {
+  background: linear-gradient(135deg, var(--p) 0%, #1d4ed8 100%);
+  box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+.glow-btn-primary:hover:not(:disabled) {
+  box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.45);
+  transform: translateY(-1px);
+}
+
+.glow-btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.stripe-input {
+  background-color: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--b3);
+  color: var(--bc);
+  transition: all 0.2s ease-in-out;
+}
+
+.stripe-input:focus {
+  border-color: var(--p);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+  outline: none;
+}
