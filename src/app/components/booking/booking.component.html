@@ -108,6 +108,76 @@
         </ng-template>
       </div>
 
+      <!-- Regulatory Disclaimers & Guidelines -->
+      <div class="mb-8 border-t border-[var(--b3)] pt-8">
+        <h3 class="text-xl font-bold text-white mb-2">Regulatory Disclosures & Guidelines</h3>
+        <p class="text-xs text-[var(--bc)]/60 mb-4">Please review the following regulatory disclosures for the <strong class="text-white">{{ expert.subjectExpertise }}</strong> category.</p>
+
+        <!-- Medical Advice Disclaimers -->
+        <div *ngIf="expert.subjectExpertise === 'Medical Advice'" class="bg-blue-950/20 border border-blue-500/20 p-5 rounded-2xl space-y-3 text-xs leading-relaxed text-[var(--bc)]/80">
+          <p class="font-bold text-white text-sm text-blue-400">Telemedicine Practice Guidelines (2020) Disclosures:</p>
+          <ul class="list-disc pl-5 space-y-2">
+            <li><strong>Not for Emergencies:</strong> ConsultNow is not a crisis helpline and must not be used for medical emergencies, trauma, or severe psychological distress. If you are experiencing an emergency, please visit the nearest hospital.</li>
+            <li><strong>No Substitute for Diagnosis:</strong> A digital chat consultation is not a substitute for a physical clinical examination, professional diagnosis, or formal medical treatment.</li>
+            <li><strong>General Information:</strong> The medical expert's answers are general in nature. You must consult your personal physician before altering any medications or health routines.</li>
+            <li><strong>Informed Consent Required:</strong> Digital, informed consent must be collected from the user before initiating the consultation with the healthcare professional.</li>
+          </ul>
+        </div>
+
+        <!-- Legal Advice Disclaimers -->
+        <div *ngIf="expert.subjectExpertise === 'Legal Advice'" class="bg-blue-950/20 border border-blue-500/20 p-5 rounded-2xl space-y-3 text-xs leading-relaxed text-[var(--bc)]/80">
+          <p class="font-bold text-white text-sm text-blue-400">Bar Council of India (BCI) Compliance Guidelines:</p>
+          <ul class="list-disc pl-5 space-y-2">
+            <li><strong>No Solicitation:</strong> The platform is a service aggregator and there is no advertisement, personal communication, or solicitation of work by the advocates.</li>
+            <li><strong>No Attorney-Client Relationship:</strong> Using the live chat or booking a session does not establish a formal, legally privileged attorney-client relationship.</li>
+            <li><strong>Informational Purposes Only:</strong> Answers to queries are strictly for educational or informational purposes and must not be construed as actionable legal advice.</li>
+            <li><strong>Independent Counsel:</strong> Users must seek independent, formal legal counsel before taking action on any legal matters discussed on the platform.</li>
+          </ul>
+        </div>
+
+        <!-- IT Career Guidance Disclaimers -->
+        <div *ngIf="expert.subjectExpertise === 'IT Career Guidance'" class="bg-blue-950/20 border border-blue-500/20 p-5 rounded-2xl space-y-3 text-xs leading-relaxed text-[var(--bc)]/80">
+          <p class="font-bold text-white text-sm text-blue-400">Career Mentorship Guidelines:</p>
+          <ul class="list-disc pl-5 space-y-2">
+            <li><strong>No Employment Guarantee:</strong> The guidance and advice provided do not guarantee job placement, promotions, interview opportunities, or specific salary outcomes.</li>
+            <li><strong>Dynamic Market Conditions:</strong> Technology trends, hiring practices, and market conditions change rapidly. Advice is based on current industry standards and the personal opinion of the expert.</li>
+            <li><strong>Independent Verification:</strong> Users are responsible for independently verifying certification requirements, educational prerequisites, and job market demands.</li>
+          </ul>
+        </div>
+
+        <!-- HR Services Disclaimers -->
+        <div *ngIf="expert.subjectExpertise === 'HR Services'" class="bg-blue-950/20 border border-blue-500/20 p-5 rounded-2xl space-y-3 text-xs leading-relaxed text-[var(--bc)]/80">
+          <p class="font-bold text-white text-sm text-blue-400">Human Resources Advisory Guidelines:</p>
+          <ul class="list-disc pl-5 space-y-2">
+            <li><strong>Not Legal Counsel:</strong> HR guidance provided is for operational best practices and organizational strategy. It does not constitute formal employment law or labor law advice.</li>
+            <li><strong>Jurisdictional Compliance:</strong> Labor laws and compliance requirements vary strictly by state and country. Organizations must consult with a certified employment lawyer to ensure any suggested policies comply with local and national regulations.</li>
+            <li><strong>No Liability:</strong> ConsultNow and its HR experts are not liable for any employee grievances, workplace disputes, or regulatory compliance penalties arising from the implementation of suggested policies.</li>
+          </ul>
+        </div>
+
+        <!-- Student Tutoring Services Disclaimers -->
+        <div *ngIf="expert.subjectExpertise === 'Student Tutoring Services'" class="bg-blue-950/20 border border-blue-500/20 p-5 rounded-2xl space-y-3 text-xs leading-relaxed text-[var(--bc)]/80">
+          <p class="font-bold text-white text-sm text-blue-400">Student Tutoring Services Guidelines:</p>
+          <ul class="list-disc pl-5 space-y-2">
+            <li><strong>Academic Support:</strong> Focuses on homework support, academic guidance, and foundational skill-building for Grades 1 through 10.</li>
+            <li><strong>Parental Involvement:</strong> Parents are encouraged to monitor progress and maintain contact with tutors for minor students.</li>
+          </ul>
+        </div>
+
+        <!-- Checkbox for Consent -->
+        <div class="mt-5 flex items-start gap-3">
+          <input 
+            id="regulatoryConsent" 
+            type="checkbox" 
+            [(ngModel)]="disclaimerAccepted"
+            class="mt-1 h-4.5 w-4.5 text-blue-600 border-[var(--b3)] bg-slate-950/20 rounded focus:ring-blue-500 cursor-pointer"
+          />
+          <label for="regulatoryConsent" class="text-xs text-[var(--bc)]/90 cursor-pointer select-none leading-relaxed">
+            <strong class="text-white">I agree and provide digital informed consent</strong> to the regulatory disclosures, disclaimers, and guidelines stated above for this consultation.
+          </label>
+        </div>
+      </div>
+
       <!-- Action Buttons -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <button 

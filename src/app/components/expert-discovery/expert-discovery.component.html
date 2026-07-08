@@ -11,6 +11,72 @@
       </a>
     </div>
 
+    <!-- AI-Powered Search Bar -->
+    <div class="max-w-3xl mx-auto mb-12">
+      <div class="bg-[var(--b2)] border border-[var(--b3)] p-6 rounded-2xl shadow-xl space-y-4">
+        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
+          AI-Powered Expert Matcher
+        </h2>
+        <p class="text-xs text-[var(--bc)]/60">Describe your problem in natural language (e.g., "I need help drafting a remote work policy" or "I have a sudden headache and fever"), and our AI will route you to the right expert instantly.</p>
+        
+        <form (ngSubmit)="searchWithAi()" class="flex flex-col sm:flex-row gap-3">
+          <div class="relative flex-1">
+            <input 
+              type="text" 
+              [(ngModel)]="searchQuery" 
+              name="searchQuery"
+              placeholder="What do you need help with today?" 
+              class="stripe-input w-full pl-10 pr-4 py-3 rounded-xl text-sm"
+              autocomplete="off"
+            />
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+          <button 
+            type="submit" 
+            [disabled]="searchLoading || !searchQuery.trim()"
+            class="glow-btn-primary text-white font-semibold py-3 px-6 rounded-xl transition-all text-sm cursor-pointer flex items-center justify-center gap-2">
+            <span *ngIf="searchLoading" class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+            Search with AI
+          </button>
+        </form>
+
+        <div *ngIf="activeFilterCategory" class="flex items-center justify-between bg-blue-500/10 border border-blue-500/20 px-4 py-2.5 rounded-xl text-xs">
+          <span class="text-[var(--bc)]/90">Filtering by AI match: <strong class="text-white">{{ activeFilterCategory }}</strong></span>
+          <button (click)="clearSearchFilter()" class="text-blue-400 hover:text-blue-300 font-bold cursor-pointer">Clear Filter</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- High-Risk Triage / Emergency Disclaimer Modal -->
+    <div *ngIf="emergencyDisclaimer" class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+      <div class="bg-[var(--b2)] border border-red-500/30 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-fade-in-up">
+        <div class="bg-red-500/10 border-b border-red-500/20 px-6 py-4 flex items-center gap-3">
+          <svg class="h-6 w-6 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <h3 class="font-extrabold text-white text-lg">HIGH RISK / EMERGENCY WARNING</h3>
+        </div>
+        <div class="p-6 space-y-4">
+          <p class="text-sm text-red-200/90 leading-relaxed font-semibold">
+            {{ emergencyDisclaimer }}
+          </p>
+          <div class="bg-slate-950/40 p-4 rounded-xl border border-[var(--b3)] text-xs text-[var(--bc)]/60 leading-relaxed space-y-2">
+            <p><strong>Note:</strong> ConsultNow is strictly an informational and advisory platform. We do not provide crisis services, emergency response, or direct clinical medical/legal action.</p>
+          </div>
+        </div>
+        <div class="bg-slate-950/40 px-6 py-4 flex justify-end border-t border-[var(--b3)]">
+          <button (click)="clearSearchFilter()" class="glow-btn-primary text-white font-bold py-2.5 px-6 rounded-xl transition-all text-sm cursor-pointer">
+            I Understand
+          </button>
+        </div>
+      </div>
+    </div>
+
     <h1 class="text-4xl font-extrabold tracking-tight text-white mb-10 text-center bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Find an Expert</h1>
 
     <!-- Loading State -->
@@ -26,51 +92,66 @@
 
     <!-- Accordion for Subjects -->
     <div *ngIf="!loading && subjects.length > 0" class="space-y-6">
-      <div *ngFor="let subject of subjects" class="bg-[var(--b2)] rounded-2xl border border-[var(--b3)] overflow-hidden shadow-md transition-all duration-300">
-        <button (click)="toggleSubject(subject)" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-900/30 transition-colors focus:outline-none">
-          <h2 class="text-2xl font-bold text-white tracking-wide">{{ subject }}</h2>
-          <svg [ngClass]="{'transform rotate-180': openSubject === subject}" class="h-5 w-5 text-slate-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-        
-        <div class="accordion-content" [style.max-height]="openSubject === subject ? '2000px' : '0'">
-          <div class="p-6 border-t border-[var(--b3)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-[#0c1222]/40">
-            <!-- Upwork-inspired Expert Card -->
-            <div *ngFor="let expert of expertsBySubject[subject]" class="premium-card rounded-2xl flex flex-col overflow-hidden">
-              <div class="p-6 flex-1 flex flex-col">
-                <div class="flex items-start space-x-4">
-                  <!-- 1:1 Aspect Ratio photo -->
-                  <img [src]="expert.photoUrl || '/Expert_Profile_No_Photo.png'" alt="{{ expert.name }}" 
-                    class="w-20 h-20 rounded-xl object-cover aspect-square shadow-sm border border-[var(--b3)]"
-                    width="80" height="80">
-                  <div class="space-y-1">
-                    <h3 class="text-lg font-bold text-white hover:text-blue-400 transition-colors cursor-pointer" (click)="selectExpert(expert)">{{ expert.name }}</h3>
-                    <div class="flex items-center text-xs text-[var(--bc)]/60">
-                      <svg class="h-4 w-4 mr-1 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {{ expert.yearsExperience }} Years Exp.
-                    </div>
-                    <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Verified
+      <div *ngFor="let subject of subjects">
+        <!-- Render only if there is no filter OR this subject matches the filter -->
+        <div *ngIf="!activeFilterCategory || activeFilterCategory === subject" class="bg-[var(--b2)] rounded-2xl border border-[var(--b3)] overflow-hidden shadow-md transition-all duration-300">
+          <button (click)="toggleSubject(subject)" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-900/30 transition-colors focus:outline-none">
+            <h2 class="text-2xl font-bold text-white tracking-wide">{{ subject }}</h2>
+            <svg [ngClass]="{'transform rotate-180': openSubject === subject}" class="h-5 w-5 text-slate-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          <div class="accordion-content" [style.max-height]="openSubject === subject ? '2000px' : '0'">
+            <!-- Category Service Description -->
+            <div class="px-6 pt-5 pb-3 border-t border-[var(--b3)] bg-slate-950/10">
+              <p class="text-xs text-[var(--bc)]/70 italic leading-relaxed">{{ categoryDescriptions[subject] }}</p>
+            </div>
+
+            <div class="p-6 border-t border-[var(--b3)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-[#0c1222]/40">
+              <!-- Upwork-inspired Expert Card -->
+              <div *ngFor="let expert of expertsBySubject[subject]" class="premium-card rounded-2xl flex flex-col overflow-hidden">
+                <div class="p-6 flex-1 flex flex-col">
+                  <div class="flex items-start space-x-4">
+                    <!-- 1:1 Aspect Ratio photo -->
+                    <img [src]="expert.photoUrl || '/Expert_Profile_No_Photo.png'" alt="{{ expert.name }}" 
+                      class="w-20 h-20 rounded-xl object-cover aspect-square shadow-sm border border-[var(--b3)]"
+                      width="80" height="80">
+                    <div class="space-y-1">
+                      <h3 class="text-lg font-bold text-white hover:text-blue-400 transition-colors cursor-pointer" (click)="selectExpert(expert)">{{ expert.name }}</h3>
+                      <div class="flex items-center text-xs text-[var(--bc)]/60">
+                        <svg class="h-4 w-4 mr-1 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {{ expert.yearsExperience }} Years Exp.
+                      </div>
+                      <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Verified
+                      </div>
                     </div>
                   </div>
+                  
+                  <!-- Dynamic recommendation summaries/tags next to/below expert's details -->
+                  <div *ngIf="expertRecommendations[expert.id]" class="mt-4 text-xs font-semibold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-3 py-2 rounded-xl flex items-start gap-1.5 animate-pulse">
+                    <span class="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1 shrink-0"></span>
+                    <span>{{ expertRecommendations[expert.id] }}</span>
+                  </div>
+
+                  <p class="mt-4 text-sm text-[var(--bc)]/80 leading-relaxed line-clamp-3 flex-grow">
+                    {{ expert.marketingSnippet || 'No marketing snippet available.' }}
+                  </p>
                 </div>
-                <p class="mt-4 text-sm text-[var(--bc)]/80 leading-relaxed line-clamp-3 flex-grow">
-                  {{ expert.marketingSnippet || 'No marketing snippet available.' }}
-                </p>
-              </div>
-              <div class="bg-slate-950/40 p-5 border-t border-[var(--b3)] flex items-center justify-between mt-auto">
-                <div>
-                  <span class="text-xl font-extrabold text-white">₹{{ expert.pricePerHour }}</span>
-                  <span class="text-xs text-[var(--bc)]/60 font-medium">/hour</span>
+                <div class="bg-slate-950/40 p-5 border-t border-[var(--b3)] flex items-center justify-between mt-auto">
+                  <div>
+                    <span class="text-xl font-extrabold text-white">₹{{ expert.pricePerHour }}</span>
+                    <span class="text-xs text-[var(--bc)]/60 font-medium">/hour</span>
+                  </div>
+                  <button 
+                    (click)="selectExpert(expert)"
+                    class="glow-btn-primary text-white text-sm font-semibold py-2 px-5 rounded-xl transition-all cursor-pointer">
+                    Select Profile
+                  </button>
                 </div>
-                <button 
-                  (click)="selectExpert(expert)"
-                  class="glow-btn-primary text-white text-sm font-semibold py-2 px-5 rounded-xl transition-all cursor-pointer">
-                  Select Profile
-                </button>
               </div>
             </div>
           </div>
@@ -82,4 +163,3 @@
   <!-- AI Support Chat Widget -->
   <app-ai-support-chat></app-ai-support-chat>
 </div>
-

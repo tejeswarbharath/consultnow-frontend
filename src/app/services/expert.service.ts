@@ -28,6 +28,14 @@ export class ExpertService {
   private expertUpdatedSource = new Subject<Expert>();
   expertUpdated$ = this.expertUpdatedSource.asObservable();
 
+  // Share category filter between components (chatbot -> discovery)
+  private categoryFilterSource = new Subject<string | null>();
+  categoryFilter$ = this.categoryFilterSource.asObservable();
+
+  setCategoryFilter(category: string | null) {
+    this.categoryFilterSource.next(category);
+  }
+
   constructor(private http: HttpClient) { }
 
   // Restored to fix chat.component.ts inference errors

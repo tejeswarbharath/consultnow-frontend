@@ -20,8 +20,23 @@ export class AiService {
     return this.http.post<MarketingContent>(`${this.apiUrl}/generate-marketing`, { skills });
   }
 
-  // FIX: Added the triage method to use the centralized environment API URL
-  triageProblem(problemDescription: string): Observable<{recommendedCategory: string}> {
-    return this.http.post<{recommendedCategory: string}>(`${this.apiUrl}/triage`, { problemDescription });
+  // triage method to use the centralized environment API URL
+  triageProblem(problemDescription: string): Observable<{
+    recommendedCategory: string;
+    reason?: string;
+    isEmergency?: boolean;
+    disclaimer?: string;
+  }> {
+    return this.http.post<{
+      recommendedCategory: string;
+      reason?: string;
+      isEmergency?: boolean;
+      disclaimer?: string;
+    }>(`${this.apiUrl}/triage`, { problemDescription });
+  }
+
+  // get LLM generated expert summaries customized to user's search query
+  getExpertSummaries(query: string, experts: any[]): Observable<{ summaries: { [expertId: string]: string } }> {
+    return this.http.post<{ summaries: { [expertId: string]: string } }>(`${this.apiUrl}/expert-summaries`, { query, experts });
   }
 }

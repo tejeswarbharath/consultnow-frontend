@@ -30,6 +30,7 @@ export class BookingComponent implements OnInit {
   problemDescription = '';
   isProcessingPaid = false;
   isProcessingFree = false;
+  disclaimerAccepted = false;
 
   // Availability
   availableSlots: Date[] = [];
@@ -109,6 +110,11 @@ export class BookingComponent implements OnInit {
       alert('Please select a time slot for your consultation.');
       return;
     }
+
+    if (!this.disclaimerAccepted) {
+      alert('You must read and agree to the disclaimers and guidelines for this category before booking.');
+      return;
+    }
     
     this.isProcessingPaid = true;
 
@@ -150,6 +156,11 @@ export class BookingComponent implements OnInit {
 
     if (!this.selectedSlot) {
       alert('Please select a time slot for your consultation.');
+      return;
+    }
+
+    if (!this.disclaimerAccepted) {
+      alert('You must read and agree to the disclaimers and guidelines for this category before booking.');
       return;
     }
 
