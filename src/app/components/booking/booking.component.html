@@ -113,27 +113,7 @@
         <h3 class="text-xl font-bold text-white mb-2">Regulatory Disclosures & Guidelines</h3>
         <p class="text-xs text-[var(--bc)]/60 mb-4">Please review the following regulatory disclosures for the <strong class="text-white">{{ expert.subjectExpertise }}</strong> category.</p>
 
-        <!-- Medical Advice Disclaimers -->
-        <div *ngIf="expert.subjectExpertise === 'Medical Advice'" class="bg-blue-950/20 border border-blue-500/20 p-5 rounded-2xl space-y-3 text-xs leading-relaxed text-[var(--bc)]/80">
-          <p class="font-bold text-white text-sm text-blue-400">Telemedicine Practice Guidelines (2020) Disclosures:</p>
-          <ul class="list-disc pl-5 space-y-2">
-            <li><strong>Not for Emergencies:</strong> ConsultNow is not a crisis helpline and must not be used for medical emergencies, trauma, or severe psychological distress. If you are experiencing an emergency, please visit the nearest hospital.</li>
-            <li><strong>No Substitute for Diagnosis:</strong> A digital chat consultation is not a substitute for a physical clinical examination, professional diagnosis, or formal medical treatment.</li>
-            <li><strong>General Information:</strong> The medical expert's answers are general in nature. You must consult your personal physician before altering any medications or health routines.</li>
-            <li><strong>Informed Consent Required:</strong> Digital, informed consent must be collected from the user before initiating the consultation with the healthcare professional.</li>
-          </ul>
-        </div>
 
-        <!-- Legal Advice Disclaimers -->
-        <div *ngIf="expert.subjectExpertise === 'Legal Advice'" class="bg-blue-950/20 border border-blue-500/20 p-5 rounded-2xl space-y-3 text-xs leading-relaxed text-[var(--bc)]/80">
-          <p class="font-bold text-white text-sm text-blue-400">Bar Council of India (BCI) Compliance Guidelines:</p>
-          <ul class="list-disc pl-5 space-y-2">
-            <li><strong>No Solicitation:</strong> The platform is a service aggregator and there is no advertisement, personal communication, or solicitation of work by the advocates.</li>
-            <li><strong>No Attorney-Client Relationship:</strong> Using the live chat or booking a session does not establish a formal, legally privileged attorney-client relationship.</li>
-            <li><strong>Informational Purposes Only:</strong> Answers to queries are strictly for educational or informational purposes and must not be construed as actionable legal advice.</li>
-            <li><strong>Independent Counsel:</strong> Users must seek independent, formal legal counsel before taking action on any legal matters discussed on the platform.</li>
-          </ul>
-        </div>
 
         <!-- IT Career Guidance Disclaimers -->
         <div *ngIf="expert.subjectExpertise === 'IT Career Guidance'" class="bg-blue-950/20 border border-blue-500/20 p-5 rounded-2xl space-y-3 text-xs leading-relaxed text-[var(--bc)]/80">

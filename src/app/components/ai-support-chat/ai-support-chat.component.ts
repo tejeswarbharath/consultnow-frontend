@@ -17,7 +17,7 @@ export class AiSupportChatComponent {
     { 
       sender: 'ai', 
       text: 'Hello! Welcome to ConsultNow. I am your Conversational Concierge. How can we help you today? Are you looking for help with:',
-      options: ['Personal Health / Wellness', 'Career / IT Transition', 'Business / Workplace HR', 'School / Studies / Tutoring', 'Legal Guidance / Rights']
+      options: ['Career / IT Transition', 'Business / Workplace HR', 'School / Studies / Tutoring']
     }
   ];
   isLoading = false;
@@ -35,9 +35,6 @@ export class AiSupportChatComponent {
     // Map human-readable option to actual category string
     let mappedCategory = '';
     switch (option) {
-      case 'Personal Health / Wellness':
-        mappedCategory = 'Medical Advice';
-        break;
       case 'Career / IT Transition':
         mappedCategory = 'IT Career Guidance';
         break;
@@ -46,9 +43,6 @@ export class AiSupportChatComponent {
         break;
       case 'School / Studies / Tutoring':
         mappedCategory = 'Student Tutoring Services';
-        break;
-      case 'Legal Guidance / Rights':
-        mappedCategory = 'Legal Advice';
         break;
       default:
         mappedCategory = '';

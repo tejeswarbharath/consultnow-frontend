@@ -37,9 +37,7 @@ export class ExpertDiscoveryComponent implements OnInit {
 
   categoryDescriptions: { [key: string]: string } = {
     'Student Tutoring Services': 'Connects young learners from Grades 1 through 10 with experienced educators to provide personalized academic support, homework assistance, and foundational skill-building.',
-    'Medical Advice': 'Provides users with general health information, wellness insights, and non-emergency guidance from verified healthcare professionals across various medical specialties.',
     'IT Career Guidance': 'Empowers early-career professionals and career-transitioning candidates with strategic roadmaps, upskilling advice, and mentorship to navigate the rapidly evolving technology industry.',
-    'Legal Advice': 'Connects individuals with qualified legal professionals to provide general guidance, clarify rights and procedures, and help users understand the legal frameworks surrounding their current challenges.',
     'HR Services': 'Assists organizations and business founders in designing effective workplace policies, navigating manpower disputes, and implementing modern human resources best practices.'
   };
 
