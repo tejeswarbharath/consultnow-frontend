@@ -37,6 +37,14 @@ export const routes: Routes = [
     path: 'booking/:id',
     loadComponent: () => import('./components/booking/booking.component').then(m => m.BookingComponent)
   },
+  {
+    path: 'privacy',
+    loadComponent: () => import('./components/privacy/privacy.component').then(m => m.PrivacyComponent)
+  },
+  {
+    path: 'terms',
+    loadComponent: () => import('./components/terms/terms.component').then(m => m.TermsComponent)
+  },
   { 
     path: '', 
     loadComponent: () => import('./components/expert-discovery/expert-discovery.component').then(m => m.ExpertDiscoveryComponent) 
