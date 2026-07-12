@@ -39,4 +39,9 @@ export class AiService {
   getExpertSummaries(query: string, experts: any[]): Observable<{ summaries: { [expertId: string]: string } }> {
     return this.http.post<{ summaries: { [expertId: string]: string } }>(`${this.apiUrl}/expert-summaries`, { query, experts });
   }
+
+  // Chat with the AI Twin of an expert
+  chatWithExpertTwin(expertId: string, message: string, history: any[]): Observable<{ reply: string }> {
+    return this.http.post<{ reply: string }>(`${this.apiUrl}/expert-twin-chat`, { expertId, message, history });
+  }
 }

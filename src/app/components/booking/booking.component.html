@@ -34,7 +34,80 @@
               </span>
             </div>
           </div>
+          
+          <div class="pt-4 border-t border-[var(--b3)] flex items-center justify-between flex-wrap gap-4">
+            <div class="text-xs text-[var(--bc)]/60 flex items-center gap-2">
+              <span class="h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse"></span>
+              💡 <strong>Free Trial:</strong> Practice your consultation or ask quick questions.
+            </div>
+            <button (click)="toggleSandbox()" 
+              class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-lg shadow-blue-500/20 transition-all cursor-pointer">
+              {{ showSandbox ? 'Close Sandbox' : 'Chat with AI Twin' }}
+            </button>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- AI Twin Sandbox Chat Panel -->
+    <div *ngIf="showSandbox" class="bg-[var(--b2)] border border-blue-500/30 shadow-2xl rounded-2xl overflow-hidden mb-10 animate-fade-in">
+      <!-- Header -->
+      <div class="bg-blue-600/10 border-b border-[var(--b3)] p-5 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <img [src]="expert.photoUrl ? expert.photoUrl : '/Expert_Profile_No_Photo.png'" alt="Twin Avatar" class="h-10 w-10 rounded-xl object-cover border border-blue-500/30" width="40" height="40">
+            <span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-blue-500 border-2 border-[var(--b2)] animate-pulse"></span>
+          </div>
+          <div>
+            <h4 class="font-extrabold text-white text-sm">AI Twin of {{ expert.name }}</h4>
+            <p class="text-[10px] text-[var(--bc)]/60 font-medium">Free Pre-Consultation Sandbox Simulator</p>
+          </div>
+        </div>
+        <button (click)="toggleSandbox()" class="text-slate-400 hover:text-white text-xs cursor-pointer font-bold">
+          ✕ Close
+        </button>
+      </div>
+
+      <!-- Disclaimer banner -->
+      <div class="bg-amber-950/20 border-b border-[var(--b3)] p-3.5 text-[10px] text-amber-200/80 leading-relaxed font-semibold">
+        ⚠️ <strong>Note:</strong> This is a virtual AI simulator mimicking the expert's consulting style for quick rehearsal. To consult directly, book a session below.
+      </div>
+
+      <!-- Messages Body -->
+      <div class="p-6 h-96 overflow-y-auto space-y-4 bg-slate-950/20 flex flex-col">
+        <div *ngFor="let msg of sandboxHistory" class="w-full flex" [ngClass]="msg.sender === 'user' ? 'justify-end' : 'justify-start'">
+          <div [ngClass]="msg.sender === 'user' ? 'bg-blue-600/20 border border-blue-500/30 text-white rounded-br-none' : 'bg-[var(--b2)] text-[var(--bc)] border border-[var(--b3)] rounded-bl-none'" class="rounded-xl p-4 max-w-[85%] text-xs shadow-sm leading-relaxed whitespace-pre-line">
+            {{ msg.text }}
+          </div>
+        </div>
+        <div *ngIf="sandboxLoading" class="self-start flex justify-start items-center gap-2 text-xs text-[var(--bc)]/50 italic">
+          <span class="h-2 w-2 rounded-full bg-blue-500 animate-bounce"></span>
+          <span>AI is typing...</span>
+        </div>
+      </div>
+
+      <!-- Quick prompts footer -->
+      <div class="px-6 py-5 border-t border-[var(--b3)] bg-slate-950/40 space-y-4">
+        <div class="text-[10px] text-[var(--bc)]/50 font-bold uppercase tracking-wider">Suggested Questions:</div>
+        <div class="flex flex-wrap gap-2">
+          <button (click)="selectSandboxPrompt('What should I prepare for our live consultation?')" class="text-[10px] bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 text-blue-400 px-3 py-1.5 rounded-lg cursor-pointer transition-all font-semibold">
+            "What should I prepare for our consultation?"
+          </button>
+          <button (click)="selectSandboxPrompt('What details should I provide to get the best advice?')" class="text-[10px] bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 text-blue-400 px-3 py-1.5 rounded-lg cursor-pointer transition-all font-semibold">
+            "What details should I provide?"
+          </button>
+          <button (click)="selectSandboxPrompt('Can you summarize your core areas of expertise?')" class="text-[10px] bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 text-blue-400 px-3 py-1.5 rounded-lg cursor-pointer transition-all font-semibold">
+            "What are your core areas of expertise?"
+          </button>
+        </div>
+
+        <!-- Input Box -->
+        <form (ngSubmit)="sendSandboxMessage()" class="flex space-x-2 pt-2">
+          <input type="text" [(ngModel)]="sandboxInput" name="sandboxInput" placeholder="Ask the AI Twin a question..." class="stripe-input flex-1 px-4 py-3.5 rounded-xl text-xs bg-slate-950/40" autocomplete="off" [disabled]="sandboxLoading">
+          <button type="submit" [disabled]="sandboxLoading || !sandboxInput.trim()" class="glow-btn-primary text-white px-6 py-3.5 rounded-xl text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all cursor-pointer">
+            Send
+          </button>
+        </form>
       </div>
     </div>
 

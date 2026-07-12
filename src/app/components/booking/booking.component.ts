@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ExpertService, Expert } from '../../services/expert.service';
 import { PaymentService } from '../../services/payment.service';
 import { BookingService } from '../../services/booking.service';
+import { AiService } from '../../services/ai.service';
 
 @Component({
   selector: 'app-booking',
@@ -20,10 +21,17 @@ export class BookingComponent implements OnInit {
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
+  private aiService = inject(AiService);
 
   expertId: string | null = null;
   expert: Expert | null = null;
   isLoading = true;
+
+  // Sandbox Chat variables
+  showSandbox = false;
+  sandboxHistory: { sender: 'user' | 'ai'; text: string }[] = [];
+  sandboxInput = '';
+  sandboxLoading = false;
   // Guest Information
   guestName = '';
   guestEmail = '';
@@ -195,5 +203,48 @@ export class BookingComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  toggleSandbox() {
+    this.showSandbox = !this.showSandbox;
+    if (this.showSandbox && this.sandboxHistory.length === 0 && this.expert) {
+      this.sandboxHistory.push({
+        sender: 'ai',
+        text: `Hello! I am the AI Twin of ${this.expert.name}. You can chat with me for free to practice our session, ask questions, or clarify your thoughts. How can I help you today?`
+      });
+    }
+    this.cdr.detectChanges();
+  }
+
+  sendSandboxMessage() {
+    if (!this.sandboxInput.trim() || !this.expertId) return;
+
+    const userMessage = this.sandboxInput;
+    this.sandboxHistory.push({ sender: 'user', text: userMessage });
+    this.sandboxInput = '';
+    this.sandboxLoading = true;
+    this.cdr.detectChanges();
+
+    this.aiService.chatWithExpertTwin(this.expertId, userMessage, this.sandboxHistory.slice(0, -1)).subscribe({
+      next: (res) => {
+        this.sandboxHistory.push({ sender: 'ai', text: res.reply });
+        this.sandboxLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to chat with AI Twin:', err);
+        this.sandboxHistory.push({
+          sender: 'ai',
+          text: 'Oops, I encountered an issue. Let me know if you want to try again, or feel free to book a live session!'
+        });
+        this.sandboxLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  selectSandboxPrompt(promptText: string) {
+    this.sandboxInput = promptText;
+    this.sendSandboxMessage();
   }
 }
