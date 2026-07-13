@@ -1,13 +1,15 @@
 <div class="min-h-screen flex items-center justify-center bg-[var(--b1)] py-12 px-4 sm:px-6 lg:px-8 text-[var(--bc)]">
   <div class="max-w-md w-full space-y-8 p-8 rounded-2xl border border-[var(--b3)] bg-[var(--b2)] shadow-2xl">
     <div class="text-center">
-      <img src="ConsultNowDesign.png" alt="ConsultNow Design" class="mx-auto h-24 w-auto mb-4 object-contain" width="96" height="96">
+      <div class="inline-flex items-center justify-center p-3 bg-white/95 rounded-2xl shadow-lg border border-slate-200/50 mx-auto mb-4">
+        <img src="ConsultNowDesign.png" alt="ConsultNow Design" class="h-20 w-auto object-contain" width="80" height="80">
+      </div>
       <h2 class="mt-6 text-center text-4xl font-extrabold text-white">Welcome Back</h2>
       <p class="mt-2 text-sm text-[var(--bc)]/60">Sign in to access your expert profile.</p>
     </div>
     <form class="mt-8 space-y-6" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       
-      <div *ngIf="errorMessage" class="bg-red-950/40 border border-red-500 text-red-200 p-4 rounded-md text-sm" role="alert">
+      <div *ngIf="errorMessage" class="bg-red-950/40 border border-red-500 text-red-200 p-4 rounded-md text-sm" role="alert" aria-live="assertive">
         <p>{{ errorMessage }}</p>
       </div>
 
@@ -15,12 +17,12 @@
         <div>
           <label for="email-address" class="block text-sm font-medium text-[var(--bc)]/80 mb-1">Email address</label>
           <input id="email-address" type="email" formControlName="email" required 
-            class="stripe-input w-full px-3 py-3 rounded-md text-sm" placeholder="john@example.com">
+            class="stripe-input w-full px-3 py-3 rounded-md text-sm" placeholder="Enter Email Address">
         </div>
         <div>
           <label for="password" class="block text-sm font-medium text-[var(--bc)]/80 mb-1">Password</label>
           <input id="password" type="password" formControlName="password" required 
-            class="stripe-input w-full px-3 py-3 rounded-md text-sm" placeholder="••••••••">
+            class="stripe-input w-full px-3 py-3 rounded-md text-sm" placeholder="Enter Password">
         </div>
       </div>
 

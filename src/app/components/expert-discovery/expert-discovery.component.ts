@@ -4,7 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Expert, ExpertService } from '../../services/expert.service';
 import { AiSupportChatComponent } from '../ai-support-chat/ai-support-chat.component';
 import { environment } from '../../../environments/environment';
-import { CommonModule, isPlatformServer } from '@angular/common';
+import { CommonModule, isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { AiService } from '../../services/ai.service';
 
 @Component({
@@ -38,7 +38,7 @@ export class ExpertDiscoveryComponent implements OnInit {
   categoryDescriptions: { [key: string]: string } = {
     'Student Tutoring Services': 'Connects young learners from Grades 1 through 10 with experienced educators to provide personalized academic support, homework assistance, and foundational skill-building.',
     'IT Career Guidance': 'Empowers early-career professionals and career-transitioning candidates with strategic roadmaps, upskilling advice, and mentorship to navigate the rapidly evolving technology industry.',
-    'HR Services': 'Assists organizations and business founders in designing effective workplace policies, navigating manpower disputes, and implementing modern human resources best practices.'
+    'HR Services': 'Assists organizations and business founders in designing effective workplace policies, and implementing modern human resources best practices.'
   };
 
   constructor(
@@ -52,20 +52,22 @@ export class ExpertDiscoveryComponent implements OnInit {
   ngOnInit(): void {
     this.loading = true;
 
-    if (isPlatformServer(this.platformId)) {
-      this.loading = false;
-    } else {
+    if (isPlatformBrowser(this.platformId)) {
       this.expertService.getExpertsGroupedBySubject().subscribe({
         next: (data) => {
-          this.expertsBySubject = data;
-          this.subjects = Object.keys(data);
-          this.loading = false;
-          this.cdr.detectChanges(); 
+          setTimeout(() => {
+            this.expertsBySubject = data;
+            this.subjects = Object.keys(data);
+            this.loading = false;
+            this.cdr.detectChanges(); 
+          });
         },
         error: (err) => {
-          console.error('Failed to load experts', err);
-          this.loading = false;
-          this.cdr.detectChanges(); 
+          setTimeout(() => {
+            console.error('Failed to load experts', err);
+            this.loading = false;
+            this.cdr.detectChanges(); 
+          });
         }
       });
 

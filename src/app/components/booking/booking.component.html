@@ -1,4 +1,4 @@
-<div class="container mx-auto p-6 md:p-10 max-w-4xl animate-fade-in text-[var(--bc)]">
+<div class="container mx-auto p-4 sm:p-6 md:p-10 max-w-4xl animate-fade-in text-[var(--bc)]">
   <div *ngIf="isLoading" class="text-center py-20">
     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
   </div>
@@ -103,8 +103,8 @@
 
         <!-- Input Box -->
         <form (ngSubmit)="sendSandboxMessage()" class="flex space-x-2 pt-2">
-          <input type="text" [(ngModel)]="sandboxInput" name="sandboxInput" placeholder="Ask the AI Twin a question..." class="stripe-input flex-1 px-4 py-3.5 rounded-xl text-xs bg-slate-950/40" autocomplete="off" [disabled]="sandboxLoading">
-          <button type="submit" [disabled]="sandboxLoading || !sandboxInput.trim()" class="glow-btn-primary text-white px-6 py-3.5 rounded-xl text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all cursor-pointer">
+          <input id="sandboxInput" type="text" [(ngModel)]="sandboxInput" name="sandboxInput" placeholder="Ask the AI Twin a question..." class="stripe-input flex-1 px-4 py-3.5 rounded-xl text-xs bg-slate-950/40" autocomplete="off" [disabled]="sandboxLoading" aria-label="Ask the AI Twin a question">
+          <button type="submit" [disabled]="sandboxLoading || !sandboxInput.trim()" class="glow-btn-primary text-white px-6 py-3.5 rounded-xl text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all cursor-pointer" aria-label="Send query to AI Twin">
             Send
           </button>
         </form>
@@ -118,7 +118,7 @@
       </svg>
       <div class="space-y-1">
         <p class="font-bold text-white text-sm">Important Booking Policy</p>
-        <p class="text-xs text-amber-200/80 leading-relaxed">For any inquiries regarding payment issues or booking disputes, please directly consult customer support at <a href="mailto:no-reply@consultnow.in" class="text-amber-400 underline font-semibold">no-reply@consultnow.in</a>.</p>
+        <p class="text-xs text-amber-200/80 leading-relaxed">For any inquiries regarding payment issues or booking disputes, please directly consult customer support at <a href="mailto:support@consultnow.in" class="text-amber-400 underline font-semibold">support@consultnow.in</a>.</p>
       </div>
     </div>
 
@@ -128,22 +128,43 @@
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div>
-          <label class="block text-sm font-medium text-[var(--bc)]/80 mb-2">Your Name</label>
-          <input type="text" [(ngModel)]="guestName" placeholder="Enter Name" 
+          <label for="guestName" class="block text-sm font-medium text-[var(--bc)]/80 mb-2">Your Name</label>
+          <input id="guestName" type="text" [(ngModel)]="guestName" placeholder="Enter Name" 
             class="stripe-input w-full px-4 py-3 rounded-xl text-sm" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-[var(--bc)]/80 mb-2">Your Email</label>
-          <input type="email" [(ngModel)]="guestEmail" placeholder="Enter Email Address" 
+          <label for="guestEmail" class="block text-sm font-medium text-[var(--bc)]/80 mb-2">Your Email</label>
+          <input id="guestEmail" type="email" [(ngModel)]="guestEmail" placeholder="Enter Email Address" 
             class="stripe-input w-full px-4 py-3 rounded-xl text-sm" />
         </div>
       </div>
       
       <div class="mb-8">
-        <label class="block text-sm font-medium text-[var(--bc)]/80 mb-2">Enter Your First Query / Problem Description</label>
-        <textarea [(ngModel)]="problemDescription" rows="4" 
+        <label for="problemDescription" class="block text-sm font-medium text-[var(--bc)]/80 mb-2">Enter Your First Query / Problem Description</label>
+        <textarea id="problemDescription" [(ngModel)]="problemDescription" rows="4" 
           class="stripe-input w-full px-4 py-3 rounded-xl text-sm leading-relaxed" 
           placeholder="Please describe what you need help with in detail..."></textarea>
+      </div>
+
+      <!-- Consultation Hours Selection (for Paid Bookings) -->
+      <div class="mb-8 p-5 bg-slate-950/20 border border-[var(--b3)] rounded-2xl animate-fade-in-up">
+        <label for="consultationHours" class="block text-sm font-medium text-white mb-2">Number of Consultation Hours Required</label>
+        <div class="flex flex-wrap items-center gap-4">
+          <input 
+            id="consultationHours" 
+            type="number" 
+            [(ngModel)]="hoursCount" 
+            (ngModelChange)="updateTotalAmount()"
+            min="1" 
+            max="12"
+            class="stripe-input w-24 px-4 py-2.5 rounded-xl text-center font-bold text-base" />
+          <div class="text-sm text-[var(--bc)]/80">
+            Rate: <strong class="text-white">₹{{ expert.pricePerHour }}/hr</strong> 
+            &nbsp;|&nbsp; 
+            Total Payable: <strong class="text-blue-400 text-lg">₹{{ totalAmount }}</strong>
+          </div>
+        </div>
+        <p class="text-[10px] text-[var(--bc)]/50 mt-2">Adjust the tutoring/consultation hours needed. Minimum 1 hour, maximum 12 hours.</p>
       </div>
 
       <!-- Calendly-inspired Time Slot Selection -->
@@ -157,10 +178,12 @@
               *ngFor="let slot of paginatedSlots" 
               (click)="selectSlot(slot)"
               class="w-full p-4 rounded-xl border font-semibold text-sm transition-all duration-150 flex flex-col items-center justify-center gap-1.5 cursor-pointer focus:outline-none"
-              [ngClass]="selectedSlot?.getTime() === slot.getTime() ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20' : 'bg-slate-950/20 border-[var(--b3)] text-[var(--bc)] hover:bg-slate-900/40 hover:border-blue-500/40'">
-              <span class="text-xs tracking-wider uppercase opacity-65 font-bold">{{ slot | date:'EEEE' }}</span>
-              <span class="text-sm font-extrabold text-white">{{ slot | date:'shortTime' }}</span>
-              <span class="text-[10px] opacity-75">{{ slot | date:'MMM d' }}</span>
+              [ngClass]="selectedSlot?.getTime() === slot.getTime() ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20' : 'bg-slate-950/20 border-[var(--b3)] text-[var(--bc)] hover:bg-slate-900/40 hover:border-blue-500/40'"
+              [attr.aria-pressed]="selectedSlot?.getTime() === slot.getTime() ? 'true' : 'false'"
+              aria-label="Time slot: {{ slot | date:'EEEE, MMMM d, y, h:mm a' }}">
+              <span class="text-xs tracking-wider uppercase opacity-65 font-bold" aria-hidden="true">{{ slot | date:'EEEE' }}</span>
+              <span class="text-sm font-extrabold text-white" aria-hidden="true">{{ slot | date:'shortTime' }}</span>
+              <span class="text-[10px] opacity-75" aria-hidden="true">{{ slot | date:'MMM d' }}</span>
             </button>
           </div>
           
@@ -248,6 +271,34 @@
           <span *ngIf="isProcessingFree" class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
           {{ isProcessingFree ? 'Requesting Booking...' : 'Request Free Consultation' }}
         </button>
+      </div>
+    </div>
+
+    <!-- Custom Dialog Modal -->
+    <div *ngIf="showConfirmModal" class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm" role="dialog" aria-modal="true" [attr.aria-labelledby]="'modal-title'">
+      <div class="bg-[var(--b2)] border border-[var(--b3)] rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-fade-in-up">
+        <div class="bg-slate-900/50 border-b border-[var(--b3)] px-6 py-4 flex items-center gap-3">
+          <svg *ngIf="confirmModalType === 'confirm'" class="h-6 w-6 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <svg *ngIf="confirmModalType === 'info'" class="h-6 w-6 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h3 id="modal-title" class="font-extrabold text-white text-lg capitalize">{{ confirmModalTitle }}</h3>
+        </div>
+        <div class="p-6">
+          <p class="text-sm text-[var(--bc)]/90 leading-relaxed font-semibold">
+            {{ confirmModalMessage }}
+          </p>
+        </div>
+        <div class="bg-slate-950/40 px-6 py-4 flex justify-end gap-3 border-t border-[var(--b3)]">
+          <button *ngIf="confirmModalType === 'confirm'" (click)="handleModalCancel()" class="px-5 py-2.5 rounded-xl border border-[var(--b3)] bg-slate-900/30 text-[var(--bc)]/80 hover:bg-slate-800/40 hover:text-white font-bold text-sm cursor-pointer transition-all">
+            Cancel
+          </button>
+          <button (click)="handleModalOkay()" class="glow-btn-primary text-white font-bold py-2.5 px-6 rounded-xl transition-all text-sm cursor-pointer">
+            Okay
+          </button>
+        </div>
       </div>
     </div>
   </div>

@@ -40,6 +40,17 @@ export class BookingComponent implements OnInit {
   isProcessingFree = false;
   disclaimerAccepted = false;
 
+  // Custom confirmation and alert modal state
+  showConfirmModal = false;
+  confirmModalTitle = '';
+  confirmModalMessage = '';
+  confirmModalType: 'info' | 'confirm' = 'info';
+  confirmAction: (() => void) | null = null;
+
+  // Flexible tutoring hours variables
+  hoursCount = 1;
+  totalAmount = 0;
+
   // Availability
   availableSlots: Date[] = [];
   selectedSlot: Date | null = null;
@@ -77,28 +88,48 @@ export class BookingComponent implements OnInit {
   fetchExpertDetails() {
     this.expertService.getExpertById(this.expertId!).subscribe({
       next: (data) => {
-        this.expert = data;
-        this.isLoading = false;
-        this.fetchAvailability();
-        this.cdr.detectChanges();
+        setTimeout(() => {
+          this.expert = data;
+          this.isLoading = false;
+          this.updateTotalAmount();
+          this.fetchAvailability();
+          this.cdr.detectChanges();
+        });
       },
       error: (err) => {
-        console.error('Failed to load expert details', err);
-        this.isLoading = false;
-        this.cdr.detectChanges();
-        this.router.navigate(['/']);
+        setTimeout(() => {
+          console.error('Failed to load expert details', err);
+          this.isLoading = false;
+          this.cdr.detectChanges();
+          this.router.navigate(['/']);
+        });
       }
     });
+  }
+
+  updateTotalAmount() {
+    if (this.hoursCount < 1) {
+      this.hoursCount = 1;
+    }
+    if (this.expert) {
+      this.totalAmount = this.expert.pricePerHour * this.hoursCount;
+    }
+    this.cdr.detectChanges();
   }
 
   fetchAvailability() {
     this.bookingService.getAvailability(this.expertId!).subscribe({
       next: (slots) => {
-        this.availableSlots = slots.map(s => new Date(s));
-        this.cdr.detectChanges();
+        setTimeout(() => {
+          this.availableSlots = slots.map(s => new Date(s));
+          this.cdr.detectChanges();
+        });
       },
       error: (err) => {
-        console.error('Failed to load availability', err);
+        setTimeout(() => {
+          console.error('Failed to load availability', err);
+          this.cdr.detectChanges();
+        });
       }
     });
   }
@@ -108,27 +139,70 @@ export class BookingComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
+  showModal(title: string, message: string, type: 'info' | 'confirm' = 'info', onConfirm?: () => void) {
+    this.confirmModalTitle = title;
+    this.confirmModalMessage = message;
+    this.confirmModalType = type;
+    this.confirmAction = onConfirm || null;
+    this.showConfirmModal = true;
+    this.cdr.detectChanges();
+  }
+
+  handleModalOkay() {
+    this.showConfirmModal = false;
+    if (this.confirmAction) {
+      const action = this.confirmAction;
+      this.confirmAction = null;
+      action();
+    }
+    this.cdr.detectChanges();
+  }
+
+  handleModalCancel() {
+    this.showConfirmModal = false;
+    this.confirmAction = null;
+    this.cdr.detectChanges();
+  }
+
   initiateCheckout() {
     if (!this.guestName || !this.guestEmail || !this.problemDescription) {
-      alert('Please provide your name, email, and your first query so we can prepare your consultation.');
+      this.showModal('Details Required', 'Please provide your name, email, and your first query so we can prepare your consultation.');
       return;
     }
 
     if (!this.selectedSlot) {
-      alert('Please select a time slot for your consultation.');
+      this.showModal('Select Slot', 'Please select a time slot for your consultation.');
       return;
     }
 
     if (!this.disclaimerAccepted) {
-      alert('You must read and agree to the disclaimers and guidelines for this category before booking.');
+      this.showModal('Agreement Required', 'You must read and agree to the disclaimers and guidelines for this category before booking.');
+      return;
+    }
+
+    if (this.hoursCount < 1) {
+      this.showModal('Invalid Hours', 'Please enter a valid number of hours (minimum 1).');
       return;
     }
     
+    const formattedDate = this.selectedSlot.toLocaleString([], { dateStyle: 'long', timeStyle: 'short' });
+    this.showModal(
+      'Confirm Paid Booking',
+      `Are you sure you want to book a paid consultation with ${this.expert?.name || 'this expert'} on ${formattedDate} for ${this.hoursCount} hour(s)? The total payable is ₹${this.totalAmount}.`,
+      'confirm',
+      () => {
+        this.proceedWithPaidBooking();
+      }
+    );
+  }
+
+  proceedWithPaidBooking() {
     this.isProcessingPaid = true;
+    this.cdr.detectChanges();
 
     const paymentPayload = {
       expertId: this.expertId!,
-      amount: this.expert!.pricePerHour,
+      amount: this.totalAmount,
       currency: this.expert!.currency || 'INR',
       guestData: {
         name: this.guestName,
@@ -139,7 +213,7 @@ export class BookingComponent implements OnInit {
 
     this.paymentService.createOrder(paymentPayload).subscribe({
       next: (orderData: any) => {
-        this.paymentService.openRazorpayModal(orderData, this.guestName, this.guestEmail, this.selectedSlot).then(() => {
+        this.paymentService.openRazorpayModal(orderData, this.guestName, this.guestEmail, this.selectedSlot, this.hoursCount).then(() => {
            this.isProcessingPaid = false;
            this.cdr.detectChanges();
         }).catch(() => {
@@ -150,7 +224,7 @@ export class BookingComponent implements OnInit {
       error: (err: any) => {
         console.error('Order creation failed', err);
         this.isProcessingPaid = false;
-        alert('Failed to initialize payment. Please try again.');
+        this.showModal('Payment Initialization Failed', 'Failed to initialize payment. Please try again.');
         this.cdr.detectChanges();
       }
     });
@@ -158,24 +232,36 @@ export class BookingComponent implements OnInit {
 
   bookFreeService() {
     if (!this.guestName || !this.guestEmail || !this.problemDescription) {
-      alert('Please provide your name, email, and your first query before proceeding.');
+      this.showModal('Details Required', 'Please provide your name, email, and your first query before proceeding.');
       return;
     }
 
     if (!this.selectedSlot) {
-      alert('Please select a time slot for your consultation.');
+      this.showModal('Select Slot', 'Please select a time slot for your consultation.');
       return;
     }
 
     if (!this.disclaimerAccepted) {
-      alert('You must read and agree to the disclaimers and guidelines for this category before booking.');
+      this.showModal('Agreement Required', 'You must read and agree to the disclaimers and guidelines for this category before booking.');
       return;
     }
 
+    const formattedDate = this.selectedSlot.toLocaleString([], { dateStyle: 'long', timeStyle: 'short' });
+    this.showModal(
+      'Confirm Free Consultation',
+      `Are you sure you want to request a free 1-hour consultation with ${this.expert?.name || 'this expert'} on ${formattedDate}?`,
+      'confirm',
+      () => {
+        this.proceedWithFreeBooking();
+      }
+    );
+  }
+
+  proceedWithFreeBooking() {
     this.isProcessingFree = true;
     this.cdr.detectChanges();
 
-    const endTime = new Date(this.selectedSlot);
+    const endTime = new Date(this.selectedSlot!);
     endTime.setHours(endTime.getHours() + 1);
 
     const payload = {
@@ -192,14 +278,20 @@ export class BookingComponent implements OnInit {
     this.bookingService.requestFreeService(payload).subscribe({
       next: () => {
         this.isProcessingFree = false;
-        alert('Your 1-hour free service request has been sent! Check your email for confirmation.');
-        this.router.navigate(['/']);
+        this.showModal(
+          'Booking Request Sent',
+          'Your 1-hour free service request has been sent! Check your email for confirmation.',
+          'info',
+          () => {
+            this.router.navigate(['/']);
+          }
+        );
         this.cdr.detectChanges();
       },
       error: (err) => {
         this.isProcessingFree = false;
         console.error('Free service booking failed', err);
-        alert('Failed to book free service. Please try again.');
+        this.showModal('Booking Failed', 'Failed to book free service. Please try again.');
         this.cdr.detectChanges();
       }
     });

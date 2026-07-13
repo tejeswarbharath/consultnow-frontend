@@ -4,7 +4,7 @@
     <div class="bg-gradient-to-r from-blue-950/40 to-slate-900/40 backdrop-blur border border-blue-500/20 p-6 rounded-2xl mb-10 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
       <div class="space-y-1">
         <h4 class="font-bold text-white text-lg">Want to share your expertise?</h4>
-        <p class="text-sm text-[var(--bc)]/70">Join ConsultNow as an expert and start offering consultations. Queries? Contact <a href="mailto:no-reply@consultnow.in" class="text-blue-400 underline">no-reply@consultnow.in</a>.</p>
+        <p class="text-sm text-[var(--bc)]/70">Join ConsultNow as an expert and start offering consultations. Queries? Contact <a href="mailto:support@consultnow.in" class="text-blue-400 underline">support@consultnow.in</a>.</p>
       </div>
       <a [href]="registerUrl" target="_blank" class="glow-btn-primary whitespace-nowrap text-white font-semibold py-2.5 px-6 rounded-xl transition-all text-sm">
         Register as Expert
@@ -23,12 +23,14 @@
         <form (ngSubmit)="searchWithAi()" class="flex flex-col sm:flex-row gap-3">
           <div class="relative flex-1">
             <input 
+              id="ai-search-input"
               type="text" 
               [(ngModel)]="searchQuery" 
               name="searchQuery"
               placeholder="What do you need help with today?" 
               class="stripe-input w-full pl-10 pr-4 py-3 rounded-xl text-sm"
               autocomplete="off"
+              aria-label="Describe what you need help with today for AI match"
             />
             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
@@ -95,19 +97,23 @@
       <div *ngFor="let subject of subjects">
         <!-- Render only if there is no filter OR this subject matches the filter -->
         <div *ngIf="!activeFilterCategory || activeFilterCategory === subject" class="bg-[var(--b2)] rounded-2xl border border-[var(--b3)] overflow-hidden shadow-md transition-all duration-300">
-          <button (click)="toggleSubject(subject)" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-900/30 transition-colors focus:outline-none">
+          <button (click)="toggleSubject(subject)" 
+            class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-900/30 transition-colors focus:outline-none"
+            [attr.aria-expanded]="openSubject === subject ? 'true' : 'false'"
+            [attr.aria-controls]="'subject-content-' + subject"
+            id="subject-btn-{{subject}}">
             <h2 class="text-2xl font-bold text-white tracking-wide">{{ subject }}</h2>
             <svg [ngClass]="{'transform rotate-180': openSubject === subject}" class="h-5 w-5 text-slate-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
           
-          <div class="accordion-content" [style.max-height]="openSubject === subject ? '2000px' : '0'">
+          <div id="subject-content-{{subject}}" class="accordion-content" [style.max-height]="openSubject === subject ? '2000px' : '0'" role="region" [attr.aria-labelledby]="'subject-btn-' + subject">
             <!-- Category Service Description -->
             <div class="px-6 pt-5 pb-3 border-t border-[var(--b3)] bg-slate-950/10">
               <p class="text-xs text-[var(--bc)]/70 italic leading-relaxed">{{ categoryDescriptions[subject] }}</p>
             </div>
-
+ 
             <div class="p-6 border-t border-[var(--b3)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-[#0c1222]/40">
               <!-- Upwork-inspired Expert Card -->
               <div *ngFor="let expert of expertsBySubject[subject]" class="premium-card rounded-2xl flex flex-col overflow-hidden">
@@ -118,7 +124,12 @@
                       class="w-20 h-20 rounded-xl object-cover aspect-square shadow-sm border border-[var(--b3)]"
                       width="80" height="80">
                     <div class="space-y-1">
-                      <h3 class="text-lg font-bold text-white hover:text-blue-400 transition-colors cursor-pointer" (click)="selectExpert(expert)">{{ expert.name }}</h3>
+                      <h3 class="text-lg font-bold text-white hover:text-blue-400 transition-colors cursor-pointer" 
+                        (click)="selectExpert(expert)"
+                        tabindex="0" 
+                        role="link" 
+                        (keydown.enter)="selectExpert(expert)" 
+                        (keydown.space)="selectExpert(expert)">{{ expert.name }}</h3>
                       <div class="flex items-center text-xs text-[var(--bc)]/60">
                         <svg class="h-4 w-4 mr-1 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />

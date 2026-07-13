@@ -66,16 +66,20 @@
   <footer class="bg-[var(--b2)] border-t border-[var(--b3)] p-4">
     <div class="max-w-4xl mx-auto w-full relative flex items-center">
       <input 
+        id="chat-message-input"
         type="text" 
         [(ngModel)]="newMessage" 
         (keyup.enter)="sendMessage()"
         placeholder="Type your message here..." 
         class="w-full bg-[#0a0f1d] border border-[var(--b3)] rounded-full pl-6 pr-14 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-white placeholder-slate-500 transition-all"
+        aria-label="Type your message here"
       />
       <button 
         (click)="sendMessage()"
         [disabled]="!newMessage.trim()"
-        class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-md focus:outline-none cursor-pointer">
+        class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-md focus:outline-none cursor-pointer"
+        aria-label="Send message"
+      >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-0.5 text-white" viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
           <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
         </svg>
