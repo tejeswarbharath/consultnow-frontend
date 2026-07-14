@@ -32,7 +32,7 @@ export class PaymentService {
     this.currentExpertId = payload.expertId;
     this.currentGuestData = payload.guestData;
     
-    return this.http.post(`/.netlify/functions/create-razorpay-order`, payload);
+    return this.http.post(`${this.apiUrl}/create-order`, payload);
   }
 
   /**
@@ -64,7 +64,7 @@ export class PaymentService {
             email: guestEmail
           },
           theme: {
-            color: '#2563eb' // Tailwind Blue-600
+            color: '#4f46e5' // Premium Indigo
           }
         };
 

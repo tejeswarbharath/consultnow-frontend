@@ -6,40 +6,53 @@
 
 /* Tailwind v4 Theme Configuration */
 @theme {
-  --color-consult-navy: #090d16;
-  --color-consult-teal: #10b981;
+  --color-consult-navy: #0c0e17;
+  --color-consult-teal: #14b8a6;
+
+  /* Redefine default Tailwind blue classes to match the new Indigo color scheme */
+  --color-blue-50: #f5f7ff;
+  --color-blue-100: #eef2ff;
+  --color-blue-200: #e0e7ff;
+  --color-blue-300: #c7d2fe;
+  --color-blue-400: #a5b4fc;
+  --color-blue-500: #818cf8;
+  --color-blue-600: #6366f1;
+  --color-blue-700: #4f46e5;
+  --color-blue-800: #3730a3;
+  --color-blue-900: #312e81;
+  --color-blue-950: #1e1b4b;
 
   /* Modern Premium Dark Palette */
-  --color-primary-blue: #3b82f6;
-  --color-primary-dark-blue: #0f172a;
-  --color-secondary-green: #10b981;
+  --color-primary-blue: #6366f1;
+  --color-primary-dark-blue: #1e1b4b;
+  --color-secondary-green: #14b8a6;
   --color-accent-purple: #8b5cf6;
-  --color-neutral-light-gray: #090d16;
-  --color-neutral-medium-gray: #1e293b;
+  --color-neutral-light-gray: #0c0e17;
+  --color-neutral-medium-gray: #151b2d;
   --color-neutral-dark-gray: #64748b;
   --color-text-body: #f8fafc;
   --color-text-light: #94a3b8;
 
   /* Semantic variables mapped to theme */
-  --p: #3b82f6;                  /* Primary (Electric Blue) */
+  --p: #6366f1;                  /* Primary (Premium Indigo) */
   --pc: #ffffff;
-  --s: #10b981;                  /* Secondary (Electric Green) */
+  --s: #14b8a6;                  /* Secondary (Premium Teal) */
   --sc: #ffffff;
-  --a: #f59e0b;                  /* Accent (Amber Gold) */
-  --ac: #090d16;
-  --n: #1e293b;                  /* Neutral (Slate) */
+  --a: #fbbf24;                  /* Accent (Warm Amber Gold) */
+  --ac: #0c0e17;
+  --n: #151b2d;                  /* Neutral (Deep Slate) */
   --nc: #f8fafc;
-  --b1: #090d16;                 /* Base 100 (Deep Obsidian Background) */
-  --b2: #111a2e;                 /* Base 200 (Dark Slate Card Background) */
-  --b3: #1e293b;                 /* Base 300 (Border Color) */
+  --b1: #0c0e17;                 /* Base 100 (Luxurious Dark Charcoal/Slate Background) */
+  --b2: #131828;                 /* Base 200 (Softer Card Background) */
+  --b3: #1e263d;                 /* Base 300 (Subtle Indigo-Slate Border) */
   --bc: #f8fafc;                 /* Base Content (Off-White Text) */
 
   --in: #0ea5e9;
   --inc: #ffffff;
-  --su: #10b981;
+  --su: #14b8a6;
   --suc: #ffffff;
-  --wa: #f59e0b;
-  --wac: #090d16;
+  --wa: #fbbf24;
+  --wac: #0c0e17;
   --er: #ef4444;
   --erc: #ffffff;
 
@@ -72,9 +85,9 @@ html {
 
 /* Premium UI Utilities */
 .glass-panel {
-  background: rgba(17, 26, 46, 0.8);
+  background: rgba(19, 24, 40, 0.75);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .premium-card {
@@ -84,19 +97,19 @@ html {
 }
 
 .premium-card:hover {
-  border-color: rgba(59, 130, 246, 0.4);
-  box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.15);
+  border-color: rgba(99, 102, 241, 0.35);
+  box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.12);
   transform: translateY(-2px);
 }
 
 .glow-btn-primary {
-  background: linear-gradient(135deg, var(--p) 0%, #1d4ed8 100%);
-  box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
+  background: linear-gradient(135deg, var(--p) 0%, #4f46e5 100%);
+  box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.25);
   transition: all 0.2s ease-in-out;
 }
 
 .glow-btn-primary:hover:not(:disabled) {
-  box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.45);
+  box-shadow: 0 6px 20px 0 rgba(99, 102, 241, 0.4);
   transform: translateY(-1px);
 }
 
@@ -105,7 +118,7 @@ html {
 }
 
 .stripe-input {
-  background-color: rgba(15, 23, 42, 0.6);
+  background-color: rgba(12, 14, 23, 0.6);
   border: 1px solid var(--b3);
   color: var(--bc);
   transition: all 0.2s ease-in-out;
@@ -113,6 +126,6 @@ html {
 
 .stripe-input:focus {
   border-color: var(--p);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
   outline: none;
 }
