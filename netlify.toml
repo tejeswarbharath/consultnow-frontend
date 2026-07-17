@@ -3,6 +3,9 @@
   publish = "dist/consultnow-frontend/browser"
   functions = "netlify/functions"
 
+[build.environment]
+  SECRETS_SCAN_OMIT_PATHS = "dist,src/environments"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
