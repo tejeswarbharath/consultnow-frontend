@@ -4,7 +4,7 @@
   functions = "netlify/functions"
 
 [build.environment]
-  SECRETS_SCAN_OMIT_PATHS = "dist,src/environments"
+  SECRETS_SCAN_OMIT_KEYS = "API_URL,SOCKET_URL,REGISTER_URL,RAZORPAY_KEY_ID"
 
 [[redirects]]
   from = "/*"
