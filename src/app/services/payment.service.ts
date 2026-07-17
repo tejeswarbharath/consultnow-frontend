@@ -65,6 +65,12 @@ export class PaymentService {
           },
           theme: {
             color: '#4f46e5' // Premium Indigo
+          },
+          modal: {
+            ondismiss: () => {
+              console.log('Payment modal closed by user.');
+              this.cancelOrder(orderData.orderId);
+            }
           }
         };
 
@@ -117,6 +123,21 @@ export class PaymentService {
         this.router.navigate(['/payment-failure'], {
           queryParams: { reference_id: verificationPayload.razorpay_payment_id || 'N/A' }
         });
+      }
+    });
+  }
+
+  /**
+   * Notify backend that payment was cancelled and redirect to failure page
+   */
+  private cancelOrder(orderId: string) {
+    this.http.post(`${this.apiUrl}/cancel-payment`, { orderId }).subscribe({
+      next: () => {
+        this.router.navigate(['/payment-failure'], { queryParams: { reference_id: orderId } });
+      },
+      error: (err) => {
+        console.error('Failed to update cancellation on backend:', err);
+        this.router.navigate(['/payment-failure'], { queryParams: { reference_id: orderId } });
       }
     });
   }
