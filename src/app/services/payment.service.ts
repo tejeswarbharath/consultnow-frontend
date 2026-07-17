@@ -106,13 +106,17 @@ export class PaymentService {
     };
 
     this.http.post(`${this.apiUrl}/verify-payment`, verificationPayload).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         console.log('Payment & Booking Confirmed!', res);
-        this.router.navigate(['/payment-success']);
+        this.router.navigate(['/payment-success'], { 
+          queryParams: { reference_id: res.transaction?.paymentId || res.transaction?.id || 'N/A' } 
+        });
       },
       error: (err) => {
         console.error('Verification failed', err);
-        this.router.navigate(['/payment-failure']);
+        this.router.navigate(['/payment-failure'], {
+          queryParams: { reference_id: verificationPayload.razorpay_payment_id || 'N/A' }
+        });
       }
     });
   }
