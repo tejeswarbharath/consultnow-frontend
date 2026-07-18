@@ -1,11 +1,12 @@
 import { Component, OnInit, inject, ChangeDetectorRef, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ExpertService, Expert } from '../../services/expert.service';
 import { PaymentService } from '../../services/payment.service';
 import { BookingService } from '../../services/booking.service';
 import { AiService } from '../../services/ai.service';
+import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-booking',
@@ -22,6 +23,9 @@ export class BookingComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
   private aiService = inject(AiService);
+  private titleService = inject(Title);
+  private metaService = inject(Meta);
+  private document = inject(DOCUMENT);
 
   expertId: string | null = null;
   expert: Expert | null = null;
@@ -93,6 +97,7 @@ export class BookingComponent implements OnInit {
           this.isLoading = false;
           this.updateTotalAmount();
           this.fetchAvailability();
+          this.updateSEOMetadata();
           this.cdr.detectChanges();
         });
       },
@@ -105,6 +110,47 @@ export class BookingComponent implements OnInit {
         });
       }
     });
+  }
+
+  updateSEOMetadata() {
+    if (!this.expert) return;
+
+    // 1. Dynamic Page Title
+    const pageTitle = `Book Consultation with ${this.expert.name} | ConsultNow`;
+    this.titleService.setTitle(pageTitle);
+
+    // 2. Dynamic Meta Description
+    const description = `Book a 1-hour session with ${this.expert.name}, an expert specializing in ${this.expert.subjectExpertise}. ${this.expert.marketingSnippet || this.expert.bio || ''}`.substring(0, 160);
+    this.metaService.updateTag({ name: 'description', content: description });
+
+    // 3. Dynamic JSON-LD Structured Data Schema
+    try {
+      const scriptId = 'expert-jsonld-schema';
+      let scriptElement = this.document.getElementById(scriptId) as HTMLScriptElement;
+      if (!scriptElement) {
+        scriptElement = this.document.createElement('script');
+        scriptElement.id = scriptId;
+        scriptElement.type = 'application/ld+json';
+        this.document.body.appendChild(scriptElement);
+      }
+
+      const schema = {
+        '@context': 'https://schema.org',
+        '@type': 'ProfessionalService',
+        'name': this.expert.name,
+        'description': this.expert.marketingSnippet || this.expert.bio || `Expert consultant in ${this.expert.subjectExpertise}`,
+        'image': this.expert.photoUrl || 'https://consultnow.in/Expert_Profile_No_Photo.png',
+        'priceRange': `₹${this.expert.pricePerHour}`,
+        'address': {
+          '@type': 'PostalAddress',
+          'addressCountry': 'IN'
+        }
+      };
+
+      scriptElement.text = JSON.stringify(schema);
+    } catch (e) {
+      console.error('Error generating JSON-LD structured data', e);
+    }
   }
 
   updateTotalAmount() {

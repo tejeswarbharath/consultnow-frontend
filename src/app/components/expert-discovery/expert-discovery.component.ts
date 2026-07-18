@@ -6,6 +6,7 @@ import { AiSupportChatComponent } from '../ai-support-chat/ai-support-chat.compo
 import { environment } from '../../../environments/environment';
 import { CommonModule, isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { AiService } from '../../services/ai.service';
+import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-expert-discovery',
@@ -46,11 +47,20 @@ export class ExpertDiscoveryComponent implements OnInit {
     private aiService: AiService,
     private router: Router,
     private cdr: ChangeDetectorRef,
+    private titleService: Title,
+    private metaService: Meta,
     @Inject(PLATFORM_ID) private platformId: object
   ) {}
 
   ngOnInit(): void {
     this.loading = true;
+
+    // Set SEO Meta Tags
+    this.titleService.setTitle('ConsultNow - Connect with Professional Experts for HR, IT & Tutoring');
+    this.metaService.updateTag({
+      name: 'description',
+      content: 'ConsultNow connects you with professional experts in IT Career Guidance, HR Services, and Student Tutoring. Book a session or chat with an AI twin.'
+    });
 
     if (isPlatformBrowser(this.platformId)) {
       this.expertService.getExpertsGroupedBySubject().subscribe({
