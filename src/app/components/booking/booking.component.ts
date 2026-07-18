@@ -326,7 +326,7 @@ export class BookingComponent implements OnInit {
         this.isProcessingFree = false;
         this.showModal(
           'Booking Request Sent',
-          'Your 1-hour free service request has been sent! Check your email for confirmation.',
+          'Your 1-hour free service request has been sent! Expert will review your request and confirm the slot soon. You can always opt for a paid booking if you want to start immediately.',
           'info',
           () => {
             this.router.navigate(['/']);
