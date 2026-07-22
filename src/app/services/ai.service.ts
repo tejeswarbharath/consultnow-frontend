@@ -44,4 +44,24 @@ export class AiService {
   chatWithExpertTwin(expertId: string, message: string, history: any[]): Observable<{ reply: string }> {
     return this.http.post<{ reply: string }>(`${this.apiUrl}/expert-twin-chat`, { expertId, message, history });
   }
+
+  // Generate 3-step consultation prep agenda for clients
+  generateAgenda(problemDetails: string, expertSubject: string): Observable<{ agenda: string[] }> {
+    return this.http.post<{ agenda: string[] }>(`${this.apiUrl}/agenda`, { problemDetails, expertSubject });
+  }
+
+  // Generate 30-second pre-call intake briefing digest for experts
+  generateBriefing(clientNotes: string, bookingType?: string): Observable<{ summary: string; keyFocus: string; suggestedApproach: string }> {
+    return this.http.post<{ summary: string; keyFocus: string; suggestedApproach: string }>(`${this.apiUrl}/briefing`, { clientNotes, bookingType });
+  }
+
+  // Generate post-consultation follow-up email draft and session summary
+  generateFollowUp(clientName: string, topic: string, notes?: string): Observable<{ subject: string; emailBody: string; actionItems: string[] }> {
+    return this.http.post<{ subject: string; emailBody: string; actionItems: string[] }>(`${this.apiUrl}/followup`, { clientName, topic, notes });
+  }
+
+  // Recommend expert pricing based on market benchmarks
+  recommendPricing(yearsExperience: number, subjectExpertise: string, currentRate?: number): Observable<{ recommendedPrice: number; priceRange: string; rationale: string }> {
+    return this.http.post<{ recommendedPrice: number; priceRange: string; rationale: string }>(`${this.apiUrl}/recommend-pricing`, { yearsExperience, subjectExpertise, currentRate });
+  }
 }

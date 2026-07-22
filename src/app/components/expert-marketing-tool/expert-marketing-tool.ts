@@ -26,6 +26,10 @@ export class ExpertMarketingTool {
   successMessage = '';
   marketingData: any = null;
 
+  // Pricing Advisor properties
+  pricingData: { recommendedPrice: number; priceRange: string; rationale: string } | null = null;
+  isPricingLoading = false;
+
   generateMarketing() {
     if (!this.skillsInput.trim()) return;
 
@@ -84,6 +88,27 @@ export class ExpertMarketingTool {
         this.isSaving = false;
         console.error('Save Failed:', err);
         this.error = 'Failed to save to profile. Please try again.';
+      }
+    });
+  }
+
+  getPricingRecommendation() {
+    if (!this.expert) return;
+    this.isPricingLoading = true;
+    this.pricingData = null;
+
+    this.aiService.recommendPricing(
+      this.expert.yearsExperience || 2,
+      this.expert.subjectExpertise || '',
+      this.expert.pricePerHour || 1000
+    ).subscribe({
+      next: (res) => {
+        this.pricingData = res;
+        this.isPricingLoading = false;
+      },
+      error: (err) => {
+        console.error('Pricing Advisor Failed:', err);
+        this.isPricingLoading = false;
       }
     });
   }

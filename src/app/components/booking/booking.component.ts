@@ -385,4 +385,28 @@ export class BookingComponent implements OnInit {
     this.sandboxInput = promptText;
     this.sendSandboxMessage();
   }
+
+  // AI Agenda Builder state and action
+  aiAgenda: string[] = [];
+  isGeneratingAgenda = false;
+
+  generateAiAgenda() {
+    if (!this.problemDescription.trim()) return;
+    this.isGeneratingAgenda = true;
+    this.aiAgenda = [];
+    this.cdr.detectChanges();
+
+    this.aiService.generateAgenda(this.problemDescription, this.expert?.subjectExpertise || '').subscribe({
+      next: (res) => {
+        this.aiAgenda = res.agenda || [];
+        this.isGeneratingAgenda = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to generate agenda:', err);
+        this.isGeneratingAgenda = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
 }

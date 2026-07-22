@@ -33,10 +33,55 @@
               <p class="font-medium text-white text-base">{{ expert.yearsExperience }} Years</p>
             </div>
             <div class="space-y-1">
-              <p class="text-xs font-semibold uppercase tracking-wider text-[var(--bc)]/50">Price Per Hour</p>
-              <p class="font-medium text-white text-base">
+              <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold uppercase tracking-wider text-[var(--bc)]/50">Price Per Hour</p>
+                <button
+                  *ngIf="!isEditingPrice"
+                  (click)="startEditingPrice()"
+                  class="text-xs text-blue-400 hover:underline font-medium cursor-pointer flex items-center gap-1"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  Edit Price
+                </button>
+              </div>
+
+              <!-- Read-only View -->
+              <p *ngIf="!isEditingPrice" class="font-medium text-white text-base">
                 <span *ngIf="expert.currency === 'INR'">₹</span>{{ expert.pricePerHour }}
               </p>
+
+              <!-- Inline Edit Controls -->
+              <div *ngIf="isEditingPrice" class="flex items-center gap-2 mt-1">
+                <div class="relative flex-1">
+                  <span class="absolute left-3 top-2.5 text-xs text-[var(--bc)]/60 font-bold">₹</span>
+                  <input
+                    type="number"
+                    [(ngModel)]="editedPrice"
+                    min="0"
+                    class="stripe-input pl-7 pr-3 py-1.5 rounded-lg text-sm font-bold text-white w-full"
+                  />
+                </div>
+                <button
+                  (click)="savePrice()"
+                  [disabled]="isSavingPrice"
+                  class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold disabled:opacity-50 cursor-pointer flex items-center gap-1"
+                >
+                  <span *ngIf="isSavingPrice" class="animate-spin h-3 w-3 border-2 border-white border-t-transparent rounded-full"></span>
+                  Save
+                </button>
+                <button
+                  (click)="cancelEditingPrice()"
+                  [disabled]="isSavingPrice"
+                  class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-[var(--bc)]/80 rounded-lg text-xs font-semibold cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
+
+              <p *ngIf="priceSuccessMsg" class="text-xs text-emerald-400 font-medium mt-1">{{ priceSuccessMsg }}</p>
+              <p *ngIf="priceErrorMsg" class="text-xs text-red-400 font-medium mt-1">{{ priceErrorMsg }}</p>
             </div>
           </div>
 
@@ -59,6 +104,115 @@
       </div>
 
       <app-expert-marketing-tool [expert]="expert"></app-expert-marketing-tool>
+
+      <!-- AI Expert Productivity Suite -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+        
+        <!-- AI Pre-Call Intake Briefing Digest -->
+        <div class="bg-[var(--b2)] border border-[var(--b3)] shadow-2xl rounded-2xl p-6">
+          <div class="flex items-center gap-2.5 mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 class="text-lg font-bold text-white">AI Pre-Call Intake Digest</h3>
+          </div>
+          <p class="text-xs text-[var(--bc)]/60 mb-4 leading-relaxed">
+            Paste client problem notes or booking details to get a 30-second AI intake briefing before starting your live consultation.
+          </p>
+
+          <div class="mb-4">
+            <label for="clientNotes" class="block text-xs font-medium text-[var(--bc)]/80 mb-1.5">Client Problem Description / Booking Notes</label>
+            <textarea
+              id="clientNotes"
+              [(ngModel)]="clientNotesInput"
+              rows="3"
+              class="stripe-input w-full px-4 py-2.5 rounded-xl text-xs leading-relaxed"
+              placeholder="e.g. Client needs advice on transitioning from QA testing to DevOps role within 6 months..."
+            ></textarea>
+          </div>
+
+          <button
+            (click)="generateBriefing()"
+            [disabled]="isBriefingLoading || !clientNotesInput.trim()"
+            class="glow-btn-primary w-full px-4 py-2 text-white rounded-xl disabled:opacity-50 flex justify-center items-center gap-2 font-semibold text-xs cursor-pointer"
+          >
+            <span *ngIf="isBriefingLoading" class="animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full"></span>
+            <span>{{ isBriefingLoading ? 'Generating 30s Digest...' : 'Generate 30s Briefing Digest' }}</span>
+          </button>
+
+          <div *ngIf="briefingData" class="mt-4 p-4 bg-sky-950/20 border border-sky-500/30 rounded-xl space-y-2 text-xs animate-fade-in-up">
+            <div>
+              <span class="font-bold text-sky-400 uppercase tracking-wider text-[10px]">Core Overview:</span>
+              <p class="text-[var(--bc)]/90 mt-0.5">{{ briefingData.summary }}</p>
+            </div>
+            <div>
+              <span class="font-bold text-sky-400 uppercase tracking-wider text-[10px]">Key Focus Area:</span>
+              <p class="text-[var(--bc)]/90 mt-0.5">{{ briefingData.keyFocus }}</p>
+            </div>
+            <div>
+              <span class="font-bold text-sky-400 uppercase tracking-wider text-[10px]">Suggested Opening Approach:</span>
+              <p class="text-[var(--bc)]/90 mt-0.5">{{ briefingData.suggestedApproach }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Post-Consultation Follow-Up Generator -->
+        <div class="bg-[var(--b2)] border border-[var(--b3)] shadow-2xl rounded-2xl p-6">
+          <div class="flex items-center gap-2.5 mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <h3 class="text-lg font-bold text-white">AI Follow-Up Email & Summary</h3>
+          </div>
+          <p class="text-xs text-[var(--bc)]/60 mb-4 leading-relaxed">
+            Generate a personalized follow-up email draft and next steps summary after completing a client consultation.
+          </p>
+
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label for="clientName" class="block text-xs font-medium text-[var(--bc)]/80 mb-1">Client Name</label>
+              <input id="clientName" type="text" [(ngModel)]="followUpClientName" placeholder="e.g. Rahul" class="stripe-input w-full px-3 py-2 rounded-xl text-xs" />
+            </div>
+            <div>
+              <label for="topic" class="block text-xs font-medium text-[var(--bc)]/80 mb-1">Topic</label>
+              <input id="topic" type="text" [(ngModel)]="followUpTopic" placeholder="e.g. System Design Review" class="stripe-input w-full px-3 py-2 rounded-xl text-xs" />
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="notes" class="block text-xs font-medium text-[var(--bc)]/80 mb-1">Discussion Notes / Takeaways</label>
+            <textarea id="notes" [(ngModel)]="followUpNotes" rows="2" placeholder="e.g. Discussed microservices transition and recommended Docker/K8s reading..." class="stripe-input w-full px-3 py-2 rounded-xl text-xs"></textarea>
+          </div>
+
+          <button
+            (click)="generateFollowUp()"
+            [disabled]="isFollowUpLoading || !followUpClientName.trim() || !followUpTopic.trim()"
+            class="glow-btn-primary w-full px-4 py-2 text-white rounded-xl disabled:opacity-50 flex justify-center items-center gap-2 font-semibold text-xs cursor-pointer"
+          >
+            <span *ngIf="isFollowUpLoading" class="animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full"></span>
+            <span>{{ isFollowUpLoading ? 'Drafting Follow-Up...' : 'Draft Follow-Up & Action Plan' }}</span>
+          </button>
+
+          <div *ngIf="followUpData" class="mt-4 p-4 bg-purple-950/20 border border-purple-500/30 rounded-xl space-y-3 text-xs animate-fade-in-up">
+            <div>
+              <span class="font-bold text-purple-300">Subject:</span> {{ followUpData.subject }}
+            </div>
+            <div>
+              <span class="font-bold text-purple-300 block mb-1">Email Body Draft:</span>
+              <div class="bg-slate-950/40 p-3 rounded-lg text-[var(--bc)]/90 whitespace-pre-wrap font-mono text-[11px] leading-relaxed border border-[var(--b3)]">
+                {{ followUpData.emailBody }}
+              </div>
+            </div>
+            <div *ngIf="followUpData.actionItems.length">
+              <span class="font-bold text-purple-300 block mb-1">Action Items:</span>
+              <ul class="list-disc list-inside space-y-1 text-[var(--bc)]/80">
+                <li *ngFor="let item of followUpData.actionItems">{{ item }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 </div>

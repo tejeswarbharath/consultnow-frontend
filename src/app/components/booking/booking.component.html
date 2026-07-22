@@ -144,6 +144,35 @@
         <textarea id="problemDescription" [(ngModel)]="problemDescription" rows="4" 
           class="stripe-input w-full px-4 py-3 rounded-xl text-sm leading-relaxed" 
           placeholder="Please describe what you need help with in detail..."></textarea>
+        
+        <!-- AI Agenda Builder Widget -->
+        <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
+          <button
+            type="button"
+            (click)="generateAiAgenda()"
+            [disabled]="isGeneratingAgenda || !problemDescription.trim()"
+            class="glow-btn-primary text-xs px-4 py-2 text-white rounded-xl disabled:opacity-50 flex items-center gap-2 font-medium cursor-pointer"
+          >
+            <span *ngIf="isGeneratingAgenda" class="animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full"></span>
+            <svg *ngIf="!isGeneratingAgenda" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z" clip-rule="evenodd" />
+            </svg>
+            <span>{{ isGeneratingAgenda ? 'Generating Prep Agenda...' : 'Generate AI Prep Agenda for Session' }}</span>
+          </button>
+          <span class="text-xs text-[var(--bc)]/40 italic">Gets a 3-step structured checklist to bring into your call</span>
+        </div>
+
+        <div *ngIf="aiAgenda && aiAgenda.length > 0" class="mt-4 p-4 bg-indigo-950/20 border border-indigo-500/30 rounded-xl space-y-2 animate-fade-in-up">
+          <div class="flex items-center gap-2 text-xs font-bold text-indigo-400 uppercase tracking-wider">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+            </svg>
+            AI Prepared Session Agenda
+          </div>
+          <ul class="space-y-1.5 text-xs text-[var(--bc)]/90 list-disc list-inside leading-relaxed">
+            <li *ngFor="let item of aiAgenda">{{ item }}</li>
+          </ul>
+        </div>
       </div>
 
       <!-- Consultation Hours Selection (for Paid Bookings) -->

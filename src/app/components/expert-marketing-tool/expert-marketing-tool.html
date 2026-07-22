@@ -69,5 +69,43 @@
       </button>
     </div>
   </div>
+
+  <!-- AI Smart Rate & Pricing Advisor -->
+  <div class="mt-8 border-t border-[var(--b3)] pt-6">
+    <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+      <div>
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          AI Pricing & Rate Advisor
+        </h3>
+        <p class="text-xs text-[var(--bc)]/60">Get AI-benchmarked market rate suggestions for your profile experience.</p>
+      </div>
+
+      <button
+        (click)="getPricingRecommendation()"
+        [disabled]="isPricingLoading"
+        class="px-4 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs font-semibold rounded-xl flex items-center gap-2 cursor-pointer disabled:opacity-50"
+      >
+        <span *ngIf="isPricingLoading" class="animate-spin h-3.5 w-3.5 border-2 border-emerald-400 border-t-transparent rounded-full"></span>
+        <span>{{ isPricingLoading ? 'Analyzing Market...' : 'Analyze My Rate' }}</span>
+      </button>
+    </div>
+
+    <div *ngIf="pricingData" class="p-4 bg-emerald-950/20 border border-emerald-500/30 rounded-xl space-y-2 animate-fade-in-up text-sm">
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-[var(--bc)]/70 font-semibold uppercase">Recommended Rate:</span>
+        <span class="text-base font-extrabold text-emerald-400">₹{{ pricingData.recommendedPrice }}/hr</span>
+      </div>
+      <div class="flex items-center justify-between text-xs">
+        <span class="text-[var(--bc)]/60">Suggested Market Range:</span>
+        <span class="font-medium text-white">{{ pricingData.priceRange }}</span>
+      </div>
+      <p class="text-xs text-[var(--bc)]/80 leading-relaxed border-t border-emerald-500/20 pt-2 mt-2">
+        {{ pricingData.rationale }}
+      </p>
+    </div>
+  </div>
 </div>
 
