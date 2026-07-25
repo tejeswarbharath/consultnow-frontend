@@ -7,6 +7,7 @@ import { PaymentService } from '../../services/payment.service';
 import { BookingService } from '../../services/booking.service';
 import { AiService } from '../../services/ai.service';
 import { Title, Meta } from '@angular/platform-browser';
+import { AffiliateService, PromoValidationResult } from '../../services/affiliate.service';
 
 @Component({
   selector: 'app-booking',
@@ -19,6 +20,7 @@ export class BookingComponent implements OnInit {
   private expertService = inject(ExpertService);
   private paymentService = inject(PaymentService);
   private bookingService = inject(BookingService);
+  private affiliateService = inject(AffiliateService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
@@ -44,6 +46,12 @@ export class BookingComponent implements OnInit {
   isProcessingFree = false;
   disclaimerAccepted = false;
 
+  // Affiliate Promo Code
+  promoCodeInput = '';
+  appliedPromo: PromoValidationResult | null = null;
+  isValidatingPromo = false;
+  promoMessage = '';
+
   // Custom confirmation and alert modal state
   showConfirmModal = false;
   confirmModalTitle = '';
@@ -54,6 +62,7 @@ export class BookingComponent implements OnInit {
   // Flexible tutoring hours variables
   hoursCount = 1;
   totalAmount = 0;
+  discountAmount = 0;
 
   // Availability
   availableSlots: Date[] = [];
@@ -64,6 +73,13 @@ export class BookingComponent implements OnInit {
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.expertId = this.route.snapshot.paramMap.get('id');
+      
+      // Auto-populate ref query parameter if present in URL
+      const refFromUrl = this.route.snapshot.queryParamMap.get('ref');
+      if (refFromUrl) {
+        this.promoCodeInput = refFromUrl;
+      }
+
       if (this.expertId) {
         this.fetchExpertDetails();
       } else {
@@ -91,17 +107,20 @@ export class BookingComponent implements OnInit {
 
   fetchExpertDetails() {
     this.expertService.getExpertById(this.expertId!).subscribe({
-      next: (data) => {
+      next: (data: Expert) => {
         setTimeout(() => {
           this.expert = data;
           this.isLoading = false;
           this.updateTotalAmount();
+          if (this.promoCodeInput) {
+            this.applyPromoCode();
+          }
           this.fetchAvailability();
           this.updateSEOMetadata();
           this.cdr.detectChanges();
         });
       },
-      error: (err) => {
+      error: (err: any) => {
         setTimeout(() => {
           console.error('Failed to load expert details', err);
           this.isLoading = false;
@@ -153,12 +172,61 @@ export class BookingComponent implements OnInit {
     }
   }
 
+  applyPromoCode() {
+    if (!this.promoCodeInput.trim() || !this.expert) return;
+
+    this.isValidatingPromo = true;
+    this.promoMessage = '';
+    const baseTotal = this.expert.pricePerHour * this.hoursCount;
+
+    this.affiliateService.validateCode(this.promoCodeInput, baseTotal).subscribe({
+      next: (res) => {
+        this.isValidatingPromo = false;
+        if (res.valid) {
+          this.appliedPromo = res;
+          this.discountAmount = res.discountAmount || 0;
+          this.totalAmount = res.finalAmount || (baseTotal - this.discountAmount);
+          this.promoMessage = `Code applied! ${res.discountPercent}% discount saved ₹${this.discountAmount}.`;
+        } else {
+          this.appliedPromo = null;
+          this.discountAmount = 0;
+          this.updateTotalAmount();
+          this.promoMessage = res.error || 'Invalid referral code.';
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.isValidatingPromo = false;
+        this.appliedPromo = null;
+        this.discountAmount = 0;
+        this.updateTotalAmount();
+        this.promoMessage = 'Failed to validate referral code.';
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  removePromoCode() {
+    this.appliedPromo = null;
+    this.promoCodeInput = '';
+    this.discountAmount = 0;
+    this.promoMessage = '';
+    this.updateTotalAmount();
+  }
+
   updateTotalAmount() {
     if (this.hoursCount < 1) {
       this.hoursCount = 1;
     }
     if (this.expert) {
-      this.totalAmount = this.expert.pricePerHour * this.hoursCount;
+      const baseTotal = this.expert.pricePerHour * this.hoursCount;
+      if (this.appliedPromo && this.appliedPromo.discountPercent) {
+        this.discountAmount = Math.round((baseTotal * (this.appliedPromo.discountPercent / 100)) * 100) / 100;
+        this.totalAmount = Math.max(0, baseTotal - this.discountAmount);
+      } else {
+        this.discountAmount = 0;
+        this.totalAmount = baseTotal;
+      }
     }
     this.cdr.detectChanges();
   }
@@ -234,7 +302,7 @@ export class BookingComponent implements OnInit {
     const formattedDate = this.selectedSlot.toLocaleString([], { dateStyle: 'long', timeStyle: 'short' });
     this.showModal(
       'Confirm Paid Booking',
-      `Are you sure you want to book a paid consultation with ${this.expert?.name || 'this expert'} on ${formattedDate} for ${this.hoursCount} hour(s)? The total payable is ₹${this.totalAmount}.`,
+      `Are you sure you want to book a paid consultation with ${this.expert?.name || 'this expert'} on ${formattedDate} for ${this.hoursCount} hour(s)? The total payable is ₹${this.totalAmount}.${this.discountAmount > 0 ? ' (Includes ₹' + this.discountAmount + ' promo discount)' : ''}`,
       'confirm',
       () => {
         this.proceedWithPaidBooking();
@@ -250,6 +318,7 @@ export class BookingComponent implements OnInit {
       expertId: this.expertId!,
       amount: this.totalAmount,
       currency: this.expert!.currency || 'INR',
+      referralCode: this.appliedPromo?.referralCode || this.promoCodeInput || null,
       guestData: {
         name: this.guestName,
         email: this.guestEmail,

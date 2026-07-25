@@ -286,6 +286,43 @@
         </div>
       </div>
 
+      <!-- Referral / Promo Code Box -->
+      <div class="bg-[var(--b2)] border border-[var(--b3)] p-5 rounded-2xl mb-6 shadow-md">
+        <h4 class="font-extrabold text-white text-sm mb-2">Have a Referral / Promo Code?</h4>
+        <div class="flex gap-3">
+          <input 
+            type="text" 
+            [(ngModel)]="promoCodeInput" 
+            placeholder="Enter promo code (e.g. REF-JOHN123)" 
+            class="stripe-input flex-1 px-4 py-2.5 rounded-xl text-xs uppercase font-mono bg-slate-950/40"
+            [disabled]="appliedPromo !== null || isValidatingPromo"
+          />
+          <button 
+            *ngIf="!appliedPromo" 
+            (click)="applyPromoCode()" 
+            [disabled]="isValidatingPromo || !promoCodeInput.trim()"
+            class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl cursor-pointer transition-all disabled:opacity-50">
+            {{ isValidatingPromo ? 'Applying...' : 'Apply Code' }}
+          </button>
+          <button 
+            *ngIf="appliedPromo" 
+            (click)="removePromoCode()" 
+            class="px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-bold text-xs rounded-xl cursor-pointer transition-all">
+            Remove
+          </button>
+        </div>
+
+        <div *ngIf="promoMessage" class="mt-2 text-xs font-semibold" [ngClass]="appliedPromo ? 'text-emerald-400' : 'text-amber-400'">
+          {{ promoMessage }}
+        </div>
+
+        <!-- Summary Row -->
+        <div *ngIf="appliedPromo" class="mt-4 pt-3 border-t border-[var(--b3)] flex justify-between text-xs font-bold text-white">
+          <span>Discount Savings ({{ appliedPromo.discountPercent }}%):</span>
+          <span class="text-emerald-400">-₹{{ discountAmount }}</span>
+        </div>
+      </div>
+
       <!-- Action Buttons -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <button 

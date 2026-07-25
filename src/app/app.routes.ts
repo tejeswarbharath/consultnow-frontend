@@ -38,6 +38,14 @@ export const routes: Routes = [
     loadComponent: () => import('./components/booking/booking.component').then(m => m.BookingComponent)
   },
   {
+    path: 'affiliate',
+    loadComponent: () => import('./components/affiliate-dashboard/affiliate-dashboard.component').then(m => m.AffiliateDashboardComponent)
+  },
+  {
+    path: 'expert/seo/:slug',
+    loadComponent: () => import('./components/seo-expert-profile/seo-expert-profile.component').then(m => m.SeoExpertProfileComponent)
+  },
+  {
     path: 'privacy',
     loadComponent: () => import('./components/privacy/privacy.component').then(m => m.PrivacyComponent)
   },
