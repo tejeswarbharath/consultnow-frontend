@@ -22,16 +22,21 @@ export class RegisterComponent {
     password: ['', [Validators.required, Validators.minLength(6)]],
     yearsExperience: ['', [Validators.required, Validators.min(0)]],
     subjectExpertise: ['', Validators.required],
-    pricePerHour: ['', [Validators.required, Validators.min(0)]],
+    pricePerHour: ['', [Validators.required, Validators.min(100)]],
     currency: ['INR', Validators.required] 
   });
 
   errorMessage = '';
+  successMessage = '';
 
   onSubmit() {
     if (this.registerForm.valid) {
+      this.errorMessage = '';
       this.authService.register(this.registerForm.value).subscribe({
-        next: () => this.router.navigate(['/login']),
+        next: (res) => {
+          this.successMessage = res.message || 'Registration successful! Your profile is pending review before going live.';
+          setTimeout(() => this.router.navigate(['/login']), 3500);
+        },
         error: (err) => this.errorMessage = err.error?.error || 'Registration failed'
       });
     }

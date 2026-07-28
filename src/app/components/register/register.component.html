@@ -15,6 +15,10 @@
         <p>{{ errorMessage }}</p>
       </div>
 
+      <div *ngIf="successMessage" class="bg-emerald-950/40 border border-emerald-500 text-emerald-200 p-4 rounded-md text-sm" role="alert" aria-live="polite">
+        <p>{{ successMessage }}</p>
+      </div>
+
       <div class="rounded-md space-y-4">
         <div>
           <label for="fullName" class="block text-sm font-medium text-[var(--bc)]/80 mb-1">Full Name</label>
@@ -60,9 +64,10 @@
             </select>
           </div>
           <div class="w-2/3">
-            <label for="pricePerHour" class="block text-sm font-medium text-[var(--bc)]/80 mb-1">Price Per Hour</label>
-            <input id="pricePerHour" formControlName="pricePerHour" type="number" min="0" required 
+            <label for="pricePerHour" class="block text-sm font-medium text-[var(--bc)]/80 mb-1">Price Per Hour (Min ₹100)</label>
+            <input id="pricePerHour" formControlName="pricePerHour" type="number" min="100" required 
               class="stripe-input w-full px-3 py-3 rounded-md text-sm" placeholder="1000">
+            <p class="text-xs text-slate-400 mt-1">Minimum price floor is ₹100/hr.</p>
           </div>
         </div>
       </div>
