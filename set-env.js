@@ -8,7 +8,8 @@ const envConfigFile = `export const environment = {
   apiUrl: '${process.env.API_URL || "https://api.consultnow.in/api"}',
   socketUrl: '${process.env.SOCKET_URL || "https://api.consultnow.in"}',
   razorpayKeyId: '${process.env.RAZORPAY_KEY_ID || "rzp_test_TEPquTSsoGtEh3"}',
-  registerUrl: '${process.env.REGISTER_URL || "https://consultnow.in/register"}'
+  registerUrl: '${process.env.REGISTER_URL || "https://consultnow.in/register"}',
+  gaMeasurementId: '${process.env.GA_MEASUREMENT_ID || "G-XXXXXXXXXX"}'
 };
 `;
 

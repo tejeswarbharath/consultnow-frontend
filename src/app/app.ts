@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
+import { AnalyticsService } from './services/analytics.service';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +9,7 @@ import { RouterOutlet, RouterLink } from '@angular/router';
   styleUrl: './app.scss',
 })
 export class App {
+  private analyticsService = inject(AnalyticsService);
   protected readonly title = signal('consultnow-frontend');
 }
 
