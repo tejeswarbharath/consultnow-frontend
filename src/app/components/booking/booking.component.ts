@@ -317,6 +317,7 @@ export class BookingComponent implements OnInit {
     const paymentPayload = {
       expertId: this.expertId!,
       amount: this.totalAmount,
+      hoursCount: this.hoursCount || 1,
       currency: this.expert!.currency || 'INR',
       referralCode: this.appliedPromo?.referralCode || this.promoCodeInput || null,
       guestData: {
