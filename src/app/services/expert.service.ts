@@ -14,6 +14,7 @@ export interface Expert {
   isAvailable: boolean;
   bio?: string;
   marketingSnippet?: string;
+  status?: string;
   currency?: string;
   category?: { name: string }; // Restored strictly to prevent template compilation errors
 }
