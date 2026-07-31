@@ -109,6 +109,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
+  sendQuickPrompt(text: string): void {
+    this.newMessage = text;
+    this.sendMessage();
+  }
+
   formatTime(seconds: number): string {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;

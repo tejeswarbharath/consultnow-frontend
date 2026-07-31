@@ -4,6 +4,26 @@
   </div>
 
   <div *ngIf="!isLoading && expert">
+    <!-- Booking Step Progress Tracker -->
+    <div class="flex items-center justify-center gap-2 sm:gap-4 mb-8 text-xs font-bold flex-wrap">
+      <div class="flex items-center gap-2 text-blue-400 bg-blue-500/10 border border-blue-500/30 px-3.5 py-1.5 rounded-full shadow-sm">
+        <span class="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px]">1</span> 
+        <span>Expert & AI Twin</span>
+      </div>
+      <span class="text-slate-600 font-extrabold">→</span>
+      <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full shadow-sm transition-all"
+           [ngClass]="selectedSlot ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30' : 'text-amber-400 bg-amber-500/10 border border-amber-500/30 animate-pulse'">
+        <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] text-white" [ngClass]="selectedSlot ? 'bg-emerald-500' : 'bg-amber-500'">2</span> 
+        <span>Select Time Slot</span>
+      </div>
+      <span class="text-slate-600 font-extrabold">→</span>
+      <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full shadow-sm"
+           [ngClass]="guestName && guestEmail && selectedSlot ? 'text-blue-400 bg-blue-500/10 border border-blue-500/30' : 'text-slate-400 bg-slate-900 border border-slate-800'">
+        <span class="w-5 h-5 rounded-full bg-slate-700 text-white flex items-center justify-center text-[10px]">3</span> 
+        <span>Checkout</span>
+      </div>
+    </div>
+
     <!-- Expert Quick Profile Card -->
     <div class="bg-[var(--b2)] border border-[var(--b3)] shadow-2xl rounded-2xl overflow-hidden mb-10">
       <div class="md:flex">

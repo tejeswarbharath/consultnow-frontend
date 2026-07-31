@@ -16,7 +16,11 @@ export interface Expert {
   marketingSnippet?: string;
   status?: string;
   currency?: string;
-  category?: { name: string }; // Restored strictly to prevent template compilation errors
+  category?: { name: string };
+  completedSessions?: number;
+  rating?: number;
+  reviewCount?: number;
+  totalEarnings?: number;
 }
 
 @Injectable({

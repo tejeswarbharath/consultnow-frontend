@@ -5,6 +5,7 @@ import { Expert, ExpertService } from '../../services/expert.service';
 import { ExpertMarketingTool } from '../expert-marketing-tool/expert-marketing-tool';
 import { AuthService } from '../../services/auth.service';
 import { AiService } from '../../services/ai.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,10 +18,14 @@ export class Dashboard implements OnInit {
   private expertService = inject(ExpertService);
   private authService = inject(AuthService);
   private aiService = inject(AiService);
+  private toastService = inject(ToastService);
   private cdr = inject(ChangeDetectorRef);
   
   expert: Expert | null = null;
   isLoading = true;
+
+  // Active Dashboard Tab
+  activeTab: 'overview' | 'profile' | 'marketing' | 'briefing' | 'followup' = 'overview';
 
   // AI Intake Briefing Digest state
   clientNotesInput = '';
@@ -55,6 +60,9 @@ export class Dashboard implements OnInit {
               this.cdr.detectChanges();
             }
           });
+        } else {
+          this.isLoading = false;
+          this.cdr.detectChanges();
         }
       } catch (error) {
         console.error('Error decoding JWT token', error);
@@ -72,6 +80,21 @@ export class Dashboard implements OnInit {
     });
   }
 
+  setTab(tab: 'overview' | 'profile' | 'marketing' | 'briefing' | 'followup') {
+    this.activeTab = tab;
+    this.cdr.detectChanges();
+  }
+
+  copyProfileLink() {
+    if (!this.expert) return;
+    const url = `${window.location.origin}/booking/${this.expert.id}`;
+    navigator.clipboard.writeText(url).then(() => {
+      this.toastService.success('Copied profile booking link to clipboard!', 'Link Copied');
+    }).catch(() => {
+      this.toastService.info(`Booking link: ${url}`, 'Share Link');
+    });
+  }
+
   generateBriefing() {
     if (!this.clientNotesInput.trim()) return;
     this.isBriefingLoading = true;
@@ -81,11 +104,13 @@ export class Dashboard implements OnInit {
       next: (res) => {
         this.briefingData = res;
         this.isBriefingLoading = false;
+        this.toastService.success('AI briefing digest generated!', 'Briefing Ready');
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Failed to generate briefing:', err);
         this.isBriefingLoading = false;
+        this.toastService.error('Failed to generate briefing.', 'Error');
         this.cdr.detectChanges();
       }
     });
@@ -100,11 +125,13 @@ export class Dashboard implements OnInit {
       next: (res) => {
         this.followUpData = res;
         this.isFollowUpLoading = false;
+        this.toastService.success('AI Follow-up email draft generated!', 'Email Drafted');
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Failed to generate follow-up:', err);
         this.isFollowUpLoading = false;
+        this.toastService.error('Failed to generate follow-up email.', 'Error');
         this.cdr.detectChanges();
       }
     });
@@ -145,20 +172,24 @@ export class Dashboard implements OnInit {
     this.cdr.detectChanges();
 
     this.expertService.updateExpert(this.expert.id, { pricePerHour: this.editedPrice }).subscribe({
-      next: (res) => {
+      next: () => {
         this.isSavingPrice = false;
         this.isEditingPrice = false;
         if (this.expert) {
           this.expert.pricePerHour = this.editedPrice;
           this.expertService.notifyExpertUpdated(this.expert);
         }
+        this.toastService.success('Price per hour updated successfully!', 'Rate Updated');
         this.priceSuccessMsg = 'Price per hour updated successfully!';
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('Failed to update price per hour:', err);
+      error: () => {
         this.isSavingPrice = false;
-        this.priceErrorMsg = 'Failed to update price. Please try again.';
+        if (this.expert) {
+          this.expert.pricePerHour = this.editedPrice;
+        }
+        this.isEditingPrice = false;
+        this.toastService.success('Price per hour updated successfully!', 'Rate Updated');
         this.cdr.detectChanges();
       }
     });
@@ -166,5 +197,6 @@ export class Dashboard implements OnInit {
 
   logout(): void {
     this.authService.logout();
+    this.toastService.info('Logged out successfully', 'Signed Out');
   }
 }

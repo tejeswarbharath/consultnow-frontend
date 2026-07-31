@@ -4,9 +4,10 @@ import { Router, RouterModule } from '@angular/router';
 import { Expert, ExpertService } from '../../services/expert.service';
 import { AiSupportChatComponent } from '../ai-support-chat/ai-support-chat.component';
 import { environment } from '../../../environments/environment';
-import { CommonModule, isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AiService } from '../../services/ai.service';
 import { Title, Meta } from '@angular/platform-browser';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-expert-discovery',
@@ -42,6 +43,14 @@ export class ExpertDiscoveryComponent implements OnInit {
     'HR Services': 'Assists organizations and business founders in designing effective workplace policies, and implementing modern human resources best practices.'
   };
 
+  // Quick Prompt Chips
+  promptChips = [
+    { label: '✨ Resume Review', prompt: 'I need guidance on reviewing my software engineering resume for tech roles.' },
+    { label: '💻 System Architecture', prompt: 'I need an expert consultation on scalable cloud microservices design.' },
+    { label: '👔 Remote HR Policy', prompt: 'Help me draft a comprehensive remote work and attendance policy.' },
+    { label: '📚 Math & Physics Tutoring', prompt: 'Looking for a private tutor for high school algebra and physics.' }
+  ];
+
   constructor(
     private expertService: ExpertService,
     private aiService: AiService,
@@ -49,6 +58,7 @@ export class ExpertDiscoveryComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private titleService: Title,
     private metaService: Meta,
+    private toastService: ToastService,
     @Inject(PLATFORM_ID) private platformId: object
   ) {}
 
@@ -68,6 +78,9 @@ export class ExpertDiscoveryComponent implements OnInit {
           setTimeout(() => {
             this.expertsBySubject = data;
             this.subjects = Object.keys(data);
+            if (this.subjects.length > 0) {
+              this.openSubject = this.subjects[0]; // Open first category by default for scannability
+            }
             this.loading = false;
             this.cdr.detectChanges(); 
           });
@@ -88,10 +101,25 @@ export class ExpertDiscoveryComponent implements OnInit {
           this.openSubject = category;
         } else {
           this.activeFilterCategory = null;
-          this.openSubject = null;
         }
         this.cdr.detectChanges();
       });
+    }
+  }
+
+  applyPromptChip(promptText: string): void {
+    this.searchQuery = promptText;
+    this.toastService.info('Matching prompt with AI expert routing...', 'AI Matcher');
+    this.searchWithAi();
+  }
+
+  filterByCategoryPill(category: string | null): void {
+    this.activeFilterCategory = category;
+    if (category) {
+      this.openSubject = category;
+      this.toastService.info(`Filtered by category: ${category}`, 'Category Selected');
+    } else {
+      this.openSubject = this.subjects[0] || null;
     }
   }
 
@@ -117,6 +145,7 @@ export class ExpertDiscoveryComponent implements OnInit {
         if (category && this.subjects.includes(category)) {
           this.activeFilterCategory = category;
           this.openSubject = category;
+          this.toastService.success(`AI matched your problem to: ${category}`, 'Match Found');
 
           // Fetch LLM summaries for experts in this category
           const experts = this.expertsBySubject[category] || [];
@@ -148,7 +177,9 @@ export class ExpertDiscoveryComponent implements OnInit {
     this.activeFilterCategory = null;
     this.expertRecommendations = {};
     this.emergencyDisclaimer = null;
-    this.openSubject = null;
+    if (this.subjects.length > 0) {
+      this.openSubject = this.subjects[0];
+    }
     this.cdr.detectChanges();
   }
 

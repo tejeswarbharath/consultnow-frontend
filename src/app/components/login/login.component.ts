@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private toastService = inject(ToastService);
   private router = inject(Router);
 
   loginForm = this.fb.group({
@@ -21,13 +23,26 @@ export class LoginComponent {
   });
 
   errorMessage = '';
+  loading = false;
+  showPassword = false;
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
 
   onSubmit() {
     if (this.loginForm.valid) {
+      this.loading = true;
+      this.errorMessage = '';
       this.authService.login(this.loginForm.value).subscribe({
-        next: () => this.router.navigate(['/dashboard']),
+        next: () => {
+          this.loading = false;
+          this.toastService.success('Logged in successfully', 'Welcome');
+          this.router.navigate(['/dashboard']);
+        },
         error: (err) => {
-          this.errorMessage = err.error?.message || 'Login failed. Please try again.';
+          this.loading = false;
+          this.errorMessage = err.error?.message || err.error?.error || 'Login failed. Please try again.';
         }
       });
     }

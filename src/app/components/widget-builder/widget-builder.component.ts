@@ -177,12 +177,11 @@ export class WidgetBuilderComponent implements OnInit {
   theme = 'dark';
   style = 'card';
   copied = false;
-
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
     const user = this.authService.getCurrentUser();
-    this.expertId = user?.expertId || user?.id || 'demo-expert';
+    this.expertId = user?.expertId || user?.id || '';
   }
 
   getEmbedCode(): string {

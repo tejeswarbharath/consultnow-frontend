@@ -1,14 +1,18 @@
 <div class="flex flex-col h-screen bg-[var(--b1)] font-sans text-[var(--bc)]">
   <!-- Header -->
-  <header class="bg-[var(--b2)] border-b border-[var(--b3)] px-6 py-4 flex justify-between items-center shadow-md z-10">
+  <header class="bg-[var(--b2)]/90 backdrop-blur-md border-b border-[var(--b3)] px-6 py-4 flex justify-between items-center shadow-lg z-10">
     <div class="flex items-center space-x-4">
+      <button routerLink="/" class="p-2 rounded-xl bg-slate-800/60 hover:bg-slate-700 text-slate-300 hover:text-white transition-all cursor-pointer text-xs flex items-center gap-1">
+        ← Back
+      </button>
+
       <div class="relative">
-        <div class="w-12 h-12 bg-blue-500/10 border border-blue-500/35 rounded-full flex items-center justify-center text-blue-400 font-bold text-xl">
+        <div class="w-11 h-11 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-lg shadow-md border border-blue-400/30">
           {{ expertName.charAt(0) }}
         </div>
         <!-- Status indicator -->
         <span 
-          class="absolute bottom-0 right-0 w-3.5 h-3.5 border-2 border-[var(--b2)] rounded-full shadow"
+          class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 border-2 border-[var(--b2)] rounded-full shadow"
           [ngClass]="{
             'bg-emerald-500': expertStatus === 'available',
             'bg-amber-500': expertStatus === 'busy',
@@ -18,17 +22,20 @@
         </span>
       </div>
       <div>
-        <h2 class="text-lg font-bold text-white leading-tight">{{ expertName }}</h2>
-        <p class="text-xs text-[var(--bc)]/60 capitalize mt-0.5">{{ expertStatus }}</p>
+        <h2 class="text-base font-extrabold text-white leading-tight flex items-center gap-2">
+          {{ expertName }}
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-semibold border border-emerald-500/20">Active Session</span>
+        </h2>
+        <p class="text-[11px] text-[var(--bc)]/60 capitalize mt-0.5">Consultation Room • {{ expertStatus }}</p>
       </div>
     </div>
     
-    <div class="flex items-center space-x-2 bg-blue-500/10 px-4 py-2 rounded-xl border border-blue-500/20">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+    <div class="flex items-center space-x-2 bg-blue-500/10 px-4 py-2 rounded-2xl border border-blue-500/20 shadow-sm">
+      <svg class="h-4 w-4 text-blue-400 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
-      <span class="font-mono text-base font-extrabold text-blue-400">
-        {{ remainingSeconds !== null ? formatTime(remainingSeconds) : '--:--' }}
+      <span class="font-mono text-sm font-extrabold text-blue-400">
+        {{ remainingSeconds !== null ? formatTime(remainingSeconds) : '45:00' }}
       </span>
     </div>
   </header>
@@ -37,8 +44,10 @@
   <main class="flex-1 overflow-y-auto p-6 space-y-4">
     <div class="flex flex-col space-y-4 max-w-4xl mx-auto w-full">
       
-      <div *ngIf="messages.length === 0" class="text-center text-[var(--bc)]/40 py-20 bg-slate-950/10 rounded-2xl border border-[var(--b3)] border-dashed">
-        <p class="text-sm">No messages yet. Send a message to start the consultation!</p>
+      <div *ngIf="messages.length === 0" class="text-center py-16 bg-slate-950/20 rounded-3xl border border-[var(--b3)] border-dashed space-y-2">
+        <div class="text-2xl">💬</div>
+        <h3 class="text-sm font-bold text-white">Live Consultation Chat Connected</h3>
+        <p class="text-xs text-[var(--bc)]/60 max-w-sm mx-auto">Send your first message or use quick action prompts below to start your 1-on-1 session with {{ expertName }}.</p>
       </div>
 
       <div *ngFor="let msg of messages" 
@@ -47,13 +56,13 @@
         
         <div class="max-w-[75%] rounded-2xl px-5 py-3 shadow-md relative leading-relaxed"
              [ngClass]="{
-               'bg-blue-600/20 border border-blue-500/30 text-white rounded-br-none': msg.senderId === currentUserId,
+               'bg-blue-600/25 border border-blue-500/30 text-white rounded-br-none': msg.senderId === currentUserId,
                'bg-[var(--b2)] text-[var(--bc)] border border-[var(--b3)] rounded-bl-none': msg.senderId !== currentUserId
              }">
           <div *ngIf="msg.senderId !== currentUserId" class="text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1">
             {{ msg.senderName }}
           </div>
-          <p class="text-sm break-words">{{ msg.message }}</p>
+          <p class="text-xs break-words">{{ msg.message }}</p>
           <span class="text-[9px] mt-1.5 block opacity-60 text-right font-medium">
             {{ msg.timestamp | date:'shortTime' }}
           </span>
@@ -62,29 +71,41 @@
     </div>
   </main>
 
-  <!-- Input Area -->
-  <footer class="bg-[var(--b2)] border-t border-[var(--b3)] p-4">
+  <!-- Quick Prompts & Input Area -->
+  <footer class="bg-[var(--b2)] border-t border-[var(--b3)] p-4 space-y-3">
+    <!-- Quick Prompts Bar -->
+    <div class="max-w-4xl mx-auto flex items-center gap-2 overflow-x-auto pb-1">
+      <span class="text-[10px] uppercase font-bold text-slate-400 shrink-0">Quick Actions:</span>
+      <button (click)="sendQuickPrompt('Can you summarize our session notes so far?')" class="text-[11px] px-3 py-1 rounded-xl bg-slate-800/80 hover:bg-blue-600/20 text-slate-300 border border-[var(--b3)] hover:border-blue-500/30 whitespace-nowrap transition-all cursor-pointer">
+        💬 Summarize Notes
+      </button>
+      <button (click)="sendQuickPrompt('What are your recommended next steps for me?')" class="text-[11px] px-3 py-1 rounded-xl bg-slate-800/80 hover:bg-blue-600/20 text-slate-300 border border-[var(--b3)] hover:border-blue-500/30 whitespace-nowrap transition-all cursor-pointer">
+        📌 Recommended Next Steps
+      </button>
+      <button (click)="sendQuickPrompt('Thank you so much for the insightful consultation!')" class="text-[11px] px-3 py-1 rounded-xl bg-slate-800/80 hover:bg-blue-600/20 text-slate-300 border border-[var(--b3)] hover:border-blue-500/30 whitespace-nowrap transition-all cursor-pointer">
+        🙏 Thank You!
+      </button>
+    </div>
+
     <div class="max-w-4xl mx-auto w-full relative flex items-center">
       <input 
         id="chat-message-input"
         type="text" 
         [(ngModel)]="newMessage" 
         (keyup.enter)="sendMessage()"
-        placeholder="Type your message here..." 
-        class="w-full bg-[#0a0f1d] border border-[var(--b3)] rounded-full pl-6 pr-14 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-white placeholder-slate-500 transition-all"
+        placeholder="Type your message to {{ expertName }}..." 
+        class="w-full bg-[#0a0f1d] border border-[var(--b3)] rounded-2xl pl-6 pr-14 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs text-white placeholder-slate-500 transition-all"
         aria-label="Type your message here"
       />
       <button 
         (click)="sendMessage()"
         [disabled]="!newMessage.trim()"
-        class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-md focus:outline-none cursor-pointer"
-        aria-label="Send message"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-0.5 text-white" viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
+        class="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white w-9 h-9 rounded-xl flex items-center justify-center transition-all shadow-md focus:outline-none cursor-pointer"
+        aria-label="Send message">
+        <svg class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
           <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
         </svg>
       </button>
     </div>
   </footer>
 </div>
-

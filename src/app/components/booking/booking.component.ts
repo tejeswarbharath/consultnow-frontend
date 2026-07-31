@@ -9,6 +9,8 @@ import { AiService } from '../../services/ai.service';
 import { Title, Meta } from '@angular/platform-browser';
 import { AffiliateService, PromoValidationResult } from '../../services/affiliate.service';
 
+import { ToastService } from '../../services/toast.service';
+
 @Component({
   selector: 'app-booking',
   standalone: true,
@@ -21,6 +23,7 @@ export class BookingComponent implements OnInit {
   private paymentService = inject(PaymentService);
   private bookingService = inject(BookingService);
   private affiliateService = inject(AffiliateService);
+  private toastService = inject(ToastService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
@@ -250,6 +253,8 @@ export class BookingComponent implements OnInit {
 
   selectSlot(slot: Date) {
     this.selectedSlot = slot;
+    const formatted = slot.toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+    this.toastService.success(`Selected slot: ${formatted}`, 'Time Slot Reserved');
     this.cdr.detectChanges();
   }
 
