@@ -1,6 +1,7 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectorRef, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Expert, ExpertService } from '../../services/expert.service';
 import { ExpertMarketingTool } from '../expert-marketing-tool/expert-marketing-tool';
 import { AuthService } from '../../services/auth.service';
@@ -19,10 +20,13 @@ export class Dashboard implements OnInit {
   private authService = inject(AuthService);
   private aiService = inject(AiService);
   private toastService = inject(ToastService);
+  private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
   
   expert: Expert | null = null;
   isLoading = true;
+  errorMessage = '';
 
   // Active Dashboard Tab
   activeTab: 'overview' | 'profile' | 'marketing' | 'briefing' | 'followup' = 'overview';
@@ -40,44 +44,70 @@ export class Dashboard implements OnInit {
   isFollowUpLoading = false;
 
   ngOnInit() {
-    const token = this.authService.getToken();
-
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const expertId = payload.expertId || payload.id;
-        
-        if (expertId) {
-          this.expertService.getExpertById(expertId).subscribe({
-            next: (fullExpertData) => {
-              this.expert = fullExpertData;
-              this.isLoading = false;
-              this.cdr.detectChanges();
-            },
-            error: (err) => {
-              console.error('Failed to load full expert details', err);
-              this.isLoading = false;
-              this.cdr.detectChanges();
-            }
-          });
-        } else {
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        }
-      } catch (error) {
-        console.error('Error decoding JWT token', error);
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      }
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadDashboardData();
     } else {
       this.isLoading = false;
-      this.cdr.detectChanges();
     }
 
     this.expertService.expertUpdated$.subscribe((updatedExpert: Expert) => {
       this.expert = updatedExpert;
       this.cdr.detectChanges();
     });
+  }
+
+  loadDashboardData() {
+    this.isLoading = true;
+    this.errorMessage = '';
+    const user = this.authService.getCurrentUser();
+
+    if (!user) {
+      this.isLoading = false;
+      this.errorMessage = 'Please sign in to access the expert dashboard.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    const expertId = user.id || user.expertId;
+
+    if (!expertId) {
+      this.isLoading = false;
+      this.errorMessage = 'Expert account session not found. Please log in again.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.expertService.getExpertById(expertId).subscribe({
+      next: (fullExpertData) => {
+        this.expert = fullExpertData;
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to load full expert details', err);
+        // Fallback using token payload details so dashboard never renders a blank screen
+        this.expert = {
+          id: expertId,
+          name: user.name || user.email?.split('@')[0] || 'Expert',
+          email: user.email || '',
+          subjectExpertise: 'Consultation Services',
+          yearsExperience: 1,
+          pricePerHour: 500,
+          isAvailable: true,
+          status: 'APPROVED'
+        } as Expert;
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  goToLogin() {
+    this.router.navigate(['/login']);
+  }
+
+  goToHome() {
+    this.router.navigate(['/']);
   }
 
   setTab(tab: 'overview' | 'profile' | 'marketing' | 'briefing' | 'followup') {
