@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 export interface AuthResponse {
   token: string;
   user?: any;
+  expert?: any;
   role?: string;
   message?: string;
   expertId?: string;
@@ -41,7 +42,7 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.API_URL}/login`, { ...credentials, role: 'expert' }).pipe(
       tap(response => {
         if (response.token) {
-          this.handleAuthentication(response.token, null);
+          this.handleAuthentication(response.token, response.expert || response.user);
         }
       })
     );
@@ -80,7 +81,14 @@ export class AuthService {
     try {
       const payload = token.split('.')[1];
       const decoded = JSON.parse(atob(payload));
-      return { id: decoded.id, email: decoded.email, role: decoded.role };
+      const id = decoded.expertId || decoded.id || decoded._id || decoded.sub;
+      return { 
+        id, 
+        expertId: id, 
+        email: decoded.email, 
+        role: decoded.role || 'expert',
+        name: decoded.name
+      };
     } catch (e) {
       return null;
     }

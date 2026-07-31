@@ -60,19 +60,22 @@ export class Dashboard implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
     const user = this.authService.getCurrentUser();
+    const token = this.authService.getToken();
 
-    if (!user) {
-      this.isLoading = false;
-      this.errorMessage = 'Please sign in to access the expert dashboard.';
-      this.cdr.detectChanges();
-      return;
+    let expertId = user?.id || user?.expertId;
+
+    if (!expertId && token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        expertId = payload.expertId || payload.id || payload.sub || payload._id;
+      } catch (e) {
+        console.error('Failed to parse token in dashboard', e);
+      }
     }
-
-    const expertId = user.id || user.expertId;
 
     if (!expertId) {
       this.isLoading = false;
-      this.errorMessage = 'Expert account session not found. Please log in again.';
+      this.errorMessage = 'Please sign in to access the expert dashboard.';
       this.cdr.detectChanges();
       return;
     }
